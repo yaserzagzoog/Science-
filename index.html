@@ -3,241 +3,277 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Collective AI — Open, AI-accelerated research in fundamental physics</title>
-  <meta name="description" content="Collective AI is an open, bottom-up research collaboration using Claude as an intelligence layer to accelerate distributed work on three open problems in fundamental physics: objective collapse, the fine-structure constant, and dark matter.">
+  <title>Collective AI — An open organisation for AI-accelerated fundamental physics</title>
+  <meta name="description" content="Collective AI is an open research organisation — a CERN for the AI era — giving a global cohort shared frontier-AI capacity to work together on three open problems in fundamental physics: dark matter, the fine-structure constant, and gravitationally-induced objective collapse.">
   <style>
     :root {
       color-scheme: light dark;
-      --bg: #f6f7fb;
-      --bg-2: #eef0f7;
+      --blue: #0033A0;        /* CERN blue */
+      --blue-d: #001f66;
+      --blue-l: #1a5fd0;
+      --bg: #ffffff;
+      --bg-alt: #eef2f7;
       --surface: #ffffff;
-      --text: #12141b;
-      --muted: #5a6273;
-      --border: #e5e8f0;
-      --accent: #4f46e5;
-      --accent-2: #06b6d4;
-      --chip: #eef0f7;
-      --shadow: 0 1px 2px rgba(18,20,27,.04), 0 10px 30px rgba(18,20,27,.06);
-      --shadow-hover: 0 2px 6px rgba(18,20,27,.07), 0 20px 48px rgba(79,70,229,.16);
+      --text: #14181f;
+      --muted: #586074;
+      --border: #dce1ea;
+      --chip: #eef2f7;
+      --shadow: 0 1px 2px rgba(16,24,40,.04), 0 8px 24px rgba(16,24,40,.06);
+      --shadow-lg: 0 2px 6px rgba(16,24,40,.06), 0 20px 44px rgba(0,51,160,.12);
+      --hero-text: #ffffff;
     }
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #0a0c11;
-        --bg-2: #0e1017;
-        --surface: #13161f;
-        --text: #eef0f6;
-        --muted: #99a1b3;
-        --border: #222736;
-        --accent: #8b83ff;
-        --accent-2: #34d3ee;
-        --chip: #1a1f2c;
-        --shadow: 0 1px 2px rgba(0,0,0,.4), 0 14px 34px rgba(0,0,0,.4);
-        --shadow-hover: 0 2px 6px rgba(0,0,0,.5), 0 24px 56px rgba(79,70,229,.3);
+        --blue: #4d82e8; --blue-d: #0a1020; --blue-l: #6f9bf0;
+        --bg: #0b0e14; --bg-alt: #0f1420; --surface: #121724;
+        --text: #eaeef6; --muted: #98a2b5; --border: #212836; --chip: #182031;
+        --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 30px rgba(0,0,0,.4);
+        --shadow-lg: 0 2px 6px rgba(0,0,0,.5), 0 24px 52px rgba(0,0,0,.5);
       }
     }
-
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
     body {
-      margin: 0;
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.65;
-      -webkit-font-smoothing: antialiased;
+      margin: 0; background: var(--bg); color: var(--text);
+      font-family: "Helvetica Neue", Helvetica, Arial, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.6; -webkit-font-smoothing: antialiased;
     }
-    a { color: var(--accent); }
-    .wrap { max-width: 1000px; margin: 0 auto; padding: 0 1.25rem; }
-    section { padding: clamp(3rem, 7vw, 5.5rem) 0; }
-    .eyebrow {
-      display: inline-block; font-size: .76rem; font-weight: 700;
-      letter-spacing: .14em; text-transform: uppercase; color: var(--accent);
-      margin-bottom: 1rem;
-    }
-    h2.section-title {
-      font-size: clamp(1.6rem, 4vw, 2.3rem); line-height: 1.15;
-      letter-spacing: -.02em; margin: 0 0 .6rem;
-    }
-    p.section-lead { color: var(--muted); font-size: 1.08rem; max-width: 46rem; margin: 0 0 2.5rem; }
+    a { color: var(--blue-l); }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 1.5rem; }
+    .eyebrow { display: inline-block; font-size: .74rem; font-weight: 700; letter-spacing: .16em;
+      text-transform: uppercase; color: var(--blue-l); margin-bottom: .9rem; }
+    h2.title { font-size: clamp(1.7rem, 3.6vw, 2.4rem); line-height: 1.12; letter-spacing: -.02em; margin: 0 0 .6rem; font-weight: 700; }
+    p.lead { color: var(--muted); font-size: 1.1rem; max-width: 48rem; margin: 0 0 2.5rem; }
+    section { padding: clamp(3rem, 6vw, 5rem) 0; }
+    .alt { background: var(--bg-alt); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
 
-    /* Nav */
-    nav {
-      position: sticky; top: 0; z-index: 20;
-      background: color-mix(in srgb, var(--bg) 82%, transparent);
-      backdrop-filter: saturate(160%) blur(10px);
-      border-bottom: 1px solid var(--border);
-    }
-    nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
-    .brand { display: flex; align-items: center; gap: .6rem; font-weight: 700; letter-spacing: -.01em; text-decoration: none; color: var(--text); }
-    .brand .dot { width: 26px; height: 26px; border-radius: 8px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); display: grid; place-items: center; color: #fff; font-size: .95rem; }
-    .nav-links { display: flex; gap: 1.4rem; align-items: center; }
-    .nav-links a { color: var(--muted); text-decoration: none; font-size: .93rem; font-weight: 500; }
-    .nav-links a:hover { color: var(--text); }
-    .btn {
-      display: inline-flex; align-items: center; gap: .45rem;
-      font: inherit; font-weight: 600; font-size: .95rem; cursor: pointer;
-      padding: .6rem 1.15rem; border-radius: 10px; text-decoration: none;
-      border: 1px solid transparent; transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
-    }
-    .btn-primary { background: linear-gradient(120deg, var(--accent), var(--accent-2)); color: #fff; box-shadow: var(--shadow); }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
-    .btn-ghost { background: var(--surface); border-color: var(--border); color: var(--text); }
-    .btn-ghost:hover { border-color: color-mix(in srgb, var(--accent) 45%, var(--border)); }
-    @media (max-width: 620px) { .nav-links a:not(.btn) { display: none; } }
+    /* Utility strip */
+    .utility { background: var(--blue-d); color: rgba(255,255,255,.85); font-size: .8rem; }
+    .utility .wrap { display: flex; justify-content: space-between; align-items: center; height: 34px; }
+    .utility a { color: #fff; text-decoration: none; opacity: .9; }
+    .utility a:hover { opacity: 1; text-decoration: underline; }
+
+    /* Masthead */
+    .masthead { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 30;
+      backdrop-filter: saturate(160%) blur(8px); }
+    .masthead .wrap { display: flex; align-items: center; justify-content: space-between; height: 66px; }
+    .brand { display: flex; align-items: center; gap: .7rem; text-decoration: none; color: var(--text); }
+    .brand .ring { width: 34px; height: 34px; color: var(--blue); }
+    @media (prefers-color-scheme: dark) { .brand .ring { color: var(--blue-l); } }
+    .brand .name { font-weight: 800; letter-spacing: -.01em; font-size: 1.12rem; }
+    .brand .name small { display: block; font-weight: 500; font-size: .68rem; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--muted); margin-top: -2px; }
+    .nav-links { display: flex; align-items: center; gap: 1.5rem; }
+    .nav-links a { color: var(--text); text-decoration: none; font-size: .92rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--blue-l); }
+    .btn { display: inline-flex; align-items: center; gap: .45rem; font: inherit; font-weight: 600; font-size: .92rem;
+      cursor: pointer; padding: .6rem 1.15rem; border-radius: 4px; text-decoration: none; border: 1px solid transparent;
+      transition: transform .12s ease, box-shadow .12s ease, background .12s ease, color .12s ease; }
+    .btn-primary { background: var(--blue); color: #fff; }
+    .btn-primary:hover { background: var(--blue-d); }
+    .btn-outline { background: transparent; border-color: var(--border); color: var(--text); }
+    .btn-outline:hover { border-color: var(--blue-l); color: var(--blue-l); }
+    @media (max-width: 760px) { .nav-links a:not(.btn) { display: none; } }
 
     /* Hero */
-    .hero { text-align: center; padding-top: clamp(3.5rem, 8vw, 6rem); }
-    .hero .tag {
-      display: inline-flex; align-items: center; gap: .5rem; font-size: .85rem; color: var(--muted);
-      background: var(--surface); border: 1px solid var(--border); border-radius: 999px;
-      padding: .4rem .9rem; margin-bottom: 1.6rem;
-    }
-    .hero .tag b { color: var(--accent); font-weight: 700; }
-    .hero h1 {
-      font-size: clamp(2.6rem, 8vw, 4.6rem); line-height: 1.03; letter-spacing: -.03em;
-      margin: 0 auto 1.2rem; max-width: 16ch;
-    }
-    .hero h1 .grad {
-      background: linear-gradient(120deg, var(--accent), var(--accent-2));
-      -webkit-background-clip: text; background-clip: text; color: transparent;
-    }
-    .hero p.subtitle { font-size: clamp(1.1rem, 2.6vw, 1.35rem); color: var(--muted); max-width: 40rem; margin: 0 auto 2.2rem; }
-    .cta-row { display: flex; gap: .8rem; justify-content: center; flex-wrap: wrap; }
+    .hero { position: relative; overflow: hidden; color: var(--hero-text);
+      background: radial-gradient(120% 120% at 80% 0%, #0a49c8 0%, var(--blue) 40%, var(--blue-d) 100%); }
+    .hero .rings { position: absolute; right: -140px; top: 50%; transform: translateY(-50%);
+      width: 640px; height: 640px; color: #fff; opacity: .10; pointer-events: none; }
+    .hero .wrap { position: relative; z-index: 1; padding-top: clamp(3.5rem, 7vw, 6rem); padding-bottom: clamp(3.5rem, 7vw, 6rem); }
+    .hero .kicker { display: inline-flex; align-items: center; gap: .5rem; font-size: .82rem; font-weight: 600;
+      letter-spacing: .04em; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.25);
+      padding: .4rem .9rem; border-radius: 999px; margin-bottom: 1.5rem; }
+    .hero h1 { font-size: clamp(2.4rem, 6.2vw, 4.2rem); line-height: 1.04; letter-spacing: -.03em; font-weight: 800;
+      margin: 0 0 1.2rem; max-width: 18ch; }
+    .hero p.sub { font-size: clamp(1.08rem, 2.3vw, 1.3rem); color: rgba(255,255,255,.9); max-width: 42rem; margin: 0 0 2rem; }
+    .cta-row { display: flex; gap: .8rem; flex-wrap: wrap; }
+    .hero .btn-primary { background: #fff; color: var(--blue); }
+    .hero .btn-primary:hover { background: #eaf0ff; }
+    .hero .btn-outline { border-color: rgba(255,255,255,.5); color: #fff; }
+    .hero .btn-outline:hover { border-color: #fff; color: #fff; background: rgba(255,255,255,.08); }
 
-    /* Stats */
-    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: clamp(3rem, 6vw, 4.5rem); }
-    .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1.2rem; text-align: center; box-shadow: var(--shadow); }
-    .stat .num { font-size: clamp(1.5rem, 4vw, 2rem); font-weight: 700; letter-spacing: -.02em;
-      background: linear-gradient(120deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .stat .label { font-size: .85rem; color: var(--muted); }
+    /* Stats strip */
+    .stats { border-top: 1px solid rgba(255,255,255,.18); margin-top: clamp(2.5rem, 5vw, 3.5rem); padding-top: 2rem;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; position: relative; z-index: 1; }
+    .stat .num { font-size: clamp(1.6rem, 3.6vw, 2.3rem); font-weight: 800; letter-spacing: -.02em; }
+    .stat .label { font-size: .85rem; color: rgba(255,255,255,.8); }
     @media (max-width: 620px) { .stats { grid-template-columns: repeat(2, 1fr); } }
 
-    .alt { background: var(--bg-2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    /* Generic 3-col cards */
+    .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+    @media (max-width: 820px) { .grid3 { grid-template-columns: 1fr; } }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.6rem; box-shadow: var(--shadow); }
+    .card .ico { width: 44px; height: 44px; border-radius: 8px; display: grid; place-items: center; color: var(--blue);
+      background: color-mix(in srgb, var(--blue) 10%, transparent); border: 1px solid color-mix(in srgb, var(--blue) 22%, transparent); margin-bottom: 1rem; }
+    @media (prefers-color-scheme: dark) { .card .ico { color: var(--blue-l); } }
+    .card .ico svg { width: 22px; height: 22px; }
+    .card h3 { margin: 0 0 .4rem; font-size: 1.1rem; letter-spacing: -.01em; }
+    .card p { margin: 0; color: var(--muted); font-size: .97rem; }
 
-    /* Track cards */
-    .tracks { display: grid; gap: 1.25rem; }
-    .track {
-      background: var(--surface); border: 1px solid var(--border); border-radius: 18px;
-      padding: 1.75rem; box-shadow: var(--shadow);
-      display: grid; grid-template-columns: 64px 1fr; gap: 1.25rem; align-items: start;
-      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
-    }
-    .track:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); border-color: color-mix(in srgb, var(--accent) 35%, var(--border)); }
-    .track .letter {
-      width: 64px; height: 64px; border-radius: 16px; display: grid; place-items: center;
-      font-size: 1.6rem; font-weight: 800; color: #fff;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-    }
+    /* Tracks */
+    .tracks { display: grid; gap: 1.1rem; }
+    .track { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.75rem;
+      display: grid; grid-template-columns: 56px 1fr; gap: 1.4rem; align-items: start; box-shadow: var(--shadow);
+      border-left: 4px solid var(--blue); transition: box-shadow .15s ease, transform .15s ease; }
+    .track:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+    .track .letter { width: 56px; height: 56px; border-radius: 8px; display: grid; place-items: center; color: #fff;
+      font-size: 1.5rem; font-weight: 800; background: var(--blue); }
     .track h3 { margin: 0 0 .1rem; font-size: 1.25rem; letter-spacing: -.01em; }
     .track .kicker { font-size: .82rem; color: var(--muted); margin-bottom: .7rem; }
     .track p { margin: 0 0 .9rem; color: var(--text); }
-    .track .eq {
-      display: inline-block; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-      font-size: .95rem; background: var(--chip); border: 1px solid var(--border);
-      border-radius: 8px; padding: .4rem .7rem; margin-bottom: .9rem; color: var(--text);
-    }
-    .track .eq sub, .track .eq sup { font-size: .75em; }
-    .flag {
-      display: inline-flex; align-items: center; gap: .4rem; font-size: .8rem; font-weight: 600;
-      color: #b4530a; background: color-mix(in srgb, #f59e0b 16%, transparent);
-      border: 1px solid color-mix(in srgb, #f59e0b 40%, transparent); border-radius: 7px; padding: .25rem .6rem;
-    }
+    .eq { display: inline-block; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .93rem;
+      background: var(--chip); border: 1px solid var(--border); border-radius: 5px; padding: .35rem .65rem; margin-bottom: .9rem; }
+    .eq sub, .eq sup { font-size: .75em; }
+    .flag { display: inline-flex; align-items: center; gap: .4rem; font-size: .8rem; font-weight: 600; color: #b4530a;
+      background: color-mix(in srgb, #f59e0b 15%, transparent); border: 1px solid color-mix(in srgb, #f59e0b 40%, transparent);
+      border-radius: 5px; padding: .25rem .6rem; }
     @media (prefers-color-scheme: dark) { .flag { color: #fbbf5c; } }
+    .ref-link { display: inline-flex; align-items: center; gap: .35rem; font-size: .9rem; font-weight: 600; color: var(--blue-l);
+      text-decoration: none; }
+    .ref-link:hover { text-decoration: underline; }
     @media (max-width: 560px) { .track { grid-template-columns: 1fr; } }
 
-    /* Feature grid (how Claude helps) */
-    .features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.1rem; }
-    .feature { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; box-shadow: var(--shadow); }
-    .feature .ico { width: 42px; height: 42px; border-radius: 11px; display: grid; place-items: center; font-size: 1.25rem;
-      background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 18%, transparent), color-mix(in srgb, var(--accent-2) 18%, transparent));
-      border: 1px solid var(--border); margin-bottom: .9rem; }
-    .feature h4 { margin: 0 0 .35rem; font-size: 1.05rem; }
-    .feature p { margin: 0; color: var(--muted); font-size: .96rem; }
-    @media (max-width: 620px) { .features { grid-template-columns: 1fr; } }
+    /* Feature 2-col */
+    .grid2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.1rem; }
+    @media (max-width: 720px) { .grid2 { grid-template-columns: 1fr; } }
 
-    /* Progress / timeline */
+    /* Steps */
     .steps { display: grid; gap: 1rem; }
-    .step { display: grid; grid-template-columns: auto 1fr; gap: 1rem; align-items: start;
-      background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1.35rem 1.5rem; box-shadow: var(--shadow); }
-    .step .badge { font-size: 1.4rem; }
-    .step h4 { margin: 0 0 .25rem; font-size: 1.05rem; }
-    .step p { margin: 0; color: var(--muted); font-size: .96rem; }
-
-    /* Commitments */
-    .commit { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; }
-    .commit .c { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1.4rem; box-shadow: var(--shadow); text-align: center; }
-    .commit .c .ico { font-size: 1.6rem; }
-    .commit .c h4 { margin: .5rem 0 .3rem; font-size: 1.05rem; }
-    .commit .c p { margin: 0; color: var(--muted); font-size: .93rem; }
-    @media (max-width: 620px) { .commit { grid-template-columns: 1fr; } }
+    .step { display: grid; grid-template-columns: 40px 1fr; gap: 1.1rem; align-items: start; background: var(--surface);
+      border: 1px solid var(--border); border-radius: 8px; padding: 1.4rem 1.6rem; box-shadow: var(--shadow); }
+    .step .n { width: 40px; height: 40px; border-radius: 999px; display: grid; place-items: center; font-weight: 800;
+      color: var(--blue); background: color-mix(in srgb, var(--blue) 10%, transparent);
+      border: 1px solid color-mix(in srgb, var(--blue) 25%, transparent); }
+    @media (prefers-color-scheme: dark) { .step .n { color: var(--blue-l); } }
+    .step h3 { margin: 0 0 .25rem; font-size: 1.08rem; }
+    .step p { margin: 0; color: var(--muted); font-size: .97rem; }
 
     /* CTA */
-    .cta-band {
-      background: linear-gradient(120deg, var(--accent), var(--accent-2)); color: #fff;
-      border-radius: 22px; padding: clamp(2.2rem, 5vw, 3.5rem); text-align: center; box-shadow: var(--shadow-hover);
-    }
-    .cta-band h2 { font-size: clamp(1.6rem, 4vw, 2.3rem); margin: 0 0 .6rem; letter-spacing: -.02em; }
-    .cta-band p { margin: 0 auto 1.6rem; max-width: 34rem; opacity: .92; }
-    .cta-band .btn-primary { background: #fff; color: var(--accent); }
-    .cta-band .btn-ghost { background: transparent; border-color: rgba(255,255,255,.5); color: #fff; }
+    .cta { color: #fff; background: radial-gradient(120% 140% at 85% 0%, #0a49c8 0%, var(--blue) 45%, var(--blue-d) 100%);
+      position: relative; overflow: hidden; }
+    .cta .rings { position: absolute; left: -120px; bottom: -180px; width: 460px; height: 460px; color: #fff; opacity: .10; }
+    .cta .wrap { position: relative; z-index: 1; text-align: center; }
+    .cta h2 { font-size: clamp(1.7rem, 4vw, 2.4rem); margin: 0 0 .7rem; font-weight: 800; letter-spacing: -.02em; }
+    .cta p { max-width: 36rem; margin: 0 auto 1.8rem; color: rgba(255,255,255,.9); }
+    .cta .btn-primary { background: #fff; color: var(--blue); }
+    .cta .btn-primary:hover { background: #eaf0ff; }
+    .cta .btn-outline { border-color: rgba(255,255,255,.5); color: #fff; }
+    .cta .btn-outline:hover { background: rgba(255,255,255,.1); }
 
-    footer { border-top: 1px solid var(--border); color: var(--muted); font-size: .88rem; }
-    footer .wrap { display: flex; flex-wrap: wrap; gap: .8rem 1.5rem; justify-content: space-between; align-items: center; padding-top: 2rem; padding-bottom: 2rem; }
-    footer a { color: var(--muted); text-decoration: none; }
-    footer a:hover { color: var(--text); }
-    .note { font-size: .8rem; color: var(--muted); opacity: .8; margin-top: .8rem; }
+    footer { background: var(--blue-d); color: rgba(255,255,255,.82); font-size: .9rem; }
+    footer .wrap { display: flex; flex-wrap: wrap; gap: 1rem 2rem; justify-content: space-between; align-items: center; padding: 2.25rem 1.5rem; }
+    footer a { color: #fff; text-decoration: none; opacity: .9; }
+    footer a:hover { opacity: 1; text-decoration: underline; }
   </style>
 </head>
 <body>
-  <nav>
+  <div class="utility">
     <div class="wrap">
-      <a class="brand" href="#top"><span class="dot">∴</span> Collective AI</a>
-      <div class="nav-links">
+      <span>Collective AI — open research organisation</span>
+      <a href="#join">Join the cohort →</a>
+    </div>
+  </div>
+
+  <header class="masthead">
+    <div class="wrap">
+      <a class="brand" href="#top">
+        <svg class="ring" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+          <circle cx="20" cy="20" r="17" stroke="currentColor" stroke-width="2"/>
+          <circle cx="20" cy="20" r="10.5" stroke="currentColor" stroke-width="2" opacity=".7"/>
+          <circle cx="20" cy="3.4" r="2.4" fill="currentColor"/>
+          <circle cx="34.2" cy="28" r="2" fill="currentColor" opacity=".8"/>
+          <circle cx="6" cy="27" r="1.6" fill="currentColor" opacity=".6"/>
+        </svg>
+        <span class="name">Collective AI<small>Open · AI-native science</small></span>
+      </a>
+      <nav class="nav-links">
+        <a href="#hub">Organisation</a>
         <a href="#tracks">Research</a>
         <a href="#how">How it works</a>
         <a href="#progress">Progress</a>
-        <a class="btn btn-primary" href="#join">Join the cohort</a>
-      </div>
-    </div>
-  </nav>
-
-  <header class="hero wrap" id="top">
-    <span class="tag">⚛️ Open science · <b>Claude</b> in the loop</span>
-    <h1>Collective AI for <span class="grad">scientific research</span></h1>
-    <p class="subtitle">An open, bottom-up collaboration where students, researchers, and independent
-      scientists worldwide work jointly on open problems in fundamental physics — with a frontier
-      language model as the intelligence layer that accelerates the work.</p>
-    <div class="cta-row">
-      <a class="btn btn-primary" href="#join">Join the cohort →</a>
-      <a class="btn btn-ghost" href="#tracks">Explore the research</a>
-    </div>
-
-    <div class="stats">
-      <div class="stat"><div class="num">3</div><div class="label">Open physics problems</div></div>
-      <div class="stat"><div class="num">20–50</div><div class="label">Global contributors</div></div>
-      <div class="stat"><div class="num">90-day</div><div class="label">Founding pilot</div></div>
-      <div class="stat"><div class="num">100%</div><div class="label">Open outputs & code</div></div>
+        <a class="btn btn-primary" href="#join">Join</a>
+      </nav>
     </div>
   </header>
 
-  <section class="alt" id="mission">
+  <section class="hero" id="top">
+    <svg class="rings" viewBox="0 0 200 200" fill="none" aria-hidden="true">
+      <circle cx="100" cy="100" r="96" stroke="currentColor" stroke-width="1.5"/>
+      <circle cx="100" cy="100" r="74" stroke="currentColor" stroke-width="1.5"/>
+      <circle cx="100" cy="100" r="52" stroke="currentColor" stroke-width="1.5"/>
+      <circle cx="100" cy="100" r="30" stroke="currentColor" stroke-width="1.5"/>
+      <line x1="4" y1="100" x2="196" y2="100" stroke="currentColor" stroke-width="1"/>
+      <line x1="100" y1="4" x2="100" y2="196" stroke="currentColor" stroke-width="1"/>
+    </svg>
+    <div class="wrap">
+      <span class="kicker">⚛ An open organisation for fundamental physics</span>
+      <h1>Collective AI for scientific research</h1>
+      <p class="sub">A CERN for the AI era: one shared instrument — frontier-scale AI capacity — that a global
+        cohort of scientists uses together to attack open problems in fundamental physics, in the open.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#join">Join the cohort →</a>
+        <a class="btn btn-outline" href="#tracks">Explore the research</a>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="num">3</div><div class="label">Open physics problems</div></div>
+        <div class="stat"><div class="num">20–50</div><div class="label">Global contributors</div></div>
+        <div class="stat"><div class="num">90-day</div><div class="label">Founding pilot</div></div>
+        <div class="stat"><div class="num">100%</div><div class="label">Open outputs &amp; code</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about">
     <div class="wrap">
       <span class="eyebrow">The mission</span>
-      <h2 class="section-title">Coordination and throughput are the bottleneck — not ideas.</h2>
-      <p class="section-lead">Collective AI brings physicists together across regions and institutions to
-        attack three open problems in the open. Claude is not a replacement for scientists — it is the engine
-        that accelerates literature synthesis, hypothesis triage, simulation code, cross-disciplinary
-        translation, and the coordination of a distributed cohort. We formalize and stress-test claims;
-        we don't assume them.</p>
+      <h2 class="title">Coordination and throughput are the bottleneck — not ideas.</h2>
+      <p class="lead">Collective AI brings students, researchers, faculty, and independent scientists together
+        across regions to attack three open problems in the open. A frontier language model is not a
+        replacement for scientists — it is the shared engine that accelerates literature synthesis, hypothesis
+        triage, simulation code, cross-disciplinary translation, and the coordination of a distributed cohort.
+        We formalize and stress-test claims; we don't assume them.</p>
+    </div>
+  </section>
+
+  <section class="alt" id="hub">
+    <div class="wrap">
+      <span class="eyebrow">The organisation</span>
+      <h2 class="title">A CERN for open, AI-native science</h2>
+      <p class="lead">CERN gave particle physicists one shared instrument no single lab could build alone.
+        Collective AI is the same idea for the AI era: a shared intelligence hub where researchers anywhere
+        plug into frontier-scale AI capacity — long context, high throughput — to calibrate their thinking,
+        pool what they learn, and build on one another's work.</p>
+      <div class="grid3">
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3a4 4 0 0 1 4 4c1.5.6 2.5 2 2.5 3.7 0 1-.4 2-1 2.7.4.6.6 1.3.6 2.1a3.5 3.5 0 0 1-6.1 2.3M12 3a4 4 0 0 0-4 4c-1.5.6-2.5 2-2.5 3.7 0 1 .4 2 1 2.7-.4.6-.6 1.3-.6 2.1A3.5 3.5 0 0 0 12 20V3Z"/></svg></div>
+          <h3>Shared frontier-AI capacity</h3>
+          <p>Every contributor works with a large-context, high-throughput model as their reasoning and
+            analysis partner — no individual API bill or infrastructure to stand up.</p>
+        </div>
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/></svg></div>
+          <h3>Calibrate &amp; align</h3>
+          <p>A common analysis layer that checks derivations, reproduces results, and keeps everyone working
+            from the same evidence base — so contributions compose instead of conflict.</p>
+        </div>
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="12" cy="18" r="2.5"/><path d="M7.6 7.8 10.6 16M16.4 7.8 13.4 16M8 6h8"/></svg></div>
+          <h3>Pool &amp; broadcast knowledge</h3>
+          <p>Findings, code, and prompts flow back into a shared corpus and weekly digests, so what one
+            researcher learns immediately raises the whole cohort's floor.</p>
+        </div>
+      </div>
     </div>
   </section>
 
   <section id="tracks">
     <div class="wrap">
-      <span class="eyebrow">Research tracks</span>
-      <h2 class="section-title">Three open problems in fundamental physics</h2>
-      <p class="section-lead">Two mainstream open questions and one contested hypothesis we intend to
-        formalize and falsify rather than advocate for.</p>
+      <span class="eyebrow">Research programme</span>
+      <h2 class="title">Three open problems in fundamental physics</h2>
+      <p class="lead">Two mainstream open questions and one contested hypothesis we intend to formalize and
+        falsify rather than advocate for. Each track links to a curated set of arXiv references and sources.</p>
 
       <div class="tracks">
         <article class="track">
@@ -246,11 +282,13 @@
             <h3>Quantum gravity &amp; objective collapse</h3>
             <div class="kicker">Penrose–Hameroff Orchestrated Objective Reduction (Orch-OR)</div>
             <div class="eq">τ ≈ ℏ / E<sub>G</sub></div>
-            <p>Computationally formalize and critically evaluate gravitationally-induced wavefunction
-              collapse. Derive collapse- and decoherence-time estimates for realistic microtubule
-              parameters, identify falsifiable regimes, and document clearly where the model fails
-              against known decoherence bounds.</p>
-            <span class="flag">⚠ Contested hypothesis — rigor, not advocacy</span>
+            <p>Computationally formalize and critically evaluate gravitationally-induced wavefunction collapse.
+              Derive collapse- and decoherence-time estimates for realistic microtubule parameters, identify
+              falsifiable regimes, and document clearly where the model fails against known decoherence bounds.</p>
+            <div style="display:flex;flex-wrap:wrap;gap:.8rem;align-items:center">
+              <span class="flag">⚠ Contested hypothesis — rigor, not advocacy</span>
+              <a class="ref-link" href="quantum-gravity.html">References &amp; sources on arXiv →</a>
+            </div>
           </div>
         </article>
 
@@ -260,9 +298,10 @@
             <h3>The fine-structure constant</h3>
             <div class="kicker">Is the electromagnetic coupling constant across space and time?</div>
             <div class="eq">α = e² / (4πε₀ℏc) ≈ 1 / 137.036</div>
-            <p>Synthesize quasar-absorption and laboratory-spectroscopy datasets, reproduce published
-              variation analyses, and quantify systematic uncertainties — a recognized open question with
-              concrete, data-driven tests.</p>
+            <p>Synthesize quasar-absorption and laboratory-spectroscopy datasets, reproduce published variation
+              analyses, and quantify systematic uncertainties — a recognized open question with concrete,
+              data-driven tests.</p>
+            <a class="ref-link" href="fine-structure.html">References &amp; sources on arXiv →</a>
           </div>
         </article>
 
@@ -273,9 +312,10 @@
             <div class="kicker">The missing-mass problem</div>
             <div class="eq">flat v(r) ⇒ M(r) ∝ r · Ω<sub>dm</sub> ≈ 0.27</div>
             <p>Comparative evaluation of candidate explanations — particle candidates (WIMP, axion) and
-              modified-dynamics alternatives — against galactic rotation curves and gravitational-lensing
-              data. Structured hypothesis triage: which models survive which datasets, and which
-              observations would settle open cases.</p>
+              modified-dynamics alternatives — against galactic rotation curves and gravitational-lensing data.
+              Structured hypothesis triage: which models survive which datasets, and which observations would
+              settle open cases.</p>
+            <a class="ref-link" href="dark-matter.html">References &amp; sources on arXiv →</a>
           </div>
         </article>
       </div>
@@ -284,47 +324,45 @@
 
   <section class="alt" id="how">
     <div class="wrap">
-      <span class="eyebrow">How it works</span>
-      <h2 class="section-title">Five ways Claude accelerates the research</h2>
-      <p class="section-lead">Concrete, measurable functions — the intelligence layer of a distributed
-        research effort.</p>
-
-      <div class="features">
-        <div class="feature">
-          <div class="ico">📚</div>
-          <h4>Literature synthesis &amp; knowledge mapping</h4>
-          <p>Long-context and Batch-API processing to map the state of each problem across thousands of
-            papers — surfacing contradictions, dead ends, and gaps far faster than manual review.</p>
+      <span class="eyebrow">Method</span>
+      <h2 class="title">Five ways the AI hub accelerates the research</h2>
+      <p class="lead">Concrete, measurable functions — the intelligence layer of a distributed research effort.</p>
+      <div class="grid2">
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H12v16H6.5A2.5 2.5 0 0 0 4 21.5V5.5Z"/><path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H12v16h5.5a2.5 2.5 0 0 1 2.5 2.5V5.5Z"/></svg></div>
+          <h3>Literature synthesis &amp; knowledge mapping</h3>
+          <p>Long-context and Batch-API processing to map the state of each problem across thousands of papers
+            — surfacing contradictions, dead ends, and gaps far faster than manual review.</p>
         </div>
-        <div class="feature">
-          <div class="ico">🎯</div>
-          <h4>Hypothesis generation &amp; triage</h4>
-          <p>Proposing testable predictions and ranking them by falsifiability and data availability, so
-            effort goes to what is actually decidable.</p>
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg></div>
+          <h3>Hypothesis generation &amp; triage</h3>
+          <p>Proposing testable predictions and ranking them by falsifiability and data availability, so effort
+            goes to what is actually decidable.</p>
         </div>
-        <div class="feature">
-          <div class="ico">🧮</div>
-          <h4>Code &amp; simulation</h4>
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M13 5l-2 14"/></svg></div>
+          <h3>Code &amp; simulation</h3>
           <p>Writing and auditing Python analysis pipelines, reproducing published results, and running
             numerical estimates — collapse/decoherence times, α-variation fits, rotation-curve models.</p>
         </div>
-        <div class="feature">
-          <div class="ico">🌐</div>
-          <h4>Cross-disciplinary translation</h4>
-          <p>Track A spans quantum gravity, physical chemistry, and neuroscience. Claude bridges notations,
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 3.8 5.7 3.8 9S14.5 18.5 12 21c-2.5-2.5-3.8-5.7-3.8-9S9.5 5.5 12 3Z"/></svg></div>
+          <h3>Cross-disciplinary translation</h3>
+          <p>Track A spans quantum gravity, physical chemistry, and neuroscience. The hub bridges notations,
             vocabularies, and languages so specialists can build on each other's work.</p>
         </div>
-        <div class="feature">
-          <div class="ico">🔗</div>
-          <h4>Coordination layer</h4>
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="6" cy="18" r="2.5"/><path d="M8.5 6h7M6 8.5v7M18 8.5v7M8.5 18h7"/></svg></div>
+          <h3>Coordination layer</h3>
           <p>Automated weekly "state-of-the-question" digests per track that keep 20–50 globally distributed
             contributors aligned — the collaboration function no institution currently owns.</p>
         </div>
-        <div class="feature">
-          <div class="ico">🔭</div>
-          <h4>Open, reproducible output</h4>
-          <p>Every result ships with its code and prompts released publicly, so anyone can reproduce,
-            critique, and extend the work.</p>
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="10.5" width="16" height="10" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 7.5-1.9"/></svg></div>
+          <h3>Open, reproducible output</h3>
+          <p>Every result ships with its code and prompts released publicly, so anyone can reproduce, critique,
+            and extend the work.</p>
         </div>
       </div>
     </div>
@@ -332,33 +370,32 @@
 
   <section id="progress">
     <div class="wrap">
-      <span class="eyebrow">Where we are</span>
-      <h2 class="section-title">Technical feasibility &amp; current progress</h2>
-      <p class="section-lead">The coordination layer is demonstrated, not hypothetical.</p>
-
+      <span class="eyebrow">Status</span>
+      <h2 class="title">Technical feasibility &amp; current progress</h2>
+      <p class="lead">The coordination layer is demonstrated, not hypothetical.</p>
       <div class="steps">
         <div class="step">
-          <div class="badge">🛠️</div>
+          <div class="n">1</div>
           <div>
-            <h4>Working prototype</h4>
-            <p>An interactive platform that already calls the Claude API to synthesize contributions across
-              the three tracks and propose next steps.</p>
+            <h3>Working prototype</h3>
+            <p>An interactive platform that already calls the Claude API to synthesize contributions across the
+              three tracks and propose next steps.</p>
           </div>
         </div>
         <div class="step">
-          <div class="badge">🔄</div>
+          <div class="n">2</div>
           <div>
-            <h4>Automated research pipelines</h4>
+            <h3>Automated research pipelines</h3>
             <p>Daily automated research-digest workflows across physics sources — cosmology, quantum gravity,
               fine-structure, string theory — proving out the digest infrastructure.</p>
           </div>
         </div>
         <div class="step">
-          <div class="badge">🚀</div>
+          <div class="n">3</div>
           <div>
-            <h4>90-day founding pilot</h4>
+            <h3>90-day founding pilot</h3>
             <p>Recruit a 20–50-person cohort, open one sharp question per track, run analysis in the open with
-              Claude in the loop, and publish one reproducible result per track — all code and prompts released.</p>
+              the AI hub in the loop, and publish one reproducible result per track — all code and prompts released.</p>
           </div>
         </div>
       </div>
@@ -368,48 +405,50 @@
   <section class="alt" id="commitment">
     <div class="wrap">
       <span class="eyebrow">Open-science commitment</span>
-      <h2 class="section-title">Built to be open, global, and reproducible</h2>
-      <p class="section-lead"></p>
-      <div class="commit">
-        <div class="c">
-          <div class="ico">📖</div>
-          <h4>Open outputs</h4>
+      <h2 class="title">Built to be open, global, and reproducible</h2>
+      <p class="lead">The principles that govern everything the organisation produces.</p>
+      <div class="grid3">
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 6c-2-1.5-4.5-2-8-2v13c3.5 0 6 .5 8 2 2-1.5 4.5-2 8-2V4c-3.5 0-6 .5-8 2Z"/><path d="M12 6v13"/></svg></div>
+          <h3>Open outputs</h3>
           <p>All findings, code, and analysis prompts released publicly — preprints/arXiv where appropriate.</p>
         </div>
-        <div class="c">
-          <div class="ico">🌍</div>
-          <h4>Global inclusion</h4>
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 3.8 5.7 3.8 9S14.5 18.5 12 21c-2.5-2.5-3.8-5.7-3.8-9S9.5 5.5 12 3Z"/></svg></div>
+          <h3>Global inclusion</h3>
           <p>Explicitly designed to bring researchers from under-served regions into frontier work.</p>
         </div>
-        <div class="c">
-          <div class="ico">🔁</div>
-          <h4>Reproducibility</h4>
-          <p>A standing emphasis on reproducing and stress-testing claims — including honestly reporting where
-            a contested hypothesis does not hold.</p>
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12a9 9 0 0 1 15.5-6.3L21 8M21 3v5h-5M21 12a9 9 0 0 1-15.5 6.3L3 16M3 21v-5h5"/></svg></div>
+          <h3>Reproducibility</h3>
+          <p>A standing emphasis on reproducing and stress-testing claims — including honestly reporting where a
+            contested hypothesis does not hold.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <section id="join">
+  <section class="cta" id="join">
+    <svg class="rings" viewBox="0 0 200 200" fill="none" aria-hidden="true">
+      <circle cx="100" cy="100" r="96" stroke="currentColor" stroke-width="1.5"/>
+      <circle cx="100" cy="100" r="68" stroke="currentColor" stroke-width="1.5"/>
+      <circle cx="100" cy="100" r="40" stroke="currentColor" stroke-width="1.5"/>
+    </svg>
     <div class="wrap">
-      <div class="cta-band">
-        <h2>Help build fundamental science in the open</h2>
-        <p>We're recruiting the founding cohort — students, master's and PhD researchers, faculty, and
-          independent scientists from every region. Bring a problem, a dataset, or a pair of hands.</p>
-        <div class="cta-row">
-          <a class="btn btn-primary" href="mailto:CONTACT@EXAMPLE.COM?subject=Joining%20Collective%20AI">Join the cohort</a>
-          <a class="btn btn-ghost" href="#tracks">See the research tracks</a>
-        </div>
-        <p class="note">Replace the contact link with your project email or platform URL before sharing.</p>
+      <h2>Help build fundamental science in the open</h2>
+      <p>We're recruiting the founding cohort — students, master's and PhD researchers, faculty, and
+        independent scientists from every region. Bring a problem, a dataset, or a pair of hands.</p>
+      <div class="cta-row" style="justify-content:center">
+        <a class="btn btn-primary" href="mailto:yasermz@hotmail.com?subject=Joining%20Collective%20AI&body=Hi%20Yaser%2C%0A%0AI'd%20like%20to%20join%20the%20Collective%20AI%20cohort.%0A%0AName%3A%0AAffiliation%20(if%20any)%3A%0ATrack(s)%20of%20interest%20(dark%20matter%20%2F%20fine-structure%20constant%20%2F%20objective%20collapse)%3A%0ABackground%20%2F%20links%3A%0A">Join the cohort</a>
+        <a class="btn btn-outline" href="#tracks">See the research tracks</a>
       </div>
     </div>
   </section>
 
   <footer>
     <div class="wrap">
-      <span>Collective AI — open, AI-accelerated research in fundamental physics</span>
-      <span>Public domain under the <a href="./UNLICENSE">Unlicense</a></span>
+      <span>Collective AI — an open organisation for AI-accelerated fundamental physics · Public domain under the <a href="./UNLICENSE">Unlicense</a></span>
+      <a href="mailto:yasermz@hotmail.com">Contact</a>
     </div>
   </footer>
 </body>
