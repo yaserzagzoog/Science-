@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Research Workspace — Collective AI</title>
+  <meta name="description" content="Per-problem collaborative research rooms where the cohort works with Claude on dark matter, the fine-structure constant, and objective collapse.">
+  <style>
+    :root {
+      color-scheme: light dark;
+      --blue: #0033A0; --blue-d: #001f66; --blue-l: #1a5fd0;
+      --bg: #f6f7fb; --surface: #ffffff; --surface-2: #eef2f7;
+      --text: #14181f; --muted: #586074; --border: #dce1ea; --chip: #eef2f7;
+      --user: #0033A0; --assistant: #0e7a5f;
+      --shadow: 0 1px 2px rgba(16,24,40,.04), 0 8px 24px rgba(16,24,40,.06);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --blue: #4d82e8; --blue-d: #0a1020; --blue-l: #6f9bf0;
+        --bg: #0b0e14; --surface: #121724; --surface-2: #0f1420;
+        --text: #eaeef6; --muted: #98a2b5; --border: #212836; --chip: #182031;
+        --user: #4d82e8; --assistant: #35c79a;
+        --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 30px rgba(0,0,0,.4);
+      }
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body { margin: 0; background: var(--bg); color: var(--text);
+      font-family: "Helvetica Neue", Helvetica, Arial, "Segoe UI", Roboto, sans-serif; line-height: 1.55;
+      -webkit-font-smoothing: antialiased; display: flex; flex-direction: column; }
+    a { color: var(--blue-l); }
+    button { font: inherit; cursor: pointer; }
+
+    /* top bar */
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      padding: 0 1rem; height: 56px; background: var(--surface); border-bottom: 1px solid var(--border); flex: 0 0 auto; }
+    .brand { display: flex; align-items: center; gap: .55rem; text-decoration: none; color: var(--text); font-weight: 800; letter-spacing: -.01em; }
+    .brand .ring { width: 26px; height: 26px; color: var(--blue); }
+    @media (prefers-color-scheme: dark) { .brand .ring { color: var(--blue-l); } }
+    .topbar-right { display: flex; align-items: center; gap: .6rem; }
+    .badge-mode { font-size: .76rem; color: var(--muted); background: var(--chip); border: 1px solid var(--border);
+      border-radius: 999px; padding: .3rem .7rem; }
+    .btn { border: 1px solid var(--border); background: var(--surface); color: var(--text);
+      border-radius: 8px; padding: .5rem .85rem; font-size: .9rem; font-weight: 600; }
+    .btn:hover { border-color: var(--blue-l); color: var(--blue-l); }
+    .btn-primary { background: var(--blue); color: #fff; border-color: transparent; }
+    .btn-primary:hover { background: var(--blue-d); color: #fff; }
+
+    /* layout */
+    .shell { flex: 1 1 auto; display: grid; grid-template-columns: 264px 1fr; min-height: 0; }
+    .sidebar { border-right: 1px solid var(--border); background: var(--surface); padding: 1rem .8rem; overflow-y: auto; }
+    .sidebar h2 { font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: .2rem .4rem 1rem; }
+    .room { display: grid; grid-template-columns: 34px 1fr; gap: .7rem; align-items: center; width: 100%; text-align: left;
+      background: transparent; border: 1px solid transparent; border-radius: 10px; padding: .6rem .6rem; margin-bottom: .3rem; color: var(--text); }
+    .room:hover { background: var(--surface-2); }
+    .room[aria-selected="true"] { background: color-mix(in srgb, var(--blue) 12%, transparent); border-color: color-mix(in srgb, var(--blue) 35%, transparent); }
+    .room .letter { width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; color: #fff; font-weight: 800; background: var(--blue); }
+    .room .rt { min-width: 0; }
+    .room .rt strong { display: block; font-size: .95rem; }
+    .room .rt span { display: block; font-size: .78rem; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .sidebar .foot { margin-top: 1rem; padding: .7rem .5rem; border-top: 1px solid var(--border); font-size: .78rem; color: var(--muted); }
+
+    /* chat */
+    .chat { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+    .chat-head { flex: 0 0 auto; padding: .85rem 1.25rem; border-bottom: 1px solid var(--border); background: var(--surface); }
+    .chat-head h1 { margin: 0; font-size: 1.12rem; letter-spacing: -.01em; }
+    .chat-head p { margin: .15rem 0 0; font-size: .85rem; color: var(--muted); }
+    .chat-head .eq { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .82rem; background: var(--chip);
+      border: 1px solid var(--border); border-radius: 6px; padding: .1rem .45rem; }
+    .flag { display: inline-block; font-size: .74rem; font-weight: 600; color: #b4530a;
+      background: color-mix(in srgb, #f59e0b 15%, transparent); border: 1px solid color-mix(in srgb, #f59e0b 40%, transparent);
+      border-radius: 5px; padding: .1rem .45rem; margin-left: .35rem; }
+    @media (prefers-color-scheme: dark) { .flag { color: #fbbf5c; } }
+
+    .messages { flex: 1 1 auto; overflow-y: auto; padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; }
+    .msg { max-width: 760px; }
+    .msg .meta { font-size: .78rem; color: var(--muted); margin-bottom: .25rem; }
+    .msg .meta b { color: var(--text); }
+    .msg .bubble { border: 1px solid var(--border); border-radius: 12px; padding: .8rem 1rem; background: var(--surface); box-shadow: var(--shadow); white-space: pre-wrap; word-wrap: break-word; }
+    .msg.assistant .bubble { border-left: 3px solid var(--assistant); }
+    .msg.user .bubble { border-left: 3px solid var(--user); }
+    .msg .avatar { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 5px; color: #fff; font-size: .66rem; font-weight: 800; vertical-align: -3px; margin-right: .35rem; }
+    .msg.user .avatar { background: var(--user); }
+    .msg.assistant .avatar { background: var(--assistant); }
+    .empty-state { margin: auto; text-align: center; color: var(--muted); max-width: 30rem; }
+    .empty-state .big { font-size: 2rem; margin-bottom: .5rem; }
+
+    .composer { flex: 0 0 auto; border-top: 1px solid var(--border); background: var(--surface); padding: .85rem 1.25rem; }
+    .composer form { display: flex; gap: .6rem; align-items: flex-end; max-width: 900px; margin: 0 auto; }
+    .composer textarea { flex: 1 1 auto; resize: none; font: inherit; color: var(--text); background: var(--bg);
+      border: 1px solid var(--border); border-radius: 10px; padding: .65rem .8rem; max-height: 160px; }
+    .composer textarea:focus { outline: none; border-color: var(--blue-l); box-shadow: 0 0 0 3px color-mix(in srgb, var(--blue) 22%, transparent); }
+    .composer .hint { max-width: 900px; margin: .4rem auto 0; font-size: .76rem; color: var(--muted); }
+
+    /* modal */
+    .backdrop { position: fixed; inset: 0; background: rgba(10,15,25,.55); display: none; align-items: center; justify-content: center; padding: 1rem; z-index: 50; }
+    .backdrop.open { display: flex; }
+    .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; width: 100%; max-width: 540px; box-shadow: var(--shadow); max-height: 90vh; overflow-y: auto; }
+    .modal header { padding: 1.1rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .modal header h2 { margin: 0; font-size: 1.1rem; }
+    .modal .body { padding: 1.1rem 1.25rem; display: grid; gap: 1rem; }
+    .modal footer { padding: 1rem 1.25rem; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: .6rem; }
+    .field label { display: block; font-size: .85rem; font-weight: 600; margin-bottom: .3rem; }
+    .field input, .field select { width: 100%; font: inherit; color: var(--text); background: var(--bg);
+      border: 1px solid var(--border); border-radius: 8px; padding: .55rem .7rem; }
+    .field .desc { font-size: .78rem; color: var(--muted); margin-top: .3rem; }
+    .section-label { font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-top: .3rem; }
+    .callout { font-size: .8rem; color: var(--muted); background: var(--chip); border: 1px solid var(--border); border-radius: 8px; padding: .7rem .8rem; }
+    .close-x { background: transparent; border: none; font-size: 1.3rem; color: var(--muted); line-height: 1; }
+
+    @media (max-width: 720px) {
+      .shell { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <a class="brand" href="index.html">
+      <svg class="ring" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <circle cx="20" cy="20" r="17" stroke="currentColor" stroke-width="2"/>
+        <circle cx="20" cy="20" r="10.5" stroke="currentColor" stroke-width="2" opacity=".7"/>
+        <circle cx="20" cy="3.4" r="2.4" fill="currentColor"/>
+      </svg>
+      Collective AI · Workspace
+    </a>
+    <div class="topbar-right">
+      <span class="badge-mode" id="mode-badge">Local only</span>
+      <button class="btn" id="open-settings">⚙ Settings</button>
+    </div>
+  </div>
+
+  <div class="shell">
+    <aside class="sidebar">
+      <h2>Research rooms</h2>
+      <div id="room-list"></div>
+      <div class="foot">
+        Bring your own Anthropic API key. Conversations are shared with everyone in the room when a sync
+        backend is configured; otherwise they stay in this browser.
+      </div>
+    </aside>
+
+    <main class="chat">
+      <div class="chat-head">
+        <h1 id="room-title">…</h1>
+        <p id="room-sub">…</p>
+      </div>
+      <div class="messages" id="messages"></div>
+      <div class="composer">
+        <form id="composer-form">
+          <textarea id="composer-input" rows="1" placeholder="Ask Claude about this problem, or add a note for the room…" aria-label="Message"></textarea>
+          <button class="btn-primary btn" id="send-btn" type="submit">Send</button>
+        </form>
+        <div class="hint" id="composer-hint">Enter to send · Shift+Enter for a new line. Your key is used only from this browser.</div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Settings modal -->
+  <div class="backdrop" id="settings-backdrop">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+      <header>
+        <h2 id="settings-title">Workspace settings</h2>
+        <button class="close-x" id="close-settings" aria-label="Close">×</button>
+      </header>
+      <div class="body">
+        <div class="field">
+          <label for="s-name">Display name</label>
+          <input id="s-name" type="text" placeholder="e.g. Yaser Z." autocomplete="off">
+          <div class="desc">Shown next to your messages in shared rooms.</div>
+        </div>
+
+        <div class="section-label">Claude (bring your own key)</div>
+        <div class="field">
+          <label for="s-key">Anthropic API key</label>
+          <input id="s-key" type="password" placeholder="sk-ant-…" autocomplete="off">
+          <div class="desc">Stored only in this browser (localStorage) and sent directly to api.anthropic.com. Never written to the shared database.</div>
+        </div>
+        <div class="field">
+          <label for="s-model">Model</label>
+          <select id="s-model">
+            <option value="claude-opus-4-8">Claude Opus 4.8 — deepest reasoning</option>
+            <option value="claude-sonnet-5">Claude Sonnet 5 — fast &amp; economical</option>
+            <option value="claude-haiku-4-5">Claude Haiku 4.5 — fastest / cheapest</option>
+          </select>
+        </div>
+
+        <div class="section-label">Shared rooms + history (optional)</div>
+        <div class="callout">
+          Leave these blank to work locally in this browser. To share rooms and history across the cohort,
+          create a free <a href="https://supabase.com/" target="_blank" rel="noopener">Supabase</a> project, run the
+          setup SQL (see the repo README), and paste your project URL and public <em>anon</em> key below.
+        </div>
+        <div class="field">
+          <label for="s-sb-url">Supabase project URL</label>
+          <input id="s-sb-url" type="text" placeholder="https://xxxx.supabase.co" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="s-sb-key">Supabase anon key</label>
+          <input id="s-sb-key" type="password" placeholder="eyJ…" autocomplete="off">
+          <div class="desc">The public anon key is safe to expose when row-level security is enabled (see README).</div>
+        </div>
+      </div>
+      <footer>
+        <button class="btn" id="cancel-settings">Cancel</button>
+        <button class="btn-primary btn" id="save-settings">Save</button>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+  (function () {
+    "use strict";
+
+    // ---- Research rooms (per-problem context for Claude) ----
+    const ROOMS = [
+      {
+        id: "dark-matter", letter: "C", title: "Dark matter",
+        sub: "The missing-mass problem · flat v(r) ⇒ M(r) ∝ r · Ω_dm ≈ 0.27",
+        system: "You are a research assistant embedded in Collective AI, an open physics collaboration, working with a distributed cohort on the DARK MATTER / missing-mass problem. Help the researchers do rigorous, reproducible work: synthesise literature, compare candidate explanations (WIMPs, axions, sterile neutrinos, primordial black holes) against modified-dynamics alternatives (MOND and relatives), reason quantitatively about galactic rotation curves (SPARC), gravitational lensing (e.g. the Bullet Cluster), and the cosmic budget from Planck. Prefer structured hypothesis triage: state which models survive which datasets and which discriminating observations remain open. Cite real, checkable sources (arXiv IDs, journal refs) and clearly flag uncertainty. Do not fabricate references or results."
+      },
+      {
+        id: "fine-structure", letter: "B", title: "The fine-structure constant",
+        sub: "Is α = e²/(4πε₀ℏc) ≈ 1/137.036 constant across space and time?",
+        system: "You are a research assistant embedded in Collective AI, an open physics collaboration, working with a distributed cohort on possible variation of the FINE-STRUCTURE CONSTANT α across space and time. Help the researchers synthesise quasar-absorption spectroscopy (Many-Multiplet method, Keck/HIRES and VLT/UVES) and laboratory atomic-clock constraints, reproduce published variation analyses (including the 'Australian dipole'), and quantify systematic uncertainties (wavelength calibration, isotopic abundances). Weigh claimed detections against independent re-analyses and Bayesian model selection. Cite real, checkable sources (arXiv IDs, journal refs) and clearly flag uncertainty. Do not fabricate references or results."
+      },
+      {
+        id: "quantum-gravity", letter: "A", title: "Quantum gravity & objective collapse", contested: true,
+        sub: "Penrose–Hameroff Orch-OR · τ ≈ ℏ / E_G",
+        system: "You are a research assistant embedded in Collective AI, an open physics collaboration, working with a distributed cohort on gravitationally-induced OBJECTIVE COLLAPSE — the Diósi–Penrose model and the Penrose–Hameroff Orch-OR hypothesis. This is a CONTESTED hypothesis, not established physics: your job is rigour, not advocacy. Help the researchers computationally formalise the collapse-time estimate τ ≈ ℏ/E_G, derive collapse- and decoherence-time estimates for realistic microtubule parameters, identify falsifiable regimes, and document clearly where the model fails against known decoherence bounds and experiments (e.g. the Gran Sasso underground test that constrains the parameter-free Diósi–Penrose model). Cite real, checkable sources (arXiv IDs, journal refs) and clearly flag uncertainty. Do not fabricate references or results."
+      }
+    ];
+
+    const LS = {
+      name: "ca_name", key: "ca_apikey", model: "ca_model",
+      sbUrl: "ca_sb_url", sbKey: "ca_sb_key",
+      msgs: (room) => "ca_msgs_" + room
+    };
+    const get = (k, d) => { try { return localStorage.getItem(k) || d || ""; } catch (e) { return d || ""; } };
+    const set = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+
+    const state = { room: ROOMS[0].id, sb: null, channel: null, sending: false };
+
+    // ---- DOM ----
+    const $ = (id) => document.getElementById(id);
+    const roomListEl = $("room-list"), messagesEl = $("messages");
+    const titleEl = $("room-title"), subEl = $("room-sub"), modeBadge = $("mode-badge");
+    const input = $("composer-input");
+
+    const esc = (s) => String(s).replace(/[&<>"']/g, (c) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    const roomById = (id) => ROOMS.find((r) => r.id === id);
+
+    function renderRooms() {
+      roomListEl.innerHTML = ROOMS.map((r) => `
+        <button class="room" role="tab" aria-selected="${r.id === state.room}" data-room="${r.id}">
+          <span class="letter">${r.letter}</span>
+          <span class="rt"><strong>${esc(r.title)}</strong><span>Track ${r.letter}${r.contested ? " · contested" : ""}</span></span>
+        </button>`).join("");
+      roomListEl.querySelectorAll(".room").forEach((b) =>
+        b.addEventListener("click", () => selectRoom(b.dataset.room)));
+    }
+
+    function localMsgs(room) {
+      try { return JSON.parse(get(LS.msgs(room), "[]")) || []; } catch (e) { return []; }
+    }
+    function pushLocal(room, msg) {
+      const arr = localMsgs(room); arr.push(msg); set(LS.msgs(room), JSON.stringify(arr.slice(-200)));
+    }
+
+    function messageHTML(m) {
+      const initials = (m.author || (m.role === "assistant" ? "Claude" : "?"))
+        .split(/\s+/).map((w) => w[0]).join("").slice(0, 2).toUpperCase();
+      const who = m.role === "assistant" ? "Claude" : (m.author || "Researcher");
+      const time = m.created_at ? new Date(m.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "";
+      return `<div class="msg ${m.role === "assistant" ? "assistant" : "user"}">
+        <div class="meta"><span class="avatar">${esc(initials)}</span><b>${esc(who)}</b> ${time ? "· " + time : ""}</div>
+        <div class="bubble">${esc(m.content).replace(/\n/g, "<br>")}</div>
+      </div>`;
+    }
+
+    async function currentMessages() {
+      if (state.sb) {
+        const { data, error } = await state.sb.from("messages").select("*")
+          .eq("room", state.room).order("created_at", { ascending: true }).limit(200);
+        if (error) { console.warn(error); return localMsgs(state.room); }
+        return data || [];
+      }
+      return localMsgs(state.room);
+    }
+
+    function renderMessages(list) {
+      if (!list.length) {
+        const r = roomById(state.room);
+        messagesEl.innerHTML = `<div class="empty-state"><div class="big">${r.letter}</div>
+          <p><strong>${esc(r.title)}</strong></p>
+          <p>Start the conversation — ask Claude to map the literature, propose a falsifiable test, or draft an analysis. Everyone in this room sees the thread${state.sb ? "" : " (local to this browser until a sync backend is set up)"}.</p></div>`;
+        return;
+      }
+      messagesEl.innerHTML = list.map(messageHTML).join("");
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    async function refresh() { renderMessages(await currentMessages()); }
+
+    async function selectRoom(id) {
+      state.room = id;
+      const r = roomById(id);
+      titleEl.textContent = r.title;
+      subEl.innerHTML = `<span class="eq">${esc(r.sub)}</span>${r.contested ? '<span class="flag">⚠ contested hypothesis — rigour, not advocacy</span>' : ""}`;
+      roomListEl.querySelectorAll(".room").forEach((b) =>
+        b.setAttribute("aria-selected", String(b.dataset.room === id)));
+      await subscribe();
+      await refresh();
+    }
+
+    // ---- Supabase (optional shared backend) ----
+    async function initSupabase() {
+      const url = get(LS.sbUrl), key = get(LS.sbKey);
+      state.sb = null;
+      if (url && key) {
+        try {
+          const mod = await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm");
+          state.sb = mod.createClient(url, key);
+        } catch (e) { console.warn("Supabase failed to load; using local mode.", e); state.sb = null; }
+      }
+      modeBadge.textContent = state.sb ? "Shared rooms" : "Local only";
+      modeBadge.style.color = state.sb ? "var(--assistant)" : "var(--muted)";
+    }
+    async function subscribe() {
+      if (state.channel) { try { await state.sb.removeChannel(state.channel); } catch (e) {} state.channel = null; }
+      if (!state.sb) return;
+      state.channel = state.sb.channel("room-" + state.room)
+        .on("postgres_changes",
+          { event: "INSERT", schema: "public", table: "messages", filter: "room=eq." + state.room },
+          () => refresh())
+        .subscribe();
+    }
+
+    async function store(msg) {
+      if (state.sb) {
+        const { error } = await state.sb.from("messages").insert({
+          room: msg.room, author: msg.author, role: msg.role, content: msg.content
+        });
+        if (error) { console.warn(error); pushLocal(msg.room, { ...msg, created_at: new Date().toISOString() }); }
+      } else {
+        pushLocal(msg.room, { ...msg, created_at: new Date().toISOString() });
+      }
+    }
+
+    // ---- Claude call (bring your own key) ----
+    async function callClaude(room, history) {
+      const key = get(LS.key), model = get(LS.model, "claude-opus-4-8");
+      const msgs = history.slice(-24).map((m) => ({
+        role: m.role === "assistant" ? "assistant" : "user",
+        content: m.role === "assistant" ? m.content : `${m.author || "Researcher"}: ${m.content}`
+      }));
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "x-api-key": key,
+          "anthropic-version": "2023-06-01",
+          "anthropic-dangerous-direct-browser-access": "true"
+        },
+        body: JSON.stringify({ model, max_tokens: 2048, system: room.system, messages: msgs })
+      });
+      if (!res.ok) {
+        let detail = res.status + " " + res.statusText;
+        try { const j = await res.json(); if (j && j.error && j.error.message) detail = j.error.message; } catch (e) {}
+        throw new Error(detail);
+      }
+      const data = await res.json();
+      return (data.content || []).filter((b) => b.type === "text").map((b) => b.text).join("\n").trim()
+        || "(no text response)";
+    }
+
+    async function send(text) {
+      if (state.sending) return;
+      const room = roomById(state.room);
+      const name = get(LS.name) || "Researcher";
+      if (!get(LS.key)) { openSettings("Add your Anthropic API key to chat with Claude."); return; }
+
+      state.sending = true; setSending(true);
+      await store({ room: room.id, author: name, role: "user", content: text });
+      await refresh();
+
+      // typing indicator
+      const typing = document.createElement("div");
+      typing.className = "msg assistant"; typing.id = "typing";
+      typing.innerHTML = `<div class="meta"><span class="avatar">AI</span><b>Claude</b></div><div class="bubble">…thinking</div>`;
+      messagesEl.appendChild(typing); messagesEl.scrollTop = messagesEl.scrollHeight;
+
+      try {
+        const history = await currentMessages();
+        const reply = await callClaude(room, history);
+        await store({ room: room.id, author: "Claude", role: "assistant", content: reply });
+      } catch (e) {
+        await store({ room: room.id, author: "Claude", role: "assistant", content: "⚠ Error contacting Claude: " + e.message });
+      } finally {
+        const t = $("typing"); if (t) t.remove();
+        state.sending = false; setSending(false);
+        await refresh();
+      }
+    }
+
+    function setSending(on) {
+      $("send-btn").disabled = on; input.disabled = on;
+      $("send-btn").textContent = on ? "Sending…" : "Send";
+    }
+
+    // ---- Composer ----
+    input.addEventListener("input", () => { input.style.height = "auto"; input.style.height = Math.min(input.scrollHeight, 160) + "px"; });
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("composer-form").requestSubmit(); }
+    });
+    $("composer-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const text = input.value.trim(); if (!text) return;
+      input.value = ""; input.style.height = "auto";
+      send(text);
+    });
+
+    // ---- Settings modal ----
+    function openSettings(note) {
+      $("s-name").value = get(LS.name); $("s-key").value = get(LS.key);
+      $("s-model").value = get(LS.model, "claude-opus-4-8");
+      $("s-sb-url").value = get(LS.sbUrl); $("s-sb-key").value = get(LS.sbKey);
+      $("settings-backdrop").classList.add("open");
+      if (note) $("composer-hint").textContent = note;
+    }
+    function closeSettings() { $("settings-backdrop").classList.remove("open"); }
+    $("open-settings").addEventListener("click", () => openSettings());
+    $("close-settings").addEventListener("click", closeSettings);
+    $("cancel-settings").addEventListener("click", closeSettings);
+    $("settings-backdrop").addEventListener("click", (e) => { if (e.target === $("settings-backdrop")) closeSettings(); });
+    $("save-settings").addEventListener("click", async () => {
+      set(LS.name, $("s-name").value.trim());
+      set(LS.key, $("s-key").value.trim());
+      set(LS.model, $("s-model").value);
+      set(LS.sbUrl, $("s-sb-url").value.trim());
+      set(LS.sbKey, $("s-sb-key").value.trim());
+      closeSettings();
+      await initSupabase(); await subscribe(); await refresh();
+    });
+
+    // ---- Boot ----
+    async function boot() {
+      renderRooms();
+      await initSupabase();
+      await selectRoom(ROOMS[0].id);
+    }
+    boot();
+  })();
+  </script>
+</body>
+</html>
