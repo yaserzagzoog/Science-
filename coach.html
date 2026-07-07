@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WellBeing+ Biometric Coach</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://unpkg.com/fflate@0.8.2/umd/index.js"></script>
+  <style>
+    html, body, #root { height: 100%; }
+    body { margin: 0; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/plain" id="coach-src">
+const { useState, useRef, useEffect } = React;
+
+const BIOMARKERS = [
+  { key: "heartRate",       label: "Heart Rate",       unit: "bpm",  min: 40,  max: 120, ideal: [60,80],     icon: "❤️" },
+  { key: "hrv",             label: "HRV",              unit: "ms",   min: 10,  max: 100, ideal: [40,80],     icon: "〰️" },
+  { key: "sleepHours",      label: "Sleep Duration",   unit: "hrs",  min: 3,   max: 12,  ideal: [7,9],       icon: "🌙" },
+  { key: "sleepQuality",    label: "Sleep Quality",    unit: "%",    min: 0,   max: 100, ideal: [70,100],    icon: "💤" },
+  { key: "spo2",            label: "Blood Oxygen",     unit: "%",    min: 85,  max: 100, ideal: [95,100],    icon: "🫁" },
+  { key: "steps",           label: "Daily Steps",      unit: "k",    min: 0,   max: 20,  ideal: [8,15],      icon: "👣" },
+  { key: "stressLevel",     label: "Stress Level",     unit: "/10",  min: 0,   max: 10,  ideal: [0,3],       icon: "🧠" },
+  { key: "respiratoryRate", label: "Respiratory Rate", unit: "brpm", min: 8,   max: 25,  ideal: [12,16],     icon: "🌬️" },
+  { key: "bodyTemp",        label: "Body Temp",        unit: "°C",   min: 35,  max: 40,  ideal: [36.1,37.2], icon: "🌡️" },
+];
+
+function computeScore(vals) {
+  let total = 0;
+  BIOMARKERS.forEach(({ key, min, max, ideal }) => {
+    const v = parseFloat(vals[key]);
+    const [lo, hi] = ideal;
+    let s;
+    if (v >= lo && v <= hi) s = 100;
+    else if (v < lo) s = Math.max(0, 100 - ((lo - v) / (lo - min)) * 100);
+    else s = Math.max(0, 100 - ((v - hi) / (max - hi)) * 100);
+    total += s;
+  });
+  return Math.round(total / BIOMARKERS.length);
+}
+
+function scoreColor(s) {
+  if (s >= 80) return "#00e5a0";
+  if (s >= 60) return "#f5c518";
+  return "#ff4d6d";
+}
+function scoreLabel(s) {
+  if (s >= 80) return "Excellent";
+  if (s >= 60) return "Good";
+  if (s >= 40) return "Fair";
+  return "Needs Attention";
+}
+
+const DEFAULTS = {
+  heartRate: 72, hrv: 45, sleepHours: 7, sleepQuality: 72,
+  spo2: 97, steps: 8, stressLevel: 4, respiratoryRate: 14, bodyTemp: 36.6,
+};
+
+// ─── APPLE HEALTH IMPORT ──────────────────────────────────────────────────────
+// HealthKit has no browser API (it is native-iOS only), so we parse the official
+// "Export All Health Data" file the Health app produces (export.zip → export.xml).
+function parseHKDate(s) {
+  if (!s) return null;
+  // Apple format: "2024-05-01 07:30:00 -0700" → ISO-ish
+  const iso = s.replace(" ", "T").replace(/ (?=[-+]\d{4}$)/, "");
+  const d = new Date(iso);
+  return isNaN(d.getTime()) ? null : d;
+}
+
+function extractRecords(xml, type) {
+  const out = [];
+  // Match each Record opening tag of the given type (attributes live on the tag).
+  const re = new RegExp('<Record\\b[^>]*type="' + type + '"[^>]*>', "g");
+  let m;
+  while ((m = re.exec(xml))) {
+    const tag = m[0];
+    const attr = (name) => {
+      const a = tag.match(new RegExp(name + '="([^"]*)"'));
+      return a ? a[1] : null;
+    };
+    out.push({ value: attr("value"), unit: attr("unit"), startDate: attr("startDate"), endDate: attr("endDate") });
+  }
+  return out;
+}
+
+function latestRecord(records) {
+  let best = null, bestT = -Infinity;
+  for (const r of records) {
+    const d = parseHKDate(r.endDate || r.startDate);
+    if (d && d.getTime() > bestT) { bestT = d.getTime(); best = r; }
+  }
+  return best;
+}
+
+// Returns { result: {biomarkerKey: value}, found: [labels] }
+function parseAppleHealth(xml) {
+  const result = {}, found = [];
+  const num = (r) => parseFloat(r && r.value);
+
+  const hr = latestRecord(extractRecords(xml, "HKQuantityTypeIdentifierHeartRate"));
+  if (hr && !isNaN(num(hr))) { result.heartRate = Math.round(num(hr)); found.push("Heart Rate"); }
+
+  const hrv = latestRecord(extractRecords(xml, "HKQuantityTypeIdentifierHeartRateVariabilitySDNN"));
+  if (hrv && !isNaN(num(hrv))) { result.hrv = Math.round(num(hrv)); found.push("HRV"); }
+
+  const spo2 = latestRecord(extractRecords(xml, "HKQuantityTypeIdentifierOxygenSaturation"));
+  if (spo2 && !isNaN(num(spo2))) { let v = num(spo2); if (v <= 1) v *= 100; result.spo2 = Math.round(v); found.push("Blood Oxygen"); }
+
+  const rr = latestRecord(extractRecords(xml, "HKQuantityTypeIdentifierRespiratoryRate"));
+  if (rr && !isNaN(num(rr))) { result.respiratoryRate = Math.round(num(rr)); found.push("Respiratory Rate"); }
+
+  const bt = latestRecord(extractRecords(xml, "HKQuantityTypeIdentifierBodyTemperature"));
+  if (bt && !isNaN(num(bt))) {
+    let v = num(bt);
+    if ((bt.unit || "").toLowerCase().includes("degf")) v = (v - 32) * 5 / 9;
+    result.bodyTemp = Math.round(v * 10) / 10; found.push("Body Temp");
+  }
+
+  // Steps: sum per calendar day, take the most recent day (in thousands).
+  const byDay = {};
+  for (const r of extractRecords(xml, "HKQuantityTypeIdentifierStepCount")) {
+    const day = (r.startDate || "").slice(0, 10);
+    if (!day) continue;
+    byDay[day] = (byDay[day] || 0) + (parseFloat(r.value) || 0);
+  }
+  const days = Object.keys(byDay).sort();
+  if (days.length) { result.steps = Math.round((byDay[days[days.length - 1]] / 1000) * 10) / 10; found.push("Daily Steps"); }
+
+  // Sleep: total "asleep" hours for the most recent night (keyed by wake date).
+  const byNight = {};
+  for (const r of extractRecords(xml, "HKCategoryTypeIdentifierSleepAnalysis")) {
+    if (!(r.value || "").includes("Asleep")) continue; // excludes InBed / Awake
+    const s = parseHKDate(r.startDate), e = parseHKDate(r.endDate);
+    if (!s || !e || e <= s) continue;
+    const key = (r.endDate || "").slice(0, 10);
+    byNight[key] = (byNight[key] || 0) + (e - s) / 3600000;
+  }
+  const nights = Object.keys(byNight).sort();
+  if (nights.length) { result.sleepHours = Math.round(byNight[nights[nights.length - 1]] * 10) / 10; found.push("Sleep Duration"); }
+
+  return { result, found };
+}
+
+async function readHealthExport(file) {
+  const name = file.name.toLowerCase();
+  if (name.endsWith(".zip")) {
+    const buf = new Uint8Array(await file.arrayBuffer());
+    const files = fflate.unzipSync(buf);
+    const entry = Object.keys(files).find((n) => n.endsWith("export.xml"));
+    if (!entry) throw new Error("No export.xml found inside the zip.");
+    return new TextDecoder().decode(files[entry]);
+  }
+  return await file.text();
+}
+
+// ─── STRICT JSON SCHEMA ───────────────────────────────────────────────────────
+const JSON_SCHEMA = `{
+  "summary": "2-3 sentence overall health picture",
+  "status": "Excellent" | "Good" | "Fair" | "Needs Attention",
+  "insights": [
+    {
+      "biomarker": "exact biomarker name",
+      "value": "value with unit",
+      "status": "optimal" | "low" | "high" | "critical",
+      "insight": "one specific clinical observation"
+    }
+  ],
+  "recommendations": [
+    {
+      "priority": 1 | 2 | 3,
+      "action": "specific action title",
+      "detail": "exactly what to do, when, and why"
+    }
+  ],
+  "focus": "single most important thing to do TODAY in one sentence"
+}`;
+
+function buildSystemPrompt(vals, score) {
+  const lines = BIOMARKERS.map(b =>
+    `- ${b.label}: ${vals[b.key]} ${b.unit} (ideal: ${b.ideal[0]}–${b.ideal[1]} ${b.unit})`
+  ).join("\n");
+
+  return `You are WellBeing+ Biometric Coach. Analyse biometric data and respond with health coaching.
+
+BIOMETRIC DATA:
+${lines}
+
+Positive Health Score: ${score}/100 — ${scoreLabel(score)}
+
+CRITICAL INSTRUCTION: You MUST respond with ONLY a valid JSON object. No markdown, no backticks, no explanation, no preamble. Raw JSON only.
+
+Your response must match this exact schema:
+${JSON_SCHEMA}
+
+Rules:
+- "insights" array: include only the 3 most significant biomarkers (best and worst)
+- "recommendations" array: exactly 3 items, ordered by priority 1-3
+- Every "detail" must reference the patient's specific value (e.g. "Your HRV of 45ms indicates...")
+- "status" field must be exactly one of: Excellent, Good, Fair, Needs Attention
+- insight "status" must be exactly one of: optimal, low, high, critical
+- Do NOT wrap in markdown code blocks
+- Do NOT add any text outside the JSON object`;
+}
+
+// ─── SAFE JSON PARSER ─────────────────────────────────────────────────────────
+function safeParseJSON(raw) {
+  // Strip markdown code fences if present
+  let cleaned = raw.trim();
+  cleaned = cleaned.replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/\s*```$/i, "").trim();
+  // Extract first JSON object if there's surrounding text
+  const match = cleaned.match(/\{[\s\S]*\}/);
+  if (match) cleaned = match[0];
+  return JSON.parse(cleaned);
+}
+
+// ─── UI COMPONENTS ────────────────────────────────────────────────────────────
+function ScoreRing({ score }) {
+  const r = 52, c = 2 * Math.PI * r;
+  const color = scoreColor(score);
+  return (
+    <div style={{ position:"relative", width:140, height:140 }}>
+      <svg width="140" height="140" style={{ transform:"rotate(-90deg)" }}>
+        <circle cx="70" cy="70" r={r} fill="none" stroke="#1e2a3a" strokeWidth="10" />
+        <circle cx="70" cy="70" r={r} fill="none" stroke={color} strokeWidth="10"
+          strokeDasharray={`${(score/100)*c} ${c}`}
+          style={{ transition:"stroke-dasharray 0.8s ease", filter:`drop-shadow(0 0 8px ${color})` }} />
+      </svg>
+      <div style={{ position:"absolute", inset:0, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center" }}>
+        <span style={{ fontSize:32, fontWeight:800, color, fontFamily:"monospace", lineHeight:1 }}>{score}</span>
+        <span style={{ fontSize:10, color:"#8899aa", letterSpacing:2, textTransform:"uppercase", marginTop:2 }}>Score</span>
+      </div>
+    </div>
+  );
+}
+
+function BioSlider({ bm, value, onChange }) {
+  const [lo, hi] = bm.ideal;
+  const inRange = value >= lo && value <= hi;
+  const color = inRange ? "#00e5a0" : value < lo ? "#f5c518" : "#ff4d6d";
+  return (
+    <div style={{ marginBottom:14 }}>
+      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:4 }}>
+        <span style={{ fontSize:12, color:"#cdd8e8", display:"flex", gap:6, alignItems:"center" }}>
+          <span style={{ fontSize:15 }}>{bm.icon}</span>{bm.label}
+        </span>
+        <span style={{ fontSize:13, fontWeight:700, color, fontFamily:"monospace" }}>{value}{bm.unit}</span>
+      </div>
+      <input type="range" min={bm.min} max={bm.max}
+        step={bm.key==="bodyTemp"?0.1:bm.key==="steps"?0.5:1}
+        value={value} onChange={e => onChange(bm.key, parseFloat(e.target.value))}
+        style={{ width:"100%", accentColor:color, cursor:"pointer" }} />
+      <div style={{ fontSize:9, color:"#556677", textAlign:"right", marginTop:2 }}>Ideal: {lo}–{hi} {bm.unit}</div>
+    </div>
+  );
+}
+
+function InsightBadge({ status }) {
+  const map = {
+    optimal: { color:"#00e5a0", bg:"#00e5a015", label:"Optimal" },
+    low:     { color:"#f5c518", bg:"#f5c51815", label:"Low" },
+    high:    { color:"#ff8c42", bg:"#ff8c4215", label:"High" },
+    critical:{ color:"#ff4d6d", bg:"#ff4d6d15", label:"Critical" },
+  };
+  const s = map[status] || map.optimal;
+  return (
+    <span style={{ fontSize:10, fontWeight:700, color:s.color, background:s.bg,
+      border:`1px solid ${s.color}44`, borderRadius:4, padding:"2px 7px", letterSpacing:0.5, textTransform:"uppercase" }}>
+      {s.label}
+    </span>
+  );
+}
+
+function StructuredResponse({ data, question }) {
+  const statusColor = scoreColor(
+    data.status === "Excellent" ? 90 : data.status === "Good" ? 70 : data.status === "Fair" ? 50 : 30
+  );
+  return (
+    <div style={{ marginBottom:20 }}>
+      {/* User bubble */}
+      <div style={{ display:"flex", justifyContent:"flex-end", marginBottom:14 }}>
+        <div style={{ maxWidth:"78%", padding:"12px 16px", borderRadius:"18px 18px 4px 18px",
+          background:"linear-gradient(135deg,#0077cc,#0055aa)", color:"#e8f0ff", fontSize:14, lineHeight:1.65 }}>
+          {question}
+        </div>
+      </div>
+
+      {/* AI structured card */}
+      <div style={{ display:"flex", gap:10, alignItems:"flex-start" }}>
+        <div style={{ width:32, height:32, borderRadius:"50%", background:"linear-gradient(135deg,#00e5a0,#0099ff)",
+          display:"flex", alignItems:"center", justifyContent:"center", fontSize:14, flexShrink:0, marginTop:2 }}>✦</div>
+        <div style={{ flex:1, display:"flex", flexDirection:"column", gap:10 }}>
+
+          {/* Summary */}
+          <div style={{ background:"#131f2e", border:"1px solid #1e3045", borderRadius:14, padding:"14px 16px" }}>
+            <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
+              <span style={{ fontSize:11, fontWeight:700, color:statusColor, letterSpacing:1.5, textTransform:"uppercase" }}>
+                {data.status}
+              </span>
+            </div>
+            <p style={{ color:"#c8d8e8", fontSize:14, lineHeight:1.7, margin:0 }}>{data.summary}</p>
+          </div>
+
+          {/* Insights */}
+          {data.insights?.length > 0 && (
+            <div style={{ background:"#0f1a28", border:"1px solid #1a2a3d", borderRadius:14, padding:"14px 16px" }}>
+              <div style={{ fontSize:11, fontWeight:700, color:"#4a7090", letterSpacing:1.5, textTransform:"uppercase", marginBottom:10 }}>
+                Biomarker Insights
+              </div>
+              {data.insights.map((ins, i) => (
+                <div key={i} style={{ display:"flex", flexDirection:"column", gap:4,
+                  paddingBottom: i < data.insights.length-1 ? 10 : 0,
+                  marginBottom: i < data.insights.length-1 ? 10 : 0,
+                  borderBottom: i < data.insights.length-1 ? "1px solid #1a2a3d" : "none" }}>
+                  <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+                    <span style={{ fontSize:13, fontWeight:600, color:"#d0e0f0" }}>{ins.biomarker}</span>
+                    <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+                      <span style={{ fontSize:12, color:"#8899aa", fontFamily:"monospace" }}>{ins.value}</span>
+                      <InsightBadge status={ins.status} />
+                    </div>
+                  </div>
+                  <p style={{ fontSize:13, color:"#7a90a8", margin:0, lineHeight:1.6 }}>{ins.insight}</p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Recommendations */}
+          {data.recommendations?.length > 0 && (
+            <div style={{ background:"#0f1a28", border:"1px solid #1a2a3d", borderRadius:14, padding:"14px 16px" }}>
+              <div style={{ fontSize:11, fontWeight:700, color:"#4a7090", letterSpacing:1.5, textTransform:"uppercase", marginBottom:10 }}>
+                Action Plan
+              </div>
+              {data.recommendations.map((rec, i) => (
+                <div key={i} style={{ display:"flex", gap:12, alignItems:"flex-start",
+                  paddingBottom: i < data.recommendations.length-1 ? 12 : 0,
+                  marginBottom: i < data.recommendations.length-1 ? 12 : 0,
+                  borderBottom: i < data.recommendations.length-1 ? "1px solid #1a2a3d" : "none" }}>
+                  <div style={{ width:24, height:24, borderRadius:"50%", flexShrink:0,
+                    background: i===0?"linear-gradient(135deg,#00e5a0,#0099ff)":i===1?"linear-gradient(135deg,#f5c518,#ff8c42)":"#1e3045",
+                    display:"flex", alignItems:"center", justifyContent:"center",
+                    fontSize:11, fontWeight:800, color: i<2?"#080f1a":"#4a7090" }}>
+                    {rec.priority}
+                  </div>
+                  <div>
+                    <div style={{ fontSize:13, fontWeight:700, color:"#d0e0f0", marginBottom:3 }}>{rec.action}</div>
+                    <div style={{ fontSize:12, color:"#7a90a8", lineHeight:1.6 }}>{rec.detail}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Focus */}
+          {data.focus && (
+            <div style={{ background:"linear-gradient(135deg,#00e5a008,#0099ff08)", border:"1px solid #00e5a033",
+              borderRadius:14, padding:"12px 16px", display:"flex", gap:10, alignItems:"center" }}>
+              <span style={{ fontSize:18, flexShrink:0 }}>🎯</span>
+              <p style={{ fontSize:13, color:"#a0d8c0", margin:0, lineHeight:1.6, fontStyle:"italic" }}>{data.focus}</p>
+            </div>
+          )}
+
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Typing() {
+  return (
+    <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:14 }}>
+      <div style={{ width:32, height:32, borderRadius:"50%", background:"linear-gradient(135deg,#00e5a0,#0099ff)",
+        display:"flex", alignItems:"center", justifyContent:"center", fontSize:14 }}>✦</div>
+      <div style={{ background:"#131f2e", border:"1px solid #1e3045", borderRadius:"18px 18px 18px 4px",
+        padding:"12px 18px", display:"flex", gap:6, alignItems:"center" }}>
+        {[0,1,2].map(i => (
+          <div key={i} style={{ width:7, height:7, borderRadius:"50%", background:"#00e5a0",
+            animation:"pulse 1.2s ease-in-out infinite", animationDelay:`${i*0.2}s` }} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── API KEY MODAL ────────────────────────────────────────────────────────────
+function ApiKeyBar({ apiKey, onSave }) {
+  const [open, setOpen] = useState(false);
+  const [draft, setDraft] = useState(apiKey);
+  useEffect(() => { setDraft(apiKey); }, [apiKey]);
+  const has = !!apiKey;
+  return (
+    <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+      <button onClick={() => setOpen(o => !o)}
+        title={has ? "API key configured" : "Set your Anthropic API key"}
+        style={{ background:"#131f2e", border:`1px solid ${has ? "#00e5a044" : "#5c1a22"}`, borderRadius:8,
+          padding:"6px 12px", color: has ? "#00e5a0" : "#ff6b7a", fontSize:12, cursor:"pointer",
+          display:"flex", alignItems:"center", gap:6 }}>
+        🔑 {has ? "Key set" : "Set API key"}
+      </button>
+      {open && (
+        <div style={{ position:"absolute", top:60, right:24, zIndex:20, width:340,
+          background:"#0d1a27", border:"1px solid #1e3045", borderRadius:12, padding:16,
+          boxShadow:"0 12px 40px #000a" }}>
+          <div style={{ fontSize:12, fontWeight:700, color:"#c0d0e0", marginBottom:8 }}>Anthropic API Key</div>
+          <div style={{ fontSize:11, color:"#7a90a8", lineHeight:1.5, marginBottom:10 }}>
+            Stored only in this browser (localStorage) and sent directly to the Anthropic API.
+            Get one at console.anthropic.com.
+          </div>
+          <input type="password" value={draft} placeholder="sk-ant-..."
+            onChange={e => setDraft(e.target.value)}
+            style={{ width:"100%", background:"#0f1e2e", border:"1px solid #1e3045", borderRadius:8,
+              padding:"9px 11px", color:"#d0e0f0", fontSize:13, fontFamily:"monospace", marginBottom:10, boxSizing:"border-box" }} />
+          <div style={{ display:"flex", gap:8, justifyContent:"flex-end" }}>
+            <button onClick={() => { onSave(""); setDraft(""); }}
+              style={{ background:"none", border:"1px solid #1e3045", borderRadius:8, padding:"7px 12px",
+                color:"#7a90a8", fontSize:12, cursor:"pointer" }}>Clear</button>
+            <button onClick={() => { onSave(draft.trim()); setOpen(false); }}
+              style={{ background:"linear-gradient(135deg,#00c282,#0099ff)", border:"none", borderRadius:8,
+                padding:"7px 14px", color:"#fff", fontSize:12, fontWeight:700, cursor:"pointer" }}>Save</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── MAIN APP ─────────────────────────────────────────────────────────────────
+function App() {
+  const [vals, setVals] = useState(DEFAULTS);
+  const [exchanges, setExchanges] = useState([]); // [{question, data}]
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [showPanel, setShowPanel] = useState(true);
+  const [apiKey, setApiKey] = useState(() => {
+    try { return localStorage.getItem("wb_anthropic_key") || ""; } catch { return ""; }
+  });
+  const [importing, setImporting] = useState(false);
+  const [importMsg, setImportMsg] = useState("");
+  const [backendUrl, setBackendUrl] = useState(() => {
+    try { return localStorage.getItem("wb_backend_url") || ""; } catch { return ""; }
+  });
+  const [vitalUserId, setVitalUserId] = useState(() => {
+    try { return localStorage.getItem("wb_vital_user_id") || ""; } catch { return ""; }
+  });
+  const [linking, setLinking] = useState(false);
+  const [syncing, setSyncing] = useState(false);
+  const [liveMsg, setLiveMsg] = useState("");
+  const chatRef = useRef(null);
+  const fileRef = useRef(null);
+  const score = computeScore(vals);
+
+  function saveBackendUrl(u) {
+    const v = u.trim().replace(/\/$/, "");
+    setBackendUrl(v);
+    try { v ? localStorage.setItem("wb_backend_url", v) : localStorage.removeItem("wb_backend_url"); } catch {}
+  }
+  function clientUserId() {
+    try {
+      let id = localStorage.getItem("wb_client_user_id");
+      if (!id) { id = "wb_" + crypto.randomUUID(); localStorage.setItem("wb_client_user_id", id); }
+      return id;
+    } catch { return "wb_anon"; }
+  }
+  function saveVitalUserId(id) {
+    setVitalUserId(id);
+    try { id ? localStorage.setItem("wb_vital_user_id", id) : localStorage.removeItem("wb_vital_user_id"); } catch {}
+  }
+
+  // Live: open the Vital Link flow so the user connects Apple Health on their phone.
+  async function connectAppleHealth() {
+    if (!backendUrl) { setLiveMsg(""); setError("Set your backend URL first (in the Data Source box)."); return; }
+    setLinking(true); setLiveMsg(""); setError("");
+    try {
+      const u = await fetch(backendUrl + "/api/user", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ client_user_id: clientUserId() }),
+      }).then(r => r.json());
+      if (u.error) throw new Error(u.error);
+      saveVitalUserId(u.user_id);
+
+      const t = await fetch(backendUrl + "/api/link-token", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: u.user_id }),
+      }).then(r => r.json());
+      if (t.error) throw new Error(t.error);
+
+      window.open(t.link_url, "_blank", "noopener");
+      setLiveMsg("Complete the connection in the Vital tab / iOS app, then press “Sync latest”.");
+    } catch (e) {
+      setError("Connect failed: " + (e.message || e));
+    } finally {
+      setLinking(false);
+    }
+  }
+
+  // Live: pull the latest biomarkers Vital has for this user and fill the sliders.
+  async function syncLive() {
+    if (!backendUrl) { setError("Set your backend URL first."); return; }
+    if (!vitalUserId) { setError("Connect Apple Health first."); return; }
+    setSyncing(true); setLiveMsg(""); setError("");
+    try {
+      const data = await fetch(backendUrl + "/api/biomarkers?user_id=" + encodeURIComponent(vitalUserId))
+        .then(r => r.json());
+      if (data.error) throw new Error(data.error);
+      const result = data.biomarkers || {};
+      const clamped = {}; const found = [];
+      BIOMARKERS.forEach(b => {
+        if (result[b.key] != null && !isNaN(result[b.key])) {
+          clamped[b.key] = Math.max(b.min, Math.min(b.max, result[b.key]));
+          found.push(b.label);
+        }
+      });
+      if (!found.length) throw new Error("No data yet — Vital may still be syncing from your phone. Try again shortly.");
+      setVals(prev => ({ ...prev, ...clamped }));
+      setLiveMsg("Synced " + found.length + ": " + found.join(", "));
+    } catch (e) {
+      setError("Sync failed: " + (e.message || e));
+    } finally {
+      setSyncing(false);
+    }
+  }
+
+  async function handleHealthFile(file) {
+    if (!file) return;
+    setImporting(true); setImportMsg(""); setError("");
+    try {
+      const xml = await readHealthExport(file);
+      const { result, found } = parseAppleHealth(xml);
+      if (!found.length) throw new Error("No recognizable Apple Health metrics found in that file.");
+      const clamped = {};
+      BIOMARKERS.forEach(b => {
+        if (result[b.key] != null) clamped[b.key] = Math.max(b.min, Math.min(b.max, result[b.key]));
+      });
+      setVals(prev => ({ ...prev, ...clamped }));
+      setImportMsg("Imported " + found.length + ": " + found.join(", "));
+    } catch (e) {
+      setError("Apple Health import failed: " + (e.message || e));
+    } finally {
+      setImporting(false);
+    }
+  }
+
+  function saveKey(k) {
+    setApiKey(k);
+    try { k ? localStorage.setItem("wb_anthropic_key", k) : localStorage.removeItem("wb_anthropic_key"); } catch {}
+  }
+
+  useEffect(() => {
+    if (chatRef.current) chatRef.current.scrollTop = chatRef.current.scrollHeight;
+  }, [exchanges, loading]);
+
+  function updateVal(key, v) { setVals(prev => ({ ...prev, [key]: v })); }
+
+  async function sendMessage(text) {
+    if (!text.trim() || loading) return;
+    setError("");
+    const question = text.trim();
+
+    if (!apiKey) {
+      setError("Add your Anthropic API key first (🔑 top-right) to enable AI coaching.");
+      return;
+    }
+
+    setInput("");
+    setLoading(true);
+
+    try {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": apiKey,
+          "anthropic-version": "2023-06-01",
+          "anthropic-dangerous-direct-browser-access": "true",
+        },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 1000,
+          system: buildSystemPrompt(vals, score),
+          messages: [{ role: "user", content: question }],
+        }),
+      });
+
+      const rawText = await res.text();
+
+      if (!res.ok) {
+        let msg = `API error ${res.status}`;
+        try { msg = JSON.parse(rawText)?.error?.message || msg; } catch {}
+        throw new Error(msg);
+      }
+
+      const apiData = JSON.parse(rawText);
+      const textBlock = apiData.content?.find(b => b.type === "text")?.text || "";
+
+      // Parse the JSON response from Claude
+      let parsed;
+      try {
+        parsed = safeParseJSON(textBlock);
+      } catch {
+        throw new Error(`Claude returned invalid JSON. Raw: ${textBlock.slice(0, 150)}`);
+      }
+
+      // Validate required fields
+      if (!parsed.summary || !parsed.recommendations) {
+        throw new Error("Response missing required fields: " + JSON.stringify(parsed).slice(0, 100));
+      }
+
+      setExchanges(prev => [...prev, { question, data: parsed }]);
+
+    } catch (e) {
+      setError(e.message || "Connection failed.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const quickPrompts = [
+    "Analyse my biometrics now",
+    "What's my biggest health risk?",
+    "Give me a morning routine",
+    "How can I improve my sleep?",
+    "What's hurting my score most?"
+  ];
+
+  return (
+    <div style={{ minHeight:"100vh", background:"#080f1a", fontFamily:"'Segoe UI',sans-serif", display:"flex", flexDirection:"column", position:"relative" }}>
+      <style>{`
+        *{box-sizing:border-box;margin:0;padding:0}
+        ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:#0d1a27}::-webkit-scrollbar-thumb{background:#1e3045;border-radius:4px}
+        input[type=range]{-webkit-appearance:none;appearance:none;background:transparent}
+        input[type=range]::-webkit-slider-runnable-track{height:4px;background:#1e3045;border-radius:2px}
+        input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:14px;height:14px;border-radius:50%;background:#00e5a0;margin-top:-5px;cursor:pointer;box-shadow:0 0 6px #00e5a0}
+        @keyframes pulse{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
+        textarea:focus{outline:none} button:hover{opacity:0.88}
+      `}</style>
+
+      {/* Header */}
+      <div style={{ background:"#0a1525", borderBottom:"1px solid #1a2a3d", padding:"14px 24px",
+        display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+        <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+          <div style={{ width:36, height:36, borderRadius:10, background:"linear-gradient(135deg,#00e5a0,#0099ff)",
+            display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, boxShadow:"0 0 14px #00e5a044" }}>✦</div>
+          <div>
+            <div style={{ fontSize:16, fontWeight:800, color:"#e8f0ff" }}>WellBeing+ Coach</div>
+            <div style={{ fontSize:11, color:"#4a7090", letterSpacing:1.5, textTransform:"uppercase" }}>Biometric AI Agent</div>
+          </div>
+        </div>
+        <div style={{ display:"flex", alignItems:"center", gap:14 }}>
+          <div style={{ textAlign:"right" }}>
+            <div style={{ fontSize:22, fontWeight:800, color:scoreColor(score), fontFamily:"monospace" }}>
+              {score}<span style={{ fontSize:12, color:"#4a7090", fontWeight:400 }}>/100</span>
+            </div>
+            <div style={{ fontSize:10, color:"#4a7090", letterSpacing:1.5, textTransform:"uppercase" }}>Health Score</div>
+          </div>
+          <ApiKeyBar apiKey={apiKey} onSave={saveKey} />
+          <button onClick={() => setShowPanel(p=>!p)}
+            style={{ background:"#131f2e", border:"1px solid #1e3045", borderRadius:8, padding:"6px 12px", color:"#8899aa", fontSize:12, cursor:"pointer" }}>
+            {showPanel?"Hide":"Show"} Biomarkers
+          </button>
+        </div>
+      </div>
+
+      <div style={{ flex:1, display:"flex", overflow:"hidden", height:"calc(100vh - 65px)" }}>
+
+        {/* Left Panel */}
+        {showPanel && (
+          <div style={{ width:280, flexShrink:0, background:"#0a1525", borderRight:"1px solid #1a2a3d",
+            overflowY:"auto", padding:"20px 18px", display:"flex", flexDirection:"column", gap:8 }}>
+            <div style={{ display:"flex", flexDirection:"column", alignItems:"center", marginBottom:16,
+              paddingBottom:16, borderBottom:"1px solid #1a2a3d" }}>
+              <ScoreRing score={score} />
+              <div style={{ marginTop:10, fontSize:13, fontWeight:700, color:scoreColor(score) }}>{scoreLabel(score)}</div>
+              <div style={{ fontSize:11, color:"#4a7090", marginTop:2 }}>Positive Health Score™</div>
+            </div>
+            {/* Apple Health data source */}
+            <div style={{ background:"#0f1a28", border:"1px solid #1a2a3d", borderRadius:12, padding:"12px 14px", marginBottom:14 }}>
+              <div style={{ fontSize:11, fontWeight:600, color:"#4a7090", letterSpacing:2, textTransform:"uppercase", marginBottom:10 }}>
+                 Apple Health · Live
+              </div>
+
+              <input type="text" value={backendUrl} placeholder="Backend URL (https://…)"
+                onChange={e => saveBackendUrl(e.target.value)}
+                style={{ width:"100%", background:"#0a1420", border:"1px solid #1e3045", borderRadius:8,
+                  padding:"8px 10px", color:"#cdd8e8", fontSize:12, fontFamily:"monospace", marginBottom:8, boxSizing:"border-box" }} />
+
+              <div style={{ display:"flex", gap:8 }}>
+                <button onClick={connectAppleHealth} disabled={linking}
+                  style={{ flex:1, padding:"9px 0", borderRadius:9, background:"linear-gradient(135deg,#00c282,#0099ff)",
+                    border:"none", color:"#fff", fontWeight:700, fontSize:12, cursor:"pointer", opacity:linking?0.6:1 }}>
+                  {linking ? "⏳…" : (vitalUserId ? "🍏 Reconnect" : "🍏 Connect")}
+                </button>
+                <button onClick={syncLive} disabled={syncing || !vitalUserId}
+                  style={{ flex:1, padding:"9px 0", borderRadius:9, background:"#131f2e",
+                    border:"1px solid #2a4055", color: vitalUserId ? "#cdd8e8" : "#44556a",
+                    fontWeight:700, fontSize:12, cursor: vitalUserId ? "pointer" : "not-allowed", opacity:syncing?0.6:1 }}>
+                  {syncing ? "⏳…" : "⟳ Sync latest"}
+                </button>
+              </div>
+              {liveMsg && <div style={{ fontSize:10, color:"#00e5a0", marginTop:8, lineHeight:1.5 }}>✓ {liveMsg}</div>}
+              <div style={{ fontSize:10, color:"#556677", marginTop:8, lineHeight:1.5 }}>
+                Live sync via the Vital aggregator. Deploy <code>/server</code>, put its URL above, then connect Apple Health once in the Vital iOS app.
+              </div>
+
+              {/* Offline fallback: file import */}
+              <div style={{ borderTop:"1px solid #1a2a3d", marginTop:12, paddingTop:12 }}>
+                <input ref={fileRef} type="file" accept=".zip,.xml" style={{ display:"none" }}
+                  onChange={e => { const f = e.target.files[0]; handleHealthFile(f); e.target.value = ""; }} />
+                <button onClick={() => fileRef.current && fileRef.current.click()} disabled={importing}
+                  style={{ width:"100%", padding:"9px 0", borderRadius:9, background:"transparent",
+                    border:"1px dashed #2a4055", color:"#8899aa", fontWeight:600, fontSize:12,
+                    cursor:"pointer", opacity:importing?0.6:1 }}>
+                  {importing ? "⏳ Parsing…" : "⤓ Or import export file"}
+                </button>
+                {importMsg && <div style={{ fontSize:10, color:"#00e5a0", marginTop:8, lineHeight:1.5 }}>✓ {importMsg}</div>}
+                <div style={{ fontSize:10, color:"#556677", marginTop:8, lineHeight:1.5 }}>
+                  Offline: iPhone <b style={{ color:"#7a90a8" }}>Health → profile → Export All Health Data</b>, upload the <code>.zip</code>. Parsed in-browser.
+                </div>
+              </div>
+            </div>
+
+            <div style={{ fontSize:11, fontWeight:600, color:"#4a7090", letterSpacing:2, textTransform:"uppercase", marginBottom:8 }}>
+              Live Biomarkers
+            </div>
+            {BIOMARKERS.map(bm => <BioSlider key={bm.key} bm={bm} value={vals[bm.key]} onChange={updateVal} />)}
+            <button onClick={() => sendMessage("Analyse my current biometric data and give me a full health assessment.")}
+              disabled={loading}
+              style={{ marginTop:12, width:"100%", padding:"11px 0", borderRadius:10,
+                background:"linear-gradient(135deg,#00c282,#0099ff)", border:"none", color:"#fff",
+                fontWeight:700, fontSize:13, cursor:"pointer", boxShadow:"0 4px 16px #00e5a033", opacity:loading?0.6:1 }}>
+              🔍 Analyse My Health
+            </button>
+          </div>
+        )}
+
+        {/* Chat */}
+        <div style={{ flex:1, display:"flex", flexDirection:"column", overflow:"hidden" }}>
+          <div ref={chatRef} style={{ flex:1, overflowY:"auto", padding:"24px 28px" }}>
+
+            {exchanges.length === 0 && (
+              <div style={{ textAlign:"center", paddingTop:48 }}>
+                <div style={{ fontSize:48, marginBottom:16 }}>✦</div>
+                <div style={{ fontSize:20, fontWeight:700, color:"#c0d0e0", marginBottom:8 }}>Your Personal Biometric Coach</div>
+                <div style={{ fontSize:14, color:"#4a7090", maxWidth:380, margin:"0 auto 28px", lineHeight:1.7 }}>
+                  Adjust your biomarkers on the left, then ask anything — or tap a quick prompt below.
+                </div>
+                <div style={{ display:"flex", flexWrap:"wrap", gap:8, justifyContent:"center" }}>
+                  {quickPrompts.map(p => (
+                    <button key={p} onClick={() => sendMessage(p)} disabled={loading}
+                      style={{ background:"#0f1e2e", border:"1px solid #1e3045", borderRadius:20,
+                        padding:"8px 16px", color:"#8cb0cc", fontSize:13, cursor:"pointer", fontFamily:"inherit" }}>
+                      {p}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {exchanges.map((ex, i) => <StructuredResponse key={i} question={ex.question} data={ex.data} />)}
+            {loading && <Typing />}
+            {error && (
+              <div style={{ background:"#2a0a0f", border:"1px solid #5c1a22", borderRadius:10,
+                padding:"12px 16px", color:"#ff6b7a", fontSize:13, marginBottom:14 }}>
+                ⚠️ {error}
+              </div>
+            )}
+          </div>
+
+          {exchanges.length > 0 && (
+            <div style={{ padding:"0 28px 10px", display:"flex", gap:6, flexWrap:"wrap" }}>
+              {["What should I focus on?","Daily action plan","Sleep improvement tips"].map(p => (
+                <button key={p} onClick={() => sendMessage(p)} disabled={loading}
+                  style={{ background:"#0f1e2e", border:"1px solid #1e3045", borderRadius:14,
+                    padding:"5px 12px", color:"#6688aa", fontSize:12, cursor:"pointer", fontFamily:"inherit" }}>
+                  {p}
+                </button>
+              ))}
+            </div>
+          )}
+
+          <div style={{ padding:"14px 24px 20px", background:"#0a1525", borderTop:"1px solid #1a2a3d" }}>
+            <div style={{ display:"flex", gap:10, alignItems:"flex-end", background:"#0f1e2e",
+              border:"1px solid #1e3045", borderRadius:14, padding:"10px 14px",
+              boxShadow:input?"0 0 0 2px #00e5a022":"none", transition:"box-shadow 0.2s" }}>
+              <textarea rows={1} value={input}
+                onChange={e => { setInput(e.target.value); e.target.style.height="auto"; e.target.style.height=Math.min(e.target.scrollHeight,120)+"px"; }}
+                onKeyDown={e => { if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendMessage(input);} }}
+                placeholder="Ask about your health, habits, or biomarkers..."
+                style={{ flex:1, background:"none", border:"none", color:"#d0e0f0", fontSize:14,
+                  resize:"none", lineHeight:1.5, fontFamily:"inherit", minHeight:24, maxHeight:120, overflowY:"auto" }} />
+              <button onClick={() => sendMessage(input)} disabled={loading||!input.trim()}
+                style={{ width:36, height:36, borderRadius:10, flexShrink:0, cursor:"pointer",
+                  background:(loading||!input.trim())?"#1a2a3d":"linear-gradient(135deg,#00c282,#0099ff)",
+                  border:"none", color:"#fff", fontSize:16, display:"flex", alignItems:"center", justifyContent:"center",
+                  transition:"background 0.2s", boxShadow:(!loading&&input.trim())?"0 0 12px #00e5a044":"none" }}>
+                {loading?"⏳":"↑"}
+              </button>
+            </div>
+            <div style={{ fontSize:10, color:"#2a4055", textAlign:"center", marginTop:8 }}>
+              Powered by Claude AI · WellBeing+ Biometric Intelligence · Not medical advice
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+
+  <script>
+    // Compile the JSX with the classic runtime (React.createElement) so it runs
+    // as a plain script — the automatic runtime would emit ES `import`s.
+    (function () {
+      var src = document.getElementById("coach-src").textContent;
+      var out = Babel.transform(src, {
+        presets: [["react", { runtime: "classic" }]],
+        filename: "coach.jsx",
+      }).code;
+      (0, eval)(out);
+    })();
+  </script>
+</body>
+</html>
