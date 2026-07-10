@@ -1,0 +1,11 @@
+# Secrets — never commit API keys
+.env
+
+# Runtime state
+bot_state.json
+STOP
+*.log
+
+# Python
+__pycache__/
+*.pyc
