@@ -1,8 +1,15 @@
 """Risk management: position sizing, stop-loss/take-profit, daily circuit breakers.
 
-The bot halts for the rest of the UTC day when either the daily target
-gain or the daily maximum loss is reached. State survives restarts via a
-JSON file so the breakers cannot be bypassed by rebooting the bot.
+Daily P&L rules (as % of day-start equity, UTC day):
+  * hard stop at +daily_target_pct (quit while ahead)
+  * hard stop at -daily_max_loss_pct
+  * profit lock: once the day's P&L touches +daily_min_lock_pct, a floor
+    activates that trails daily_giveback_pct below the day's peak (never
+    below the minimum lock). Falling back to the floor halts the day with
+    the gain locked in.
+
+State survives restarts via a JSON file so the breakers cannot be
+bypassed by rebooting the bot.
 """
 
 import json
@@ -20,6 +27,7 @@ class RiskManager:
         self.state = {
             "day": utc_today(),
             "day_start_equity": None,
+            "day_peak_pct": 0.0,
             "realized_pnl": 0.0,
             "halted": False,
             "halt_reason": "",
@@ -53,6 +61,7 @@ class RiskManager:
             self.state.update(
                 day=utc_today(),
                 day_start_equity=equity,
+                day_peak_pct=0.0,
                 realized_pnl=0.0,
                 halted=False,
                 halt_reason="",
@@ -72,11 +81,31 @@ class RiskManager:
         if not start:
             return ""
         change_pct = (equity - start) / start * 100
+        if change_pct > self.state["day_peak_pct"]:
+            self.state["day_peak_pct"] = change_pct
+            self.save()
+        peak = self.state["day_peak_pct"]
+
         if change_pct >= self.cfg.daily_target_pct:
             self._halt(f"daily target reached: {change_pct:+.2f}%")
         elif change_pct <= -self.cfg.daily_max_loss_pct:
             self._halt(f"daily max loss reached: {change_pct:+.2f}%")
+        elif peak >= self.cfg.daily_min_lock_pct:
+            floor = max(self.cfg.daily_min_lock_pct,
+                        peak - self.cfg.daily_giveback_pct)
+            if change_pct <= floor:
+                self._halt(
+                    f"profit locked at {change_pct:+.2f}% "
+                    f"(day peaked at {peak:+.2f}%, floor {floor:+.2f}%)"
+                )
         return self.state["halt_reason"]
+
+    def profit_floor(self) -> float:
+        """Current active profit floor in %, or None if not yet activated."""
+        peak = self.state["day_peak_pct"]
+        if peak < self.cfg.daily_min_lock_pct:
+            return None
+        return max(self.cfg.daily_min_lock_pct, peak - self.cfg.daily_giveback_pct)
 
     def _halt(self, reason: str):
         self.state["halted"] = True

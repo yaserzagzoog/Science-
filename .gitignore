@@ -2,7 +2,7 @@
 .env
 
 # Runtime state
-bot_state.json
+bot_state*.json
 STOP
 *.log
 
