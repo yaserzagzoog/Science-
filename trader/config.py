@@ -58,6 +58,12 @@ class Config:
     daily_giveback_pct: float = 1.0
     daily_max_loss_pct: float = 2.0
 
+    # Trading costs, % of notional per side — applied in paper mode and
+    # backtests so simulated results aren't flattered. (Binance spot taker
+    # fee is 0.1%; OANDA's cost is the spread, modeled via slippage_pct.)
+    fee_pct: float = 0.1
+    slippage_pct: float = 0.05
+
     # Strategy parameters
     kline_interval: str = "5m"
     rsi_period: int = 14

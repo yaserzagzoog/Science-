@@ -22,23 +22,27 @@ TradeError = (BinanceError, OandaError)
 
 
 class PaperBroker:
-    """Simulates fills at the current market price."""
+    """Simulates fills at the current market price, including fees/slippage
+    so paper results aren't flattered vs. real trading."""
 
     def __init__(self, cfg):
         self.cfg = cfg
         self.quote_balance = cfg.paper_starting_balance
+        self.cost_frac = (cfg.fee_pct + cfg.slippage_pct) / 100
 
     def buy(self, symbol, qty, price):
-        cost = qty * price
+        cost = qty * price * (1 + self.cost_frac)
         if cost > self.quote_balance:
             raise BinanceError("insufficient paper balance")
         self.quote_balance -= cost
-        log.info("[PAPER] BUY %s qty=%.8f @ %.5f (cost %.2f)", symbol, qty, price, cost)
+        log.info("[PAPER] BUY %s qty=%.8f @ %.5f (cost %.2f incl fees)",
+                 symbol, qty, price, cost)
 
     def sell(self, symbol, qty, price):
-        proceeds = qty * price
+        proceeds = qty * price * (1 - self.cost_frac)
         self.quote_balance += proceeds
-        log.info("[PAPER] SELL %s qty=%.8f @ %.5f (proceeds %.2f)", symbol, qty, price, proceeds)
+        log.info("[PAPER] SELL %s qty=%.8f @ %.5f (proceeds %.2f incl fees)",
+                 symbol, qty, price, proceeds)
 
 
 class LiveBroker:

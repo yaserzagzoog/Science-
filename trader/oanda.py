@@ -43,6 +43,7 @@ class OandaClient:
         headers = {
             "Authorization": f"Bearer {self.token}",
             "Content-Type": "application/json",
+            "Accept-Datetime-Format": "UNIX",
             "User-Agent": "trader-bot/0.1",
         }
         data = json.dumps(body).encode() if body is not None else None
@@ -91,6 +92,30 @@ class OandaClient:
         return [
             float(c["mid"]["c"]) for c in data.get("candles", []) if c.get("complete")
         ]
+
+    def klines_full(self, symbol: str, interval: str, limit: int = 500,
+                    start_ms: int = None):
+        """Return OHLC candles as dicts {t, o, h, l, c}, oldest first.
+        t is the open time in ms. Used by the backtester."""
+        granularity = GRANULARITY.get(interval)
+        if granularity is None:
+            raise OandaError(f"unsupported interval {interval!r}")
+        params = {"granularity": granularity, "count": min(limit, 500), "price": "M"}
+        if start_ms is not None:
+            params["from"] = f"{start_ms / 1000:.3f}"
+        data = self._request(
+            "GET", f"/v3/instruments/{symbol}/candles", params)
+        out = []
+        for c in data.get("candles", []):
+            if not c.get("complete"):
+                continue
+            mid = c["mid"]
+            out.append({
+                "t": int(float(c["time"]) * 1000),
+                "o": float(mid["o"]), "h": float(mid["h"]),
+                "l": float(mid["l"]), "c": float(mid["c"]),
+            })
+        return out
 
     def symbol_filters(self, symbol: str) -> dict:
         # OANDA trades whole units of the base currency; 1 unit minimum.

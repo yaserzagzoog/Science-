@@ -22,10 +22,13 @@ def utc_today() -> str:
 
 
 class RiskManager:
-    def __init__(self, cfg):
+    def __init__(self, cfg, today_fn=utc_today):
         self.cfg = cfg
+        # today_fn is injectable so backtests can drive the day from
+        # historical candle timestamps instead of the wall clock.
+        self._today = today_fn
         self.state = {
-            "day": utc_today(),
+            "day": today_fn(),
             "day_start_equity": None,
             "day_peak_pct": 0.0,
             "realized_pnl": 0.0,
@@ -38,11 +41,11 @@ class RiskManager:
     # ------------------------------------------------------------- persistence
 
     def _load(self):
-        if os.path.exists(self.cfg.state_file):
+        if self.cfg.state_file and os.path.exists(self.cfg.state_file):
             try:
                 with open(self.cfg.state_file) as fh:
                     saved = json.load(fh)
-                if saved.get("day") == utc_today():
+                if saved.get("day") == self._today():
                     self.state.update(saved)
                 else:
                     # new UTC day: keep positions, reset counters
@@ -51,15 +54,17 @@ class RiskManager:
                 pass
 
     def save(self):
+        if not self.cfg.state_file:   # in-memory mode (backtests)
+            return
         with open(self.cfg.state_file, "w") as fh:
             json.dump(self.state, fh, indent=2)
 
     # ---------------------------------------------------------------- breakers
 
     def roll_day_if_needed(self, equity: float):
-        if self.state["day"] != utc_today():
+        if self.state["day"] != self._today():
             self.state.update(
-                day=utc_today(),
+                day=self._today(),
                 day_start_equity=equity,
                 day_peak_pct=0.0,
                 realized_pnl=0.0,

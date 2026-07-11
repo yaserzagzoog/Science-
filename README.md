@@ -41,6 +41,22 @@ equity per position). Nothing here is financial advice.
 - **Kill switch**: create a file named `STOP` in the bot directory and both
   instances halt immediately.
 
+## Backtesting — measure before you trade
+
+Replay months of real market history through the exact live strategy and
+risk logic, with fees and slippage included:
+
+```bash
+python3 backtest.py --days 90                     # crypto (config.json)
+python3 backtest.py config.forex.json --days 60   # forex (needs OANDA token)
+```
+
+The report shows total/monthly return, buy-and-hold comparison, win rate,
+max drawdown, the daily P&L distribution, and how often each daily breaker
+fired. **Judge the strategy by these numbers — not by targets or by the
+30–40% claims of commercial "AI trading bots", which are unverified
+marketing.** If a backtest or paper run doesn't convince you, don't fund it.
+
 ## Three modes — use them in this order
 
 | Mode      | Orders                                    | Money at risk |
@@ -95,6 +111,7 @@ account; `mode: "live"` requires a funded live account and a live token.
 
 ```
 run_bot.py            entry point (optional arg: config file)
+backtest.py           historical simulation of the exact live logic
 config.json           crypto instance settings
 config.forex.json     forex instance settings
 .env                  your credentials (from .env.example, never commit)

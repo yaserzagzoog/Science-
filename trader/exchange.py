@@ -83,6 +83,20 @@ class BinanceClient:
         )
         return [float(candle[4]) for candle in raw]
 
+    def klines_full(self, symbol: str, interval: str, limit: int = 1000,
+                    start_ms: int = None):
+        """Return OHLC candles as dicts {t, o, h, l, c}, oldest first.
+        t is the open time in ms. Used by the backtester."""
+        params = {"symbol": symbol, "interval": interval, "limit": limit}
+        if start_ms is not None:
+            params["startTime"] = start_ms
+        raw = self._request("GET", "/api/v3/klines", params)
+        return [
+            {"t": c[0], "o": float(c[1]), "h": float(c[2]),
+             "l": float(c[3]), "c": float(c[4])}
+            for c in raw
+        ]
+
     def ticker_price(self, symbol: str) -> float:
         data = self._request("GET", "/api/v3/ticker/price", {"symbol": symbol})
         return float(data["price"])
