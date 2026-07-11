@@ -125,7 +125,15 @@ class BinanceClient:
         decimals = max(0, -int(round(math.log10(step))))
         return round(math.floor(qty / step) * step, decimals)
 
+    def server_time_ms(self) -> int:
+        return int(self._request("GET", "/api/v3/time")["serverTime"])
+
     # -------------------------------------------------------------- account
+
+    def api_restrictions(self) -> dict:
+        """Key permission flags (live API only; endpoint absent on testnet).
+        Used by doctor.py to verify withdrawals are DISABLED on the key."""
+        return self._request("GET", "/sapi/v1/account/apiRestrictions", signed=True)
 
     def account_balances(self) -> dict:
         data = self._request("GET", "/api/v3/account", signed=True)
