@@ -1,29 +1,32 @@
 {
   "platform": "binance",
-  "symbols": ["BTCUSDT", "ETHUSDT"],
+  "symbols": ["BTCUSDT", "ETHUSDT", "SOLUSDT"],
   "quote_asset": "USDT",
   "mode": "paper",
 
+  "strategy": "swing",
+  "kline_interval": "1d",
+  "regime_symbol": "BTCUSDT",
+  "regime_ema_days": 50,
+  "mom_fast_days": 7,
+  "mom_slow_days": 30,
+
   "paper_starting_balance": 1000.0,
-  "max_position_fraction": 0.25,
-  "per_trade_risk_fraction": 0.01,
-  "stop_loss_pct": 1.0,
-  "take_profit_pct": 1.5,
-  "max_open_positions": 2,
+  "max_position_fraction": 0.3,
+  "per_trade_risk_fraction": 0.02,
+  "stop_loss_pct": 8.0,
+  "take_profit_pct": 25.0,
+  "max_open_positions": 3,
 
   "daily_target_pct": 5.0,
   "daily_min_lock_pct": 2.0,
   "daily_giveback_pct": 1.0,
-  "daily_max_loss_pct": 2.0,
+  "daily_max_loss_pct": 3.0,
 
-  "kline_interval": "5m",
-  "rsi_period": 14,
-  "rsi_oversold": 30.0,
-  "rsi_overbought": 70.0,
-  "ema_fast": 9,
-  "ema_slow": 21,
+  "fee_pct": 0.1,
+  "slippage_pct": 0.05,
 
-  "poll_seconds": 30,
+  "poll_seconds": 300,
   "state_file": "bot_state.json",
   "kill_switch_file": "STOP"
 }

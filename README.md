@@ -5,8 +5,34 @@ A trading bot with strict risk management that runs on two platforms:
 - **Binance** — crypto spot pairs (e.g. `BTCUSDT`, `ETHUSDT`)
 - **OANDA** — forex pairs (e.g. `EUR_USD`, `GBP_USD`)
 
-It trades the instruments you specify and manages each day's P&L with a
-**minimum profit lock of +2%** and a **stretch target of +5%**:
+The architecture is platform-agnostic (one strategy/risk core, thin API
+clients), so more markets — Saudi Tadawul, US stocks — can be phased in
+later as additional clients.
+
+## Two strategies
+
+**`swing` (default, `config.json`)** — modeled on the design of
+[Sindbad.Tech](https://sindbad.tech) (a CMA-permitted Saudi trading-bot
+company), translated to crypto:
+
+- *Momentum/acceleration model*: daily candles; enters when ~weekly (7d) and
+  monthly (30d) momentum are both positive **and** momentum is accelerating —
+  their "non-linear model predicting behavior a week ahead" analog.
+- *Safeguard signal*: a market regime filter — long only while BTC (the
+  market proxy) closes above its 50-day EMA; goes to cash in down-markets.
+  This is the capital-protection idea behind their "Safeguard Signal".
+- Wide per-position stop (−8%) / take-profit (+25%), few trades → minimal
+  fee drag. For context, Sindbad.Tech's own paid tier advertises
+  "Average Profit Up to 15% Yearly" — that is the realistic scale licensed
+  firms claim.
+
+**`scalp` (`config.scalp.json`)** — RSI + EMA crossover on 5-minute candles
+with tight stops. Trades often; fees matter a lot (backtest it!).
+
+## Daily P&L management (both strategies)
+
+Each day's P&L is managed with a **minimum profit lock of +2%** and a
+**stretch target of +5%**:
 
 | Day P&L reaches | What happens |
 |---|---|
@@ -30,15 +56,11 @@ lose.** Forex specifics: markets close on weekends, and real accounts use
 leverage — this bot deliberately sizes positions unleveraged (max 25% of
 equity per position). Nothing here is financial advice.
 
-## How it works
+## Risk controls
 
-- **Strategy** (same for both platforms): RSI(14) oversold-recovery entries
-  plus EMA 9/21 crossover momentum on 5-minute candles. Exits on RSI
-  overbought, EMA cross-down, or per-position stop-loss / take-profit
-  (crypto: −1% / +1.5%; forex: −0.3% / +0.45% — forex moves are smaller).
-- **Position sizing**: each trade risks 1% of equity via its stop distance,
-  capped at 25% of equity, max 2 concurrent positions.
-- **Kill switch**: create a file named `STOP` in the bot directory and both
+- **Position sizing**: each trade risks a fixed fraction of equity via its
+  stop distance, capped per position (swing: 30%, max 3 positions).
+- **Kill switch**: create a file named `STOP` in the bot directory and all
   instances halt immediately.
 
 ## Backtesting — measure before you trade
@@ -47,7 +69,8 @@ Replay months of real market history through the exact live strategy and
 risk logic, with fees and slippage included:
 
 ```bash
-python3 backtest.py --days 90                     # crypto (config.json)
+python3 backtest.py --days 365                    # swing strategy (config.json)
+python3 backtest.py config.scalp.json --days 90   # scalp strategy
 python3 backtest.py config.forex.json --days 60   # forex (needs OANDA token)
 ```
 
@@ -72,7 +95,7 @@ actually satisfy you.
 
 ```bash
 git clone <this repo> && cd <repo>
-python3 run_bot.py                    # crypto instance (config.json)
+python3 run_bot.py                    # crypto swing instance (config.json)
 python3 run_bot.py config.forex.json  # forex instance (run in a second terminal)
 ```
 
@@ -112,14 +135,15 @@ account; `mode: "live"` requires a funded live account and a live token.
 ```
 run_bot.py            entry point (optional arg: config file)
 backtest.py           historical simulation of the exact live logic
-config.json           crypto instance settings
+config.json           crypto swing strategy (default)
+config.scalp.json     crypto scalp strategy
 config.forex.json     forex instance settings
 .env                  your credentials (from .env.example, never commit)
 trader/
   config.py           config loading + validation
   exchange.py         Binance REST client (live + testnet, signed requests)
   oanda.py            OANDA v20 REST client (practice + live)
-  strategy.py         RSI + EMA signal generation
+  strategy.py         scalp (RSI/EMA) + swing (momentum/regime) strategies
   risk.py             sizing, stops, daily profit lock + circuit breakers
   bot.py              main loop, paper/live brokers
 bot_state*.json       runtime state per instance — auto-created

@@ -19,7 +19,7 @@ from datetime import datetime, timezone
 from trader.bot import make_client
 from trader.config import Config
 from trader.risk import RiskManager
-from trader.strategy import Strategy
+from trader.strategy import make_strategy
 
 INTERVAL_MS = {
     "1m": 60_000, "5m": 300_000, "15m": 900_000, "30m": 1_800_000,
@@ -52,14 +52,20 @@ def day_of(ts_ms):
 
 
 class Backtester:
-    def __init__(self, cfg: Config, history: dict):
-        """history: symbol -> list of {t, o, h, l, c} candles."""
+    def __init__(self, cfg: Config, history: dict, regime_history=None,
+                 trade_after_ts: int = 0):
+        """history: symbol -> list of {t, o, h, l, c} candles.
+        regime_history: candles for cfg.regime_symbol (swing strategy only).
+        trade_after_ts: candles before this are warm-up only — indicators
+        accumulate but no trades happen and no stats are recorded."""
         cfg.state_file = ""            # in-memory risk state
         self.cfg = cfg
         self.history = history
+        self.trade_after_ts = trade_after_ts
+        self.regime_by_ts = {c["t"]: c["c"] for c in (regime_history or [])}
         self.sim_day = ""
         self.risk = RiskManager(cfg, today_fn=lambda: self.sim_day)
-        self.strategy = Strategy(cfg)
+        self.strategy = make_strategy(cfg)
         self.cash = cfg.paper_starting_balance
         self.cost_frac = (cfg.fee_pct + cfg.slippage_pct) / 100
         self.trades = []               # closed trades
@@ -105,8 +111,11 @@ class Backtester:
             for symbol, candles in self.history.items()
         }
         closes = {symbol: [] for symbol in self.history}
+        regime_closes = []
 
         for ts in timeline:
+            if ts in self.regime_by_ts:
+                regime_closes.append(self.regime_by_ts[ts])
             self.sim_day = day_of(ts)
             candles_now = {
                 s: by_ts[s][ts] for s in self.history if ts in by_ts[s]
@@ -114,6 +123,8 @@ class Backtester:
             prices = {s: c["c"] for s, c in candles_now.items()}
             for s, c in candles_now.items():
                 closes[s].append(c["c"])
+            if ts < self.trade_after_ts:   # warm-up: indicators only
+                continue
 
             # 1. intrabar stop-loss / take-profit (stop assumed first: worst case)
             for s, c in candles_now.items():
@@ -147,7 +158,8 @@ class Backtester:
             # 3. strategy signals at candle close
             for s, c in candles_now.items():
                 holding = self.risk.get_position(s) is not None
-                signal = self.strategy.evaluate(closes[s], holding)
+                signal = self.strategy.evaluate(closes[s], holding,
+                                                regime_closes=regime_closes)
                 if signal.action == "BUY" and not holding and self.risk.can_open():
                     qty = self.risk.position_size(eq, c["c"])
                     if qty * c["c"] >= 10:     # skip dust
@@ -171,10 +183,12 @@ class Backtester:
         cfg = self.cfg
         start_bal = cfg.paper_starting_balance
         final = self.equity_curve[-1][1] if self.equity_curve else start_bal
-        days = [
-            (d, (v["end"] - v["start"]) / v["start"] * 100, v["halt"])
-            for d, v in sorted(self.daily.items())
-        ]
+        # day-over-day equity change (works for both intraday and 1d candles)
+        days = []
+        prev_end = start_bal
+        for d, v in sorted(self.daily.items()):
+            days.append((d, (v["end"] - prev_end) / prev_end * 100, v["halt"]))
+            prev_end = v["end"]
         day_pcts = [p for _, p, _ in days]
         n_days = len(days)
         total_pct = (final / start_bal - 1) * 100
@@ -198,8 +212,10 @@ class Backtester:
             monthly = ((final / start_bal) ** (30 / n_days) - 1) * 100
             print(f"compounded ~30d:   {monthly:+.2f}%")
         for s, candles in self.history.items():
-            bh = (candles[-1]["c"] / candles[0]["c"] - 1) * 100
-            print(f"buy&hold {s}: {bh:+.2f}%")
+            window = [c for c in candles if c["t"] >= self.trade_after_ts]
+            if len(window) >= 2:
+                bh = (window[-1]["c"] / window[0]["c"] - 1) * 100
+                print(f"buy&hold {s}: {bh:+.2f}%")
         print(f"max drawdown:      {max_dd:.2f}%")
         print("-" * 64)
         print(f"trades: {len(self.trades)}  |  win rate: "
@@ -239,7 +255,20 @@ def main():
         history[symbol] = fetch_history(client, symbol, cfg.kline_interval, days)
         print(f"  {len(history[symbol])} candles")
 
-    bt = Backtester(cfg, history)
+    regime_history = None
+    trade_after_ts = 0
+    if cfg.strategy == "swing":
+        # indicators need warm-up history before the trading window
+        warmup_days = cfg.regime_ema_days + cfg.mom_slow_days + 10
+        trade_after_ts = int(time.time() * 1000) - days * 86_400_000
+        print(f"fetching regime history for {cfg.regime_symbol}...")
+        regime_history = fetch_history(
+            client, cfg.regime_symbol, cfg.kline_interval, days + warmup_days)
+        for s in cfg.symbols:
+            history[s] = fetch_history(
+                client, s, cfg.kline_interval, days + warmup_days)
+
+    bt = Backtester(cfg, history, regime_history, trade_after_ts)
     bt.run()
     bt.report()
 

@@ -14,7 +14,7 @@ from .config import Config
 from .exchange import BinanceClient, BinanceError
 from .oanda import OandaClient, OandaError
 from .risk import RiskManager
-from .strategy import Strategy
+from .strategy import make_strategy
 
 log = logging.getLogger("bot")
 
@@ -79,7 +79,8 @@ class TradingBot:
         self.cfg = cfg
         self.client = make_client(cfg)
         self.risk = RiskManager(cfg)
-        self.strategy = Strategy(cfg)
+        self.strategy = make_strategy(cfg)
+        self._regime_closes = None
         self.broker = PaperBroker(cfg) if cfg.mode == "paper" else LiveBroker(cfg, self.client)
 
     # ------------------------------------------------------------------ equity
@@ -135,6 +136,16 @@ class TradingBot:
             self._close_all(prices)
             return False
 
+        if self.cfg.strategy == "swing":
+            try:
+                self._regime_closes = self.client.klines(
+                    self.cfg.regime_symbol, self.cfg.kline_interval,
+                    limit=self.strategy.required_bars)
+            except TradeError as exc:
+                log.warning("regime fetch failed (%s); staying defensive: %s",
+                            self.cfg.regime_symbol, exc)
+                self._regime_closes = None
+
         for symbol in self.cfg.symbols:
             if symbol in prices:
                 self._process_symbol(symbol, prices[symbol], equity)
@@ -150,13 +161,14 @@ class TradingBot:
         # 2. Strategy signal
         try:
             closes = self.client.klines(symbol, self.cfg.kline_interval,
-                                        limit=self.cfg.ema_slow * 4)
+                                        limit=self.strategy.required_bars)
         except TradeError as exc:
             log.warning("klines failed for %s: %s", symbol, exc)
             return
 
         holding = self.risk.get_position(symbol) is not None
-        signal = self.strategy.evaluate(closes, holding)
+        signal = self.strategy.evaluate(closes, holding,
+                                        regime_closes=self._regime_closes)
         log.debug("%s price=%.5f rsi=%.1f -> %s (%s)",
                   symbol, price, signal.rsi, signal.action, signal.reason)
 

@@ -64,7 +64,18 @@ class Config:
     fee_pct: float = 0.1
     slippage_pct: float = 0.05
 
-    # Strategy parameters
+    # Strategy: "scalp" (RSI/EMA on short candles) or
+    #           "swing" (daily momentum + market regime filter — modeled on
+    #           Sindbad.Tech's acceleration model + safeguard signal)
+    strategy: str = "scalp"
+
+    # Swing parameters (daily candles: set kline_interval to "1d")
+    regime_symbol: str = "BTCUSDT"   # market proxy for the regime filter
+    regime_ema_days: int = 50        # regime is UP when proxy closes above this EMA
+    mom_fast_days: int = 7           # ~weekly momentum horizon
+    mom_slow_days: int = 30
+
+    # Scalp strategy parameters
     kline_interval: str = "5m"
     rsi_period: int = 14
     rsi_oversold: float = 30.0
@@ -135,3 +146,9 @@ class Config:
             )
         if self.daily_giveback_pct <= 0:
             raise ValueError("daily_giveback_pct must be positive")
+        if self.strategy not in ("scalp", "swing"):
+            raise ValueError(f"strategy must be scalp/swing, got {self.strategy!r}")
+        if self.strategy == "swing" and self.kline_interval not in ("4h", "1d"):
+            raise ValueError(
+                "swing strategy is designed for kline_interval '1d' (or '4h')"
+            )
