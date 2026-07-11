@@ -89,6 +89,23 @@ systemctl enable --now trader.service
 journalctl -u trader -f        # watch logs
 ```
 
+## Web dashboard
+
+Run next to the bot to watch and control it from a browser:
+
+```bash
+python3 dashboard.py            # open http://localhost:8777
+```
+
+Live equity, day P&L vs the profit-lock/floor levels, open positions with
+unrealized P&L, the log tail, and STOP/RESUME buttons. It binds to
+localhost only (private). If the bot runs on a VPS, view it from your own
+computer with an SSH tunnel:
+
+```bash
+ssh -L 8777:localhost:8777 user@your-vps    # then open http://localhost:8777
+```
+
 ## Controlling the bot
 
 | Action | How |

@@ -126,6 +126,11 @@ class TradingBot:
         start = self.risk.state["day_start_equity"] or equity
         day_pct = (equity - start) / start * 100 if start else 0.0
         floor = self.risk.profit_floor()
+        # publish a live snapshot for the dashboard
+        self.risk.state["last_equity"] = equity
+        self.risk.state["last_prices"] = prices
+        self.risk.state["last_update"] = int(time.time())
+        self.risk.save()
         log.info("equity=%.2f | day P&L %+.2f%% (peak %+.2f%%%s) | positions=%d",
                  equity, day_pct, self.risk.state["day_peak_pct"],
                  f", floor {floor:+.2f}%" if floor is not None else "",
