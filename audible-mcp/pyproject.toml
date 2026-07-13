@@ -1,0 +1,19 @@
+[project]
+name = "audible-mcp"
+version = "0.1.0"
+description = "MCP server exposing your personal Audible library and wish list to Claude"
+requires-python = ">=3.10"
+dependencies = [
+    "mcp>=1.2.0",
+    "audible>=0.10.0",
+]
+
+[project.scripts]
+audible-mcp = "server:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+include = ["server.py", "authenticate.py"]
