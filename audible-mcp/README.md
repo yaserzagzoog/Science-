@@ -21,7 +21,35 @@ does), since Audible has no official public API.
 Each item includes title, subtitle, authors, narrators, series info, runtime,
 release date, and ASIN.
 
-## Setup
+## No-terminal option: the Windows app
+
+If you don't want to touch a shell at all, use the prebuilt Windows app
+instead. Every push to this folder triggers the *Build Audible Exporter*
+GitHub Actions workflow, which compiles everything into a single
+`AudibleExporter.exe` published on the repo's **Releases** page.
+
+1. Download `AudibleExporter.exe` from Releases and double-click it.
+2. Click **Sign in to Audible** — your browser opens Amazon's sign-in page
+   (the app never sees your password); after signing in, copy the final
+   page's address and paste it into the app.
+3. Click **Fetch & save my titles** — it saves `audible_library.csv` and
+   `audible_wishlist.csv` wherever you choose and shows both lists.
+
+To also use it as an MCP server for Claude Desktop (still no shell — the
+config file opens in Notepad via Settings → Developer → Edit Config):
+
+```json
+{
+  "mcpServers": {
+    "audible": {
+      "command": "C:\\path\\to\\AudibleExporter.exe",
+      "args": ["--mcp"]
+    }
+  }
+}
+```
+
+## Setup from source (terminal route)
 
 Requires Python 3.10+ on the machine where the server will run (your own
 computer — your credentials stay local).

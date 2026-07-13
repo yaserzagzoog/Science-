@@ -1,0 +1,56 @@
+name: Build Audible Exporter (Windows exe)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - claude/audible-titles-wishlist-sy7i61
+    paths:
+      - "audible-mcp/**"
+      - ".github/workflows/build-audible-exporter.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install ./audible-mcp pyinstaller
+
+      - name: Build single-file exe
+        run: >
+          pyinstaller --onefile --windowed --name AudibleExporter
+          --copy-metadata mcp --copy-metadata audible
+          audible-mcp/gui.py
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: AudibleExporter
+          path: dist/AudibleExporter.exe
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: audible-exporter-v0.1.0
+          name: Audible Exporter for Windows
+          target_commitish: ${{ github.sha }}
+          body: |
+            Double-click app that exports your Audible library (downloaded/purchased
+            titles) and wish list to CSV files. No terminal needed.
+
+            1. Download `AudibleExporter.exe` below and run it.
+            2. Click **Sign in to Audible** — sign in via your own browser and paste
+               the final page's address back into the app.
+            3. Click **Fetch & save my titles** and choose a folder.
+
+            The same exe can serve as an MCP server for Claude Desktop by adding
+            it to your config with the `--mcp` argument (see audible-mcp/README.md).
+          files: dist/AudibleExporter.exe
