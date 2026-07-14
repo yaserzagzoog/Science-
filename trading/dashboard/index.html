@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gravia-style Paper Trading Dashboard — SIMULATED</title>
+<style>
+  /* Deliberately dark-only: trading-terminal aesthetic. */
+  :root{
+    --bg:#0a0e14; --panel:#10151f; --border:#1e2633;
+    --ink:#e6edf3; --ink2:#98a5b3; --ink3:#5c6773;
+    --up:#0d9488; --down:#f43f5e; --accent:#d946ef; --warn:#d97706;
+    --up-soft:rgba(13,148,136,.16); --down-soft:rgba(244,63,94,.16);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);
+       font:14px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;padding:14px}
+  .top{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:14px}
+  .brand{font-size:18px;font-weight:700;letter-spacing:.06em}
+  .badge{border:1px solid var(--warn);color:var(--warn);border-radius:6px;
+         padding:3px 10px;font-size:12px;font-weight:700;letter-spacing:.12em}
+  .price{font-size:20px;font-weight:700}
+  .muted{color:var(--ink2);font-size:12px}
+  .grid{display:grid;grid-template-columns:280px 1fr 300px;gap:12px}
+  @media(max-width:980px){.grid{grid-template-columns:1fr}}
+  .panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;min-width:0}
+  .panel h2{font-size:11px;font-weight:600;letter-spacing:.14em;color:var(--ink3);
+            text-transform:uppercase;margin-bottom:10px}
+  .big{font-size:30px;font-weight:700;margin:2px 0 6px}
+  .pos{color:var(--up)} .neg{color:var(--down)}
+  .tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+  .tile{border:1px solid var(--border);border-radius:8px;padding:8px 10px}
+  .tile b{display:block;font-size:17px;margin-top:2px}
+  .tile span{font-size:11px;color:var(--ink3);letter-spacing:.08em;text-transform:uppercase}
+  canvas{display:block;width:100%}
+  .chartwrap{position:relative}
+  .tip{position:absolute;pointer-events:none;background:#141b28;border:1px solid var(--border);
+       border-radius:6px;padding:6px 9px;font-size:12px;color:var(--ink);display:none;z-index:5;white-space:nowrap}
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  th{color:var(--ink3);text-align:right;font-weight:600;letter-spacing:.08em;
+     text-transform:uppercase;font-size:10px;padding:4px 6px;border-bottom:1px solid var(--border)}
+  th:first-child,td:first-child{text-align:left}
+  td{padding:4px 6px;text-align:right;border-bottom:1px solid rgba(30,38,51,.5)}
+  .logwrap{max-height:300px;overflow-y:auto}
+  .disclaimer{margin-top:14px;color:var(--ink3);font-size:12px;max-width:900px}
+  .full{grid-column:1/-1}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;vertical-align:middle}
+</style>
+</head>
+<body>
+<div class="top">
+  <span class="brand">GRAVIA-STYLE BOT</span>
+  <span class="badge">PAPER TRADING · SIMULATED</span>
+  <span class="price" id="px">—</span>
+  <span class="muted" id="meta">loading…</span>
+</div>
+
+<div class="grid">
+  <div class="panel">
+    <h2>Wallet (virtual)</h2>
+    <div class="big" id="equity">—</div>
+    <div id="ret" class="muted">—</div>
+    <div class="tiles">
+      <div class="tile"><span>Sharpe</span><b id="sharpe">—</b></div>
+      <div class="tile"><span>Max DD</span><b id="dd">—</b></div>
+      <div class="tile"><span>Trades</span><b id="ntr">—</b></div>
+      <div class="tile"><span>Win rate</span><b id="win">—</b></div>
+      <div class="tile"><span>Profit factor</span><b id="pf">—</b></div>
+      <div class="tile"><span>Data source</span><b id="src" style="font-size:13px">—</b></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2 id="chart-title">Price — candles &amp; trade markers</h2>
+    <div class="chartwrap">
+      <canvas id="candles" height="340"></canvas>
+      <div class="tip" id="tip1"></div>
+    </div>
+    <div class="muted" style="margin-top:8px">
+      <span class="dot" style="background:var(--up)"></span>up candle / entry
+      <span class="dot" style="background:var(--down);margin-left:12px"></span>down candle / exit
+      <span class="dot" style="background:var(--accent);margin-left:12px"></span>trade marker
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Equity curve (virtual $)</h2>
+    <div class="chartwrap">
+      <canvas id="eq" height="150"></canvas>
+      <div class="tip" id="tip2"></div>
+    </div>
+    <h2 style="margin-top:16px">Session</h2>
+    <div class="muted" id="session">—</div>
+  </div>
+
+  <div class="panel full">
+    <h2>Execution log (virtual fills)</h2>
+    <div class="logwrap">
+      <table id="log">
+        <thead><tr><th>Entry time</th><th>Entry</th><th>Exit</th><th>Units</th><th>PnL ($)</th><th>Reason</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<p class="disclaimer">
+  Every number on this page is a simulation with virtual money — exactly like the viral
+  “$68 → $750,000” dashboards, which also say <em>SIMULATED</em> in the corner. Past or
+  simulated performance does not predict live results. Run
+  <code>python -m bot.backtest --all --export</code> to regenerate <code>data.json</code>.
+</p>
+
+<script>
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const fmt = n => n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const dt = ts => new Date(ts).toISOString().replace('T',' ').slice(5,16);
+
+// Fallback generator so the page works standalone (no data.json / file://).
+function fallbackData(){
+  let px=78000, eq=1000, seed=42;
+  const rnd=()=> (seed=(seed*1664525+1013904223)>>>0)/2**32;
+  const gauss=()=> (rnd()+rnd()+rnd()+rnd()-2)*1.7;
+  const candles=[],equity=[],trades=[];
+  let ts=1700000000000, units=0, entry=0;
+  for(let i=0;i<400;i++){
+    const o=px, c=px*Math.exp(0.00005+0.008*gauss());
+    const h=Math.max(o,c)*(1+Math.abs(gauss())*0.004);
+    const l=Math.min(o,c)*(1-Math.abs(gauss())*0.004);
+    candles.push([ts,o,h,l,c,300+200*rnd()]);
+    if(i>30){
+      const ma=candles.slice(-24).reduce((s,k)=>s+k[4],0)/24;
+      if(units===0 && c>ma*1.004){units=eq*0.4/c; entry=c*1.0015; eq-=units*entry*1.001;
+        trades.push({entry_ts:ts,entry:+entry.toFixed(2),exit_ts:0,exit:0,units:+units.toFixed(6),pnl:0,reason:''});}
+      else if(units>0 && c<ma*0.998){const fill=c*0.9985, pr=units*fill*0.999;
+        const t=trades[trades.length-1]; t.exit_ts=ts; t.exit=+fill.toFixed(2);
+        t.pnl=+(pr-t.units*t.entry).toFixed(2); eq+=pr; units=0;}
+    }
+    equity.push([ts,+(eq+units*c).toFixed(2)]); px=c; ts+=3600000;
+  }
+  return {meta:{strategy:'demo_ma_cross',source:'built-in fallback',simulated:true,
+    metrics:{total_return_pct:+((equity.at(-1)[1]/1000-1)*100).toFixed(2),
+      final_equity:equity.at(-1)[1],max_drawdown_pct:'—',sharpe:'—',
+      trades:trades.filter(t=>t.exit_ts).length,
+      win_rate_pct:'—',profit_factor:'—'}},candles,equity,
+    trades:trades.filter(t=>t.exit_ts)};
+}
+
+function drawCandles(data){
+  const cv=document.getElementById('candles'), ctx=cv.getContext('2d');
+  const W=cv.width=cv.clientWidth*devicePixelRatio, H=cv.height=340*devicePixelRatio;
+  ctx.scale(1,1);
+  const cs=data.candles.slice(-160);
+  const lo=Math.min(...cs.map(c=>c[3])), hi=Math.max(...cs.map(c=>c[2]));
+  const padL=70*devicePixelRatio, padB=22*devicePixelRatio;
+  const x=i=>padL+(W-padL-10)*(i/(cs.length-1));
+  const y=v=>8+(H-padB-16)*(1-(v-lo)/(hi-lo));
+  ctx.strokeStyle=css('--border'); ctx.fillStyle=css('--ink3');
+  ctx.font=`${11*devicePixelRatio}px ui-monospace`; ctx.lineWidth=1;
+  for(let g=0;g<5;g++){const v=lo+(hi-lo)*g/4, yy=y(v);
+    ctx.globalAlpha=.5; ctx.beginPath(); ctx.moveTo(padL,yy); ctx.lineTo(W-10,yy); ctx.stroke();
+    ctx.globalAlpha=1; ctx.fillText(fmt(v),6,yy+4);}
+  const bw=Math.max(2,(W-padL-10)/cs.length*0.6);
+  cs.forEach((c,i)=>{
+    const up=c[4]>=c[1], col=up?css('--up'):css('--down');
+    ctx.strokeStyle=col; ctx.fillStyle=col; ctx.lineWidth=Math.max(1,devicePixelRatio);
+    ctx.beginPath(); ctx.moveTo(x(i),y(c[2])); ctx.lineTo(x(i),y(c[3])); ctx.stroke();
+    const yo=y(c[1]), yc=y(c[4]);
+    ctx.fillRect(x(i)-bw/2,Math.min(yo,yc),bw,Math.max(Math.abs(yc-yo),devicePixelRatio));
+  });
+  const first=cs[0][0], last=cs.at(-1)[0];
+  data.trades.forEach(t=>{
+    [[t.entry_ts,'▲',css('--up')],[t.exit_ts,'▼',t.pnl>=0?css('--accent'):css('--down')]].forEach(([tts,sym,col])=>{
+      if(tts>=first&&tts<=last){
+        const i=cs.findIndex(c=>c[0]>=tts); if(i<0)return;
+        ctx.fillStyle=col; ctx.font=`${12*devicePixelRatio}px ui-monospace`;
+        ctx.fillText(sym,x(i)-4*devicePixelRatio,sym==='▲'?H-padB+14*devicePixelRatio:14*devicePixelRatio);
+      }});
+  });
+  // crosshair tooltip
+  const tip=document.getElementById('tip1');
+  cv.onmousemove=e=>{
+    const r=cv.getBoundingClientRect();
+    const i=Math.round((e.clientX-r.left)*devicePixelRatio-padL)/((W-padL-10)/(cs.length-1));
+    const idx=Math.max(0,Math.min(cs.length-1,Math.round(i)));
+    const c=cs[idx];
+    tip.style.display='block';
+    tip.style.left=Math.min(e.clientX-r.left+14,r.width-180)+'px';
+    tip.style.top=(e.clientY-r.top+10)+'px';
+    tip.innerHTML=`${dt(c[0])}<br>O ${fmt(c[1])} H ${fmt(c[2])}<br>L ${fmt(c[3])} C <b>${fmt(c[4])}</b>`;
+  };
+  cv.onmouseleave=()=>tip.style.display='none';
+}
+
+function drawEquity(data){
+  const cv=document.getElementById('eq'), ctx=cv.getContext('2d');
+  const W=cv.width=cv.clientWidth*devicePixelRatio, H=cv.height=150*devicePixelRatio;
+  const eq=data.equity;
+  const lo=Math.min(...eq.map(e=>e[1])), hi=Math.max(...eq.map(e=>e[1]));
+  const x=i=>4+(W-8)*(i/(eq.length-1));
+  const y=v=>6+(H-12)*(1-(v-lo)/(hi-lo||1));
+  ctx.beginPath(); ctx.moveTo(x(0),H);
+  eq.forEach((e,i)=>ctx.lineTo(x(i),y(e[1]))); ctx.lineTo(x(eq.length-1),H); ctx.closePath();
+  ctx.fillStyle=css('--up-soft'); ctx.fill();
+  ctx.beginPath(); eq.forEach((e,i)=>i?ctx.lineTo(x(i),y(e[1])):ctx.moveTo(x(0),y(e[1])));
+  ctx.strokeStyle=css('--up'); ctx.lineWidth=2*devicePixelRatio; ctx.stroke();
+  const tip=document.getElementById('tip2');
+  cv.onmousemove=e=>{
+    const r=cv.getBoundingClientRect();
+    const idx=Math.max(0,Math.min(eq.length-1,Math.round((e.clientX-r.left)/r.width*(eq.length-1))));
+    tip.style.display='block';
+    tip.style.left=Math.min(e.clientX-r.left+12,r.width-150)+'px'; tip.style.top='8px';
+    tip.innerHTML=`${dt(eq[idx][0])}<br>equity <b>$${fmt(eq[idx][1])}</b>`;
+  };
+  cv.onmouseleave=()=>tip.style.display='none';
+}
+
+function render(data){
+  const m=data.meta.metrics, last=data.candles.at(-1);
+  document.getElementById('px').textContent='$'+fmt(last[4]);
+  document.getElementById('meta').textContent=
+    `${data.meta.strategy} · ${data.meta.source} · ${data.candles.length} bars · SIMULATED`;
+  const eqEl=document.getElementById('equity');
+  eqEl.textContent='$'+fmt(m.final_equity);
+  const ret=document.getElementById('ret');
+  const pos=typeof m.total_return_pct==='number'&&m.total_return_pct>=0;
+  ret.innerHTML=`<span class="${pos?'pos':'neg'}">${pos?'+':''}${m.total_return_pct}%</span> vs starting capital`;
+  document.getElementById('sharpe').textContent=m.sharpe;
+  document.getElementById('dd').textContent=m.max_drawdown_pct+'%';
+  document.getElementById('ntr').textContent=m.trades;
+  document.getElementById('win').textContent=m.win_rate_pct+'%';
+  document.getElementById('pf').textContent=m.profit_factor;
+  document.getElementById('src').textContent=data.meta.source;
+  document.getElementById('session').textContent=
+    `${dt(data.candles[0][0])} → ${dt(last[0])} (UTC)`;
+  const tb=document.querySelector('#log tbody');
+  tb.innerHTML=data.trades.slice().reverse().map(t=>
+    `<tr><td>${dt(t.entry_ts)}</td><td>${fmt(t.entry)}</td><td>${fmt(t.exit)}</td>
+     <td>${t.units}</td><td class="${t.pnl>=0?'pos':'neg'}">${t.pnl>=0?'+':''}${fmt(t.pnl)}</td>
+     <td>${t.reason||'—'}</td></tr>`).join('');
+  drawCandles(data); drawEquity(data);
+  window.onresize=()=>{drawCandles(data);drawEquity(data);};
+}
+
+fetch('data.json').then(r=>{if(!r.ok)throw 0;return r.json()})
+  .then(render).catch(()=>render(fallbackData()));
+</script>
+</body>
+</html>
