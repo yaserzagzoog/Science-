@@ -31,6 +31,9 @@ jobs:
           --copy-metadata mcp --copy-metadata audible
           audible-mcp/gui.py
 
+      - name: Zip the exe
+        run: Compress-Archive -Path dist/AudibleExporter.exe -DestinationPath dist/AudibleExporter.zip
+
       - uses: actions/upload-artifact@v4
         with:
           name: AudibleExporter
@@ -46,11 +49,17 @@ jobs:
             Double-click app that exports your Audible library (downloaded/purchased
             titles) and wish list to CSV files. No terminal needed.
 
-            1. Download `AudibleExporter.exe` below and run it.
+            1. Download `AudibleExporter.zip` below (downloads without browser
+               warnings), right-click it > Extract All, and run the exe inside.
+               If Windows SmartScreen warns on first run, click "More info" >
+               "Run anyway" — the app is unsigned but built from this repo's
+               code by GitHub Actions.
             2. Click **Sign in to Audible** — sign in via your own browser and paste
                the final page's address back into the app.
             3. Click **Fetch & save my titles** and choose a folder.
 
             The same exe can serve as an MCP server for Claude Desktop by adding
             it to your config with the `--mcp` argument (see audible-mcp/README.md).
-          files: dist/AudibleExporter.exe
+          files: |
+            dist/AudibleExporter.zip
+            dist/AudibleExporter.exe
