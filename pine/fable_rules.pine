@@ -1,0 +1,43 @@
+//@version=5
+// Fable Rules — breakout with rising volume.
+// Mirror of tradebot/strategy.py so the same rules can run on TradingView.
+// ENTRY  close crosses above the 20-day high with volume above its 20-day SMA
+// EXIT   close crosses below the 20-day low
+// STOP   the 10-day low at entry time
+// SIZE   risk 1% of equity per trade
+// Human review required. Code is generated. Responsibility is yours.
+strategy("Fable Rules", overlay=true,
+     initial_capital=10000,
+     default_qty_type=strategy.percent_of_equity,
+     default_qty_value=10,
+     commission_type=strategy.commission.percent,
+     commission_value=0.05)
+
+breakoutLen = input.int(20, "Breakout lookback (resistance)")
+exitLen     = input.int(20, "Exit lookback (support)")
+stopLen     = input.int(10, "Stop lookback (structure low)")
+volLen      = input.int(20, "Volume SMA length")
+
+resistance = ta.highest(high, breakoutLen)[1]
+support    = ta.lowest(low, exitLen)[1]
+stopLevel  = ta.lowest(low, stopLen)[1]
+volOk      = volume > ta.sma(volume, volLen)
+
+longCond = ta.crossover(close, resistance) and volOk
+exitCond = ta.crossunder(close, support)
+
+if longCond and strategy.position_size == 0
+    strategy.entry("Long", strategy.long)
+    strategy.exit("Stop", from_entry="Long", stop=stopLevel)
+
+if exitCond and strategy.position_size > 0
+    strategy.close("Long", comment="Exit")
+
+plot(resistance, "Resistance (entry trigger)", color=color.new(color.orange, 0))
+plot(support, "Support (exit line)", color=color.new(color.gray, 40))
+plot(strategy.position_size > 0 ? stopLevel : na, "Stop", color=color.red,
+     style=plot.style_linebr)
+plotshape(longCond, title="LONG", style=shape.triangleup,
+     location=location.belowbar, color=color.green, text="LONG")
+plotshape(exitCond, title="EXIT", style=shape.triangledown,
+     location=location.abovebar, color=color.red, text="EXIT")

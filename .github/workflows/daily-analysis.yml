@@ -1,0 +1,39 @@
+name: Daily trading analysis
+
+on:
+  schedule:
+    # Weekdays 22:15 UTC — after the US market close (16:00 ET), data settled.
+    - cron: "15 22 * * 1-5"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-analysis
+  cancel-in-progress: false
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Refresh data and run analysis
+        run: python -m tradebot.run --refresh
+
+      - name: Commit and push results
+        run: |
+          git config user.name "fable-rules-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data reports docs
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Daily signals: $(date -u +%F)"
+            git push
+          fi
