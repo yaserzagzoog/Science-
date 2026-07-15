@@ -40,12 +40,18 @@ class Signal:
     above_trend: bool
     entry: float               # suggested entry (the trigger level)
     risk_per_share: float
-    shares: int                # for account_size at risk_pct
+    shares: float              # whole shares; fractional units for crypto
     risk_dollars: float
     targets: list = field(default_factory=list)  # [(label, price), ...]
     note: str = ""
     closes: list = field(default_factory=list)   # trailing closes for sparkline
     dates: list = field(default_factory=list)
+
+    @property
+    def size_label(self) -> str:
+        if self.asset_class == "crypto":
+            return f"{self.shares:.4f} units"
+        return f"{int(self.shares)} sh"
 
 
 def analyze(symbol: str, name: str, asset_class: str, bars: list[Bar],
@@ -102,7 +108,9 @@ def analyze(symbol: str, name: str, asset_class: str, bars: list[Bar],
     risk_ps = max(entry - stop, 0.0)
     if risk_ps > 0:
         risk_dollars = p["account_size"] * p["risk_pct"] / 100.0
-        shares = int(risk_dollars / risk_ps)
+        raw = risk_dollars / risk_ps
+        # crypto trades in fractional units; stocks/ETFs in whole shares
+        shares = round(raw, 6) if asset_class == "crypto" else int(raw)
     else:
         risk_dollars, shares = 0.0, 0
     targets = [(f"{r:g}R", entry + r * risk_ps) for r in p["target_r"]] if risk_ps else []

@@ -44,15 +44,19 @@ def build(signals: list[Signal], stats: dict[str, Stats], run_date: str,
         lines += ["", "## Trade plans", ""]
         for s in actionable:
             t = " · ".join(f"{lbl} = {_fmt(px)}" for lbl, px in s.targets)
+            how = ("already triggered — entry at market/close" if s.state == BUY
+                   else "buy-stop just above the trigger" if s.state == WATCH
+                   else "wait for a volume-confirmed close" if s.state == BREAKOUT_UNCONFIRMED
+                   else "exit level")
             lines += [
                 f"### {s.symbol} — {s.state}",
                 "",
                 f"{s.note}",
                 "",
-                f"- Entry: **{_fmt(s.entry)}** (buy-stop above the trigger for WATCH setups)",
-                f"- Stop loss: **{_fmt(s.stop)}** (risk {_fmt(s.risk_per_share)}/share)",
+                f"- Entry: **{_fmt(s.entry)}** ({how})",
+                f"- Stop loss: **{_fmt(s.stop)}** (risk {_fmt(s.risk_per_share)}/unit)",
                 f"- Targets: {t or 'n/a'}",
-                f"- Size: **{s.shares}** shares ≈ ${s.shares * s.entry:,.0f} exposure, "
+                f"- Size: **{s.size_label}** ≈ ${s.shares * s.entry:,.0f} exposure, "
                 f"${s.risk_dollars:,.0f} at risk",
                 "",
             ]

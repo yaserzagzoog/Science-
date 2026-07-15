@@ -204,7 +204,7 @@ def _card(s: Signal) -> str:
         ("Dist to trigger", f"{s.dist_to_trigger_pct:+.1f}%"),
         ("Volume vs 20d", f"{s.volume_ratio:.1f}x"),
         ("RSI 14", f"{s.rsi14:.0f}"),
-        ("Size @ 1% risk", f"{s.shares} sh ≈ ${s.shares * s.entry:,.0f}"),
+        ("Size @ 1% risk", f"{s.size_label} ≈ ${s.shares * s.entry:,.0f}"),
     ]
     trs = "\n".join(f"<tr><td>{html.escape(k)}</td><td>{html.escape(v)}</td></tr>"
                     for k, v in rows)
