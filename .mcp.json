@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "notebooklm": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "tools/notebooklm-mcp",
+        "run",
+        "python",
+        "server.py"
+      ]
+    }
+  }
+}
