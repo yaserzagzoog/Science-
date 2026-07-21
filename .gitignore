@@ -1,0 +1,3 @@
+# Local clone of the community NotebookLM MCP server (installed by
+# scripts/setup-notebooklm-mcp.sh) — contains auth state, never commit it.
+tools/notebooklm-mcp/
