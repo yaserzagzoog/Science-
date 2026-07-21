@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fine Structure — α Research Feed</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --accent: #5b5bd6;
+      --border: rgba(128,128,128,0.3);
+      --muted: rgba(128,128,128,0.9);
+      --arxiv: #b31b1b;
+      --quanta: #ff8600;
+    }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+      line-height: 1.6;
+    }
+    a.back { text-decoration: none; font-size: 0.9rem; opacity: 0.7; }
+    a.back:hover { opacity: 1; }
+
+    header.hero { margin: 1.5rem 0 2rem; }
+    .alpha {
+      font-size: 3.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin: 0;
+    }
+    .alpha .sym { color: var(--accent); }
+    .alpha-value {
+      font-variant-numeric: tabular-nums;
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin: 0.35rem 0 0;
+    }
+    p.lead { opacity: 0.75; margin-top: 0.75rem; }
+
+    .controls {
+      display: flex;
+      gap: 0.5rem;
+      margin: 1.5rem 0 0.5rem;
+      flex-wrap: wrap;
+    }
+    .controls input {
+      flex: 1;
+      min-width: 200px;
+      font: inherit;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: transparent;
+      color: inherit;
+    }
+    .controls button {
+      font: inherit;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: transparent;
+      color: inherit;
+      cursor: pointer;
+    }
+    .controls button:hover { border-color: var(--accent); color: var(--accent); }
+
+    section h2 {
+      font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 2.25rem 0 0.5rem;
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+    .dot.arxiv { background: var(--arxiv); }
+    .dot.quanta { background: var(--quanta); }
+    .status { font-size: 0.85rem; color: var(--muted); font-weight: 400; margin-left: auto; }
+
+    ul.feed { list-style: none; padding: 0; margin: 0; }
+    ul.feed li {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      margin: 0.75rem 0;
+    }
+    ul.feed a.title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    ul.feed a.title:hover { text-decoration: underline; }
+    .meta {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 0.2rem;
+    }
+    .abstract {
+      font-size: 0.92rem;
+      opacity: 0.85;
+      margin: 0.5rem 0 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .empty, .error {
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+    .error a { color: inherit; }
+    footer {
+      margin-top: 3rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      padding-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <a class="back" href="index.html">← Science</a>
+
+  <header class="hero">
+    <h1 class="alpha"><span class="sym">α</span> Fine Structure</h1>
+    <p class="alpha-value">α ≈ 1 / 137.035 999 177 — the coupling constant of light and matter</p>
+    <p class="lead">Live research feed: the latest fine-structure-constant papers from
+    arXiv and related articles from Quanta Magazine, fetched fresh each time you open
+    this page.</p>
+  </header>
+
+  <div class="controls">
+    <input id="q" type="search" value="fine structure constant"
+           aria-label="Search query" placeholder="Search topic…">
+    <button id="go">Refresh</button>
+  </div>
+
+  <section>
+    <h2><span class="dot arxiv"></span> arXiv — latest papers
+      <span class="status" id="arxiv-status">loading…</span></h2>
+    <ul class="feed" id="arxiv-feed"></ul>
+  </section>
+
+  <section>
+    <h2><span class="dot quanta"></span> Quanta Magazine
+      <span class="status" id="quanta-status">loading…</span></h2>
+    <ul class="feed" id="quanta-feed"></ul>
+  </section>
+
+  <footer>
+    Sources: <a href="https://arxiv.org" target="_blank" rel="noopener">arXiv</a> API ·
+    <a href="https://www.quantamagazine.org" target="_blank" rel="noopener">Quanta Magazine</a> feed.
+    Articles belong to their authors and publishers; this page only links to them.
+  </footer>
+
+  <script>
+    const $ = id => document.getElementById(id);
+    const fmtDate = s => {
+      const d = new Date(s);
+      return isNaN(d) ? "" : d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+    };
+    const el = (tag, cls, text) => {
+      const n = document.createElement(tag);
+      if (cls) n.className = cls;
+      if (text) n.textContent = text;
+      return n;
+    };
+
+    function renderItems(listEl, items) {
+      listEl.replaceChildren();
+      for (const it of items) {
+        const li = el("li");
+        const a = el("a", "title", it.title);
+        a.href = it.link; a.target = "_blank"; a.rel = "noopener";
+        li.appendChild(a);
+        li.appendChild(el("div", "meta", [it.authors, fmtDate(it.date)].filter(Boolean).join(" · ")));
+        if (it.summary) li.appendChild(el("p", "abstract", it.summary));
+        listEl.appendChild(li);
+      }
+      if (!items.length) listEl.appendChild(el("div", "empty", "No recent articles found for this query."));
+    }
+
+    function renderError(listEl, statusEl, fallbackUrl, fallbackLabel) {
+      statusEl.textContent = "unavailable";
+      const div = el("div", "error");
+      div.append("Could not load the feed (network or proxy issue). Browse directly: ");
+      const a = el("a", null, fallbackLabel);
+      a.href = fallbackUrl; a.target = "_blank"; a.rel = "noopener";
+      div.appendChild(a);
+      listEl.replaceChildren(div);
+    }
+
+    async function loadArxiv(query) {
+      const listEl = $("arxiv-feed"), statusEl = $("arxiv-status");
+      statusEl.textContent = "loading…";
+      try {
+        const url = "https://export.arxiv.org/api/query?search_query=all:%22" +
+          encodeURIComponent(query) + "%22&sortBy=submittedDate&sortOrder=descending&max_results=15";
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(res.status);
+        const xml = new DOMParser().parseFromString(await res.text(), "application/xml");
+        const items = [...xml.querySelectorAll("entry")].map(e => ({
+          title: e.querySelector("title")?.textContent.replace(/\s+/g, " ").trim() ?? "Untitled",
+          link: e.querySelector("id")?.textContent.trim(),
+          date: e.querySelector("published")?.textContent,
+          authors: [...e.querySelectorAll("author name")].slice(0, 3).map(n => n.textContent).join(", ") +
+                   (e.querySelectorAll("author name").length > 3 ? " et al." : ""),
+          summary: e.querySelector("summary")?.textContent.replace(/\s+/g, " ").trim()
+        }));
+        renderItems(listEl, items);
+        statusEl.textContent = items.length + " papers";
+      } catch {
+        renderError(listEl, statusEl,
+          "https://arxiv.org/list/physics.atom-ph/recent", "arxiv.org");
+      }
+    }
+
+    async function loadQuanta(query) {
+      const listEl = $("quanta-feed"), statusEl = $("quanta-status");
+      statusEl.textContent = "loading…";
+      const feedUrl = "https://www.quantamagazine.org/feed/";
+      try {
+        const res = await fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent(feedUrl));
+        if (!res.ok) throw new Error(res.status);
+        const xml = new DOMParser().parseFromString(await res.text(), "application/xml");
+        const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
+        const all = [...xml.querySelectorAll("item")].map(i => {
+          const html = i.querySelector("description")?.textContent ?? "";
+          const tmp = document.createElement("div");
+          tmp.innerHTML = html;
+          return {
+            title: i.querySelector("title")?.textContent.trim() ?? "Untitled",
+            link: i.querySelector("link")?.textContent.trim(),
+            date: i.querySelector("pubDate")?.textContent,
+            authors: i.getElementsByTagName("dc:creator")[0]?.textContent ?? "",
+            summary: tmp.textContent.replace(/\s+/g, " ").trim()
+          };
+        });
+        // Prefer items matching the query; if none match, show the latest physics coverage.
+        const matched = all.filter(it =>
+          terms.some(t => (it.title + " " + it.summary).toLowerCase().includes(t)));
+        const items = (matched.length ? matched : all).slice(0, 10);
+        renderItems(listEl, items);
+        statusEl.textContent = (matched.length ? matched.length + " matching" : "latest") + " articles";
+      } catch {
+        renderError(listEl, statusEl,
+          "https://www.quantamagazine.org/tag/physics/", "quantamagazine.org");
+      }
+    }
+
+    function refresh() {
+      const q = $("q").value.trim() || "fine structure constant";
+      loadArxiv(q);
+      loadQuanta(q);
+    }
+    $("go").addEventListener("click", refresh);
+    $("q").addEventListener("keydown", e => { if (e.key === "Enter") refresh(); });
+    refresh();
+  </script>
+</body>
+</html>
