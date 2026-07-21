@@ -161,6 +161,54 @@ Give me a grounded answer with source notes and a clear recommendation.
 
 ---
 
+## ربط Gmail مع NotebookLM (عبر Claude)
+
+NotebookLM لا يقبل Gmail كمصدر مباشر — لكن **Claude هو الجسر بينهما**، لأن حساب
+Gmail مربوط بالفعل مع Claude كـ Connector. المسار هو:
+
+```
+Gmail  ──►  Claude (يقرأ ويلخّص)  ──►  NotebookLM (يحفظ كذاكرة)
+```
+
+### الطريقة المتاحة الآن (بدون أي إعداد إضافي)
+
+1. اطلب من Claude البحث في بريدك وتلخيص ما يهمك:
+
+```text
+Search my Gmail for emails about [PROJECT/CLIENT] from the last month.
+Summarize them as a NotebookLM memory note:
+- key decisions and agreements
+- dates, amounts, and commitments
+- open questions and pending replies
+- next actions
+Format it so I can paste it directly into my project notebook.
+```
+
+2. انسخ الناتج وألصقه في NotebookLM كمصدر نصي (Paste text)، أو احفظه في
+   Google Doc وأضفه كمصدر — NotebookLM يدعم مصادر Google Drive مباشرة.
+
+### الطريقة الآلية (بعد تثبيت NotebookLM MCP على جهازك)
+
+عندما يكون سيرفر MCP يعمل، يستطيع Claude تنفيذ الطرفين في أمر واحد:
+
+```text
+Search my Gmail for this week's emails about [TOPIC],
+summarize the important ones as a memory note,
+then add that note to my NotebookLM project notebook.
+```
+
+### أفكار عملية
+
+- ملخص أسبوعي لرسائل عميل معيّن → Notebook العميل.
+- حفظ الاتفاقات والأسعار من البريد في Decisions Log.
+- تحويل رسائل الاجتماعات إلى Meeting Notes داخل NotebookLM.
+- أرشفة الرسائل المهمة الموسومة بـ label معيّن (مثل "Notes") كذاكرة دائمة.
+
+> **خصوصية:** بريدك قد يحتوي معلومات حساسة. راجع الملخص قبل رفعه إلى
+> NotebookLM، ولا ترفع أرقام بطاقات أو بيانات شخصية لأطراف أخرى.
+
+---
+
 ## مشاكل شائعة وحلول سريعة
 
 | المشكلة | الحل |

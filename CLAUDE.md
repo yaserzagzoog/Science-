@@ -24,6 +24,16 @@ notebook, containing:
 - files or sources to add
 - next action list
 
+## Gmail as a memory source
+
+The user's Gmail is connected to Claude as a connector. When asked to bring
+email into project memory: search Gmail for the relevant threads, summarize
+them into a memory note (decisions, dates, amounts, commitments, open
+questions, next actions), and — if the `notebooklm` MCP tools are available —
+add the note to the project notebook; otherwise hand the note to the user to
+paste into NotebookLM. Always let the user review email-derived notes before
+they are stored, since email may contain sensitive personal data.
+
 ## If the MCP server is unavailable
 
 Fall back to the manual workflow: produce the memory-update note as plain
