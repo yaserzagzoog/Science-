@@ -572,4 +572,244 @@ A deceptively simple census of the Standard Model. The textbook poster shows 17 
 
 *A formatted PDF version of this digest is also available locally.*
 
-<!--CHUNK5-->
+## Quantum Digest — 2026-07-09
+
+*Notion URL: https://app.notion.com/p/398765478c3c8159af01c4c8a06d2af0*
+
+Daily Quantum Knowledge Digest for Yaser. Sources this run: **Quanta Magazine** (quantum gravity, string theory, quantum physics tags) and **Scientific American**. Notes on failures: Quanta's dedicated `quantum-mechanics` tag returns 404, so recent items came from the `quantum-physics` tag; Scientific American's legacy `/topic/` URLs 404, so content was reached via the `/quantum-physics/` and `/string-theory/` section pages; **Quantum Cookie (Facebook)** content was not publicly viewable and was skipped. No source published within the trailing 7 days, so the most recent items per section are shown. Equations are shown inline in code formatting.
+
+### Quantum Cookie
+
+#### Quantum Cookie (Facebook) — 2026-07-09
+
+Login required / content unavailable — skipped. The page returned "This content isn't available right now," indicating restricted visibility or that the unauthenticated session cannot render the feed. No posts extracted this run.
+
+[https://www.facebook.com/QuantumCookie/](https://www.facebook.com/QuantumCookie/)
+
+### Scientific American
+
+#### Top quantum computer expert claims Microsoft's 'topological qubit' doesn't hold up — June 24, 2026
+
+In a Nature "Matters Arising" commentary, St Andrews physicist Henry Legg argues that Microsoft's claimed topological qubit — meant to encode information nonlocally in a pair of Majorana zero modes so as to be intrinsically protected from local decoherence — may be indistinguishable from ordinary noise, echoing prior retractions of Microsoft Quantum papers. The protection rests on interferometric readout of fermion parity across the wire; a genuine Majorana signature requires a robust zero-bias conductance peak quantized near `G = 2 e^2 / h` plus the correct topological gap, which Legg contends the data do not cleanly establish. Microsoft's Chetan Nayak and a co-author's rebuttal (also published that day) maintain the measurements justify the claim and defend the 2029 scalable-computing roadmap; commentators such as Pittsburgh's Sergey Frolov call for possible retraction.
+
+[https://www.scientificamerican.com/article/top-quantum-computer-expert-claims-microsofts-topological-qubit-doesnt-hold-up/](https://www.scientificamerican.com/article/top-quantum-computer-expert-claims-microsofts-topological-qubit-doesnt-hold-up/)
+
+#### Physicist Edward Witten on the future of quantum theory — June 16, 2026
+
+Fields Medalist Edward Witten identifies the interplay of quantum gravity and quantum information theory as the most exciting development of the past decade. He singles out the Penington et al. resolution of the black-hole information paradox via the Page curve — the Hawking-radiation entanglement entropy `S(t)` that rises, peaks at the Page time, then falls, restoring unitarity — enabled by including replica-wormhole (island) saddles in the gravitational path integral. Witten also voices concern over U.S. science funding and graduate-admissions pressures, warning the damage would surface on a roughly ten-year horizon.
+
+[https://www.scientificamerican.com/article/edward-witten/](https://www.scientificamerican.com/article/edward-witten/)
+
+### Quanta Magazine — String Theory
+
+#### A Dark Dimension Could Link Two of the Universe's Great Unknowns — June 22, 2026
+
+DESI's 2024–2025 evidence that dark energy is dynamical — apparently entering a "phantom" regime where its equation of state crosses `w < -1` — has revived string-motivated models where dark energy and dark matter are coupled rather than independent. Cumrun Vafa argues that computing dark energy independently of dark matter is what produces the unphysical phantom behavior; a coupled sector fits DESI while easing the ~9% Hubble tension. The favored mechanism is Vafa's "dark dimension": one extra dimension enlarged to the micron scale `L ~ 10^-6 m` (versus the Planckian `10^-35 m` others), into which gravitons leak and gain mass, becoming the massive "dark gravitons" that act as dark matter. Obied, Vafa et al. (July 2025) show this predicts dark-energy strength and dark-matter mass both decreasing over time, consistent with existing tidal-tail bounds.
+
+[https://www.quantamagazine.org/a-dark-dimension-could-link-two-of-the-universes-great-unknowns-20260622/](https://www.quantamagazine.org/a-dark-dimension-could-link-two-of-the-universes-great-unknowns-20260622/)
+
+#### String Theory Can Now Describe a Universe That Has Dark Energy — January 14, 2026
+
+Constructing a string vacuum with positive cosmological constant (de Sitter, `Lambda > 0`) has long been notoriously hard — the swampland program even conjectures such vacua may be forbidden or at best metastable. In an unprecedented step, researchers built a detailed, explicit model compatible with the observed accelerated expansion, moving beyond the anti-de Sitter (`Lambda < 0`) constructions where string theory is best controlled. The result is a concrete counterweight to de Sitter no-go arguments.
+
+[https://www.quantamagazine.org/string-theory-can-now-describe-a-universe-that-has-dark-energy-20260114/](https://www.quantamagazine.org/string-theory-can-now-describe-a-universe-that-has-dark-energy-20260114/)
+
+### Quanta Magazine — Quantum Gravity
+
+#### Entanglement Builds Space-Time. Now 'Magic' Gives It Gravity. — June 3, 2026
+
+In holographic (AdS/CFT) constructions, boundary entanglement builds bulk geometry — Wheeler's "space tells matter how to move" — but earlier stabilizer error-correcting codes yielded an inert, non-gravitating space because they cleanly split geometry-encoding entanglement from matter-encoding entanglement. Charles Cao, John Preskill and collaborators show the missing ingredient is "magic": nonstabilizerness quantified by non-Clifford resources such as `T` gates, precisely what makes a state classically hard to simulate. Their 2026 code uses many non-Clifford gates so matter and geometry entanglement mix, letting matter back-react on curvature (Wheeler's second statement). Strikingly, gravity emerges from imperfect, approximate encoding — a perfectly protecting code yields no gravity — though the model is still schematic ("step 0.5 of 5").
+
+[https://www.quantamagazine.org/entanglement-builds-space-time-now-magic-gives-it-gravity-20260603/](https://www.quantamagazine.org/entanglement-builds-space-time-now-magic-gives-it-gravity-20260603/)
+
+#### Cosmic Paradox Reveals the Awful Consequence of an Observer-Free Universe — November 19, 2025
+
+Applying black-hole quantum-gravity machinery to whole cosmologies reveals that the absence of an external observer or asymptotic boundary undermines assumptions that make quantum mechanics well defined. Without a boundary to anchor observables and a fixed operator algebra, a preferred Hilbert-space inner product and unambiguous probabilities become problematic for a closed universe, forcing a rethink of what it means to do physics on the universe as a single quantum system.
+
+[https://www.quantamagazine.org/cosmic-paradox-reveals-the-awful-consequence-of-an-observer-free-universe-20251119/](https://www.quantamagazine.org/cosmic-paradox-reveals-the-awful-consequence-of-an-observer-free-universe-20251119/)
+
+#### Old 'Ghost' Theory of Quantum Gravity Makes a Comeback — November 17, 2025
+
+Quadratic (fourth-derivative) gravity adds curvature-squared terms so the propagator scales as `1/p^4` at high momentum, making the theory perturbatively renormalizable — but at the cost of a massive spin-2 "ghost" with negative kinetic energy that naively spoils unitarity. The revisited claim is that reinterpreting the ghost (as an unstable resonance, or via modified quantization) can tame the pathology, making quadratic gravity a viable UV-complete route to quantum gravity without new ingredients.
+
+[https://www.quantamagazine.org/old-ghost-theory-of-quantum-gravity-makes-a-comeback-20251117/](https://www.quantamagazine.org/old-ghost-theory-of-quantum-gravity-makes-a-comeback-20251117/)
+
+### Quanta Magazine — Quantum Mechanics
+
+#### How Many Elementary Particles Are There, Really? — June 15, 2026
+
+The count of "elementary" particles depends entirely on bookkeeping: the Standard Model's canonical `17` particle types (six quarks, six leptons, gauge bosons `gamma, W, Z, g`, and the Higgs) balloons once color, antiparticle, and spin/polarization states are counted separately. Depending on whether one tallies distinct fields, physical states, or degrees of freedom, plausible answers span from 17 to — half-jokingly — 995.5, clarifying that the "number of particles" is a statement about which quantum numbers you choose to resolve.
+
+[https://www.quantamagazine.org/how-many-elementary-particles-are-there-really-20260615/](https://www.quantamagazine.org/how-many-elementary-particles-are-there-really-20260615/)
+
+#### Key Chemistry Question Answered, No Quantum Computer Required — May 29, 2026
+
+A decades-in-the-making result shows certain many-body ground-state and reaction questions, long assumed to need quantum hardware, can be handled by clever classical algorithms exploiting locality and limited entanglement to approximate observables that were expected to require the full exponentially large Hilbert space of dimension `2^n`. The finding sharpens the boundary of quantum advantage: it persists, but the set of problems genuinely needing a quantum computer is narrower than assumed.
+
+[https://www.quantamagazine.org/key-chemistry-question-answered-no-quantum-computer-required-20260529/](https://www.quantamagazine.org/key-chemistry-question-answered-no-quantum-computer-required-20260529/)
+
+#### Quantum 'Jamming' Explores the Truly Fundamental Principles of Nature — April 17, 2026
+
+Device-independent cryptographers ask whether security survives even if quantum mechanics is only approximate, seeking guarantees from more primitive principles such as no-signaling. The rediscovered notion of quantum "jamming" — selectively disrupting entanglement between separated parties while respecting relativistic causality — complicates naive security proofs by showing correlations can be manipulated without faster-than-light signaling. It probes which correlations are allowed beyond the Tsirelson bound `2 sqrt(2)` that caps quantum CHSH violations.
+
+[https://www.quantamagazine.org/quantum-jamming-explores-the-truly-fundamental-principles-of-nature-20260417/](https://www.quantamagazine.org/quantum-jamming-explores-the-truly-fundamental-principles-of-nature-20260417/)
+
+## 🔬 Research (arXiv)
+
+*Notion URL: https://app.notion.com/p/398765478c3c818a94b3feaef9c37feb*
+
+**30 recent arXiv papers** on **⚛️ Quantum Knowledge** — category `quant-ph` (entanglement & superposition). Fetched 9 Jul 2026 · newest first.
+
+#### [Operational Collapse Region in Repeaterless Loss-Dephasing Quantum Channels](https://arxiv.org/abs/2607.07603)
+
+**Authors:** Ufuk Korkmaz, S. Elham Mousavigharalari, Deniz Türkpençe · **Published:** 2026-07-08
+Identifies regions in optical fibers where entangled photon pairs persist physically but provide no practical advantage.
+
+#### [Quantum Software Engineering in Practice: FPGA and AI Integration for Quantum Certification](https://arxiv.org/abs/2607.07597)
+
+**Authors:** Marcos G. Lammers, José M. Suárez, Adrián Pousa, Luis M. Bibbó, Alejandro Fernández · **Published:** 2026-07-08
+Combines FPGAs and machine learning to certify entangled states in quantum devices via CHSH inequality testing.
+
+#### [Geometric Interpretation of Sum Photon Blockade](https://arxiv.org/abs/2607.07591)
+
+**Authors:** Timur Khudaiberganov · **Published:** 2026-07-08
+Provides a geometric analysis of photon blockade in multimode systems and its link to robustness against decoherence.
+
+#### [Analysis of the Sample Complexity for PAC-Learning Functions Defined over Quantum States](https://arxiv.org/abs/2607.07572)
+
+**Authors:** Jordi Pérez-Guijarro · **Published:** 2026-07-08
+Examines learning theory for quantum systems, showing VC-dimension limits on sample complexity for quantum-state functions.
+
+#### [Entanglement Asymmetry in Random Quantum Automata](https://arxiv.org/abs/2607.07556)
+
+**Authors:** Olalla A. Castro-Alvaredo, Dávid Szász-Schagrin, Michele Mazzoni · **Published:** 2026-07-08
+Investigates subsystem entanglement asymmetry in random quantum-automaton ensembles across circuit geometries.
+
+#### [Control Protocols for Entangling Gates for Group-IV Color-Centers in Diamond](https://arxiv.org/abs/2607.07549)
+
+**Authors:** Jurek Frey, Frank K. Wilhelm, Matthias M. Müller · **Published:** 2026-07-08
+Develops control methods for entangling gates using nuclear-spin coupling in diamond color centers.
+
+#### [Variational Learning with Sparse Long-range Entangling Gates](https://arxiv.org/abs/2607.07547)
+
+**Authors:** Helene M. Lösl, Aydin Deger, Andrew J. Daley · **Published:** 2026-07-08
+Analyzes how long-range connectivity affects trainability and expressibility of variational quantum algorithms.
+
+#### [A Dynamic Multiplexing Policy for a Quantum Repeater](https://arxiv.org/abs/2607.07539)
+
+**Authors:** Jeroen Grimbergen, Sounak Kar, Michal van Hooft, Conor Bradley, Stephanie Wehner · **Published:** 2026-07-08
+Proposes dynamic assignment strategies for multiplexed quantum repeaters to improve entanglement-distribution fidelity.
+
+#### [Phase-Programmable Free Electron Quantum States in Synthetic Momentum Space](https://arxiv.org/abs/2607.07445)
+
+**Authors:** Alatz Alvarez-Ahedo, Miriam Lazo, Tian-Niu Xu, Yiming Pan, Mikel Sanz, Yongcheng Ding · **Published:** 2026-07-08
+Coherent control protocols engineer free-electron superposition states using light–electron interactions.
+
+#### [Spectral-width Limit on Non-Hermitian Quantum Metrology](https://arxiv.org/abs/2607.07434)
+
+**Authors:** Jiaxin Liu, Zuoxian Wang, Danyue Ma · **Published:** 2026-07-08
+Proves fundamental precision limits in non-Hermitian quantum sensors despite amplified responses.
+
+#### [Analytical Landscape of Maximal Magic for Two-Qutrit States and Beyond](https://arxiv.org/abs/2607.07197)
+
+**Authors:** Marco Knipfer, Alexander Roman, Katia Matcheva, Konstantin T. Matchev · **Published:** 2026-07-08
+Characterizes the interplay of magic and entanglement in higher-dimensional systems, bounding maximal nonstabilizerness.
+
+#### [Macroscopic Position-Position Entanglement by Photon Recoil in Rydberg Atoms](https://arxiv.org/abs/2607.07167)
+
+**Authors:** Xiao-Feng Shi · **Published:** 2026-07-08
+Generates position-based entanglement between separated neutral atoms via Rydberg blockade.
+
+#### [Room-temperature Inversionless Diamond Nitrogen-Vacancy Electronic Spin Maser](https://arxiv.org/abs/2607.07124)
+
+**Authors:** Ali Fawaz, Sarath Raman Nair · **Published:** 2026-07-08
+Proposes an NV-center spin maser without population inversion for magnetic-field sensing.
+
+#### [Phase-Selected Single-Photon Frequency Conversion via Local Fano Resonance in a Two-Giant-Atom Waveguide-QED System](https://arxiv.org/abs/2607.07093)
+
+**Authors:** Qing-Ao Xiang, Yan Liu, Xin-Yuan Yang, Ya-Ju Song · **Published:** 2026-07-08
+Achieves efficient photon frequency conversion through controlled interference in a multi-atom waveguide.
+
+#### [Spectral Chaos Does Not Determine Quantum Mpemba Crossings](https://arxiv.org/abs/2607.07081)
+
+**Authors:** Ri-Hua Zheng, Yang Xiao, Yu Wang, Ye-Hong Chen, Yan Xia · **Published:** 2026-07-08
+Shows chaotic spectral statistics alone don't predict symmetry-restoration reversals in quantum systems.
+
+#### [A Quantum Model for Synchronizing Finite State Transition Systems](https://arxiv.org/abs/2607.06953)
+
+**Authors:** Martin Lukac, Khaled El-Fakih, Uraz Turker · **Published:** 2026-07-08
+Uses superposition and amplitude amplification to find reset sequences for finite state machines with quadratic speedup.
+
+#### [Phase Transitions and Uberholography of Holographic Pure-State Geometries](https://arxiv.org/abs/2607.06870)
+
+**Authors:** Ning Bao, Keiichiro Furuya, Jacob March · **Published:** 2026-07-08
+Studies error-correcting properties of holographic geometries via entanglement-wedge transitions and fractal boundaries.
+
+#### [Universal Spin-Squeezing Dynamics in Spinor Condensates](https://arxiv.org/abs/2607.06842)
+
+**Authors:** Nikolaos Giovanoudis, Navid Kazemiseresht, Fabio Mezzacapo, Emilia Witkowska, Tommaso Roscilde · **Published:** 2026-07-07
+Demonstrates scalable spin squeezing in BECs for generating entangled states useful in quantum sensing.
+
+#### [Entanglement-assisted Remote Energy Transfer](https://arxiv.org/abs/2607.06837)
+
+**Authors:** Bashir Mojaveri, Rasoul Jafarzadeh Bahrbeig, Mohammad Ali Fasihi, Nasrin Abdi · **Published:** 2026-07-07
+Shows entanglement between distant systems enables efficient energy transfer while suppressing dissipation.
+
+#### [Differentially Private Quantum Sensor Networks](https://arxiv.org/abs/2607.06521)
+
+**Authors:** Daniel J. Spencer, Kaiyan Shi, Emil T. Khabiboulline, Gorjan Alagic, Alexey V. Gorshkov · **Published:** 2026-07-07
+Introduces privacy-preserving protocols for entangled sensor networks at the Heisenberg limit.
+
+#### [Typical Entanglement of Superpositions](https://arxiv.org/abs/2607.06474)
+
+**Authors:** Damien Quinn, Joshuah T. Heath, Graham Kells · **Published:** 2026-07-07
+Classifies superpositions into entanglement regimes, showing logarithmic enhancement in sub-maximally entangled states.
+
+#### [Unbiased Estimation of Conditional Covariance for Quantum Optomechanics](https://arxiv.org/abs/2607.06431)
+
+**Authors:** Katsuta Sakai, Nobuyuki Matsumoto · **Published:** 2026-07-07
+Develops unbiased methods for verifying macroscopic quantum entanglement in optomechanical systems.
+
+#### [Determination of Thermodynamics from Entanglement Entropy in the Finite-Density O(N) Model](https://arxiv.org/abs/2607.06286)
+
+**Authors:** Niko Jokela, Aatu Rajala, Tobias Rindlisbacher · **Published:** 2026-07-07
+Establishes a quantitative link between entanglement-entropy derivatives and thermal entropy density.
+
+#### [Entanglement as a Structural Complexity Axis: A PAC-Bayesian View of Generalization in Quantum Policies](https://arxiv.org/abs/2607.06230)
+
+**Authors:** Jian Xu, Delu Zeng, John Paisley, Qibin Zhao · **Published:** 2026-07-07
+Shows entanglement in quantum circuits increases the generalization gap independent of parameter count.
+
+#### [Classical Reversible Computation by Quantum Coherence](https://arxiv.org/abs/2607.06219)
+
+**Authors:** Daniel Loss · **Published:** 2026-07-07
+Proposes reversible logic using coherent spin dynamics without algorithmic superposition for energy-efficient computing.
+
+#### [Packet Routing for the Quantum Internet](https://arxiv.org/abs/2607.06075)
+
+**Authors:** Robert Malaney · **Published:** 2026-07-07
+Outlines IPv6 extensions enabling teleportation and superposition-based routing in quantum networks.
+
+#### [Genuine Multi-Entropy in the Toric Code](https://arxiv.org/abs/2607.06050)
+
+**Authors:** Sriram Akella, Norihiro Iizuka, Akihiro Miyata · **Published:** 2026-07-07
+Analyzes multipartite entanglement in the topologically ordered toric code beyond conventional entropic measures.
+
+#### [Hybrid Quantum Floating-Point Method for Sharp Arithmetic](https://arxiv.org/abs/2607.06040)
+
+**Authors:** Gabriele Agliardi, Enrico Prati · **Published:** 2026-07-07
+Combines quantum and classical registers for floating-point arithmetic with reduced precision degradation.
+
+#### [Many-body Quantum Optics in a Cascaded Chiral Network](https://arxiv.org/abs/2607.05760)
+
+**Authors:** Frank Yang, Parth S. Shah, Chaitali Joshi, Mohammad Mirhosseini · **Published:** 2026-07-07
+Demonstrates reconfigurable multipartite entanglement in cascaded superconducting qubits with photon-mediated interactions.
+
+#### [Entangled Quantum Clocks as Operational Probes of Spacetime Curvature](https://arxiv.org/abs/2607.05715)
+
+**Authors:** Ivana Đorđević, Aleksandra Gočanin, Dragoljub Gočanin · **Published:** 2026-07-07
+Shows entangled states modify Bell parameters in curved spacetime, enabling detection of gravitational effects.
+
+*Source: [arXiv.org](http://arXiv.org) API · category quant-ph · sorted by submission date (descending).*
+
+<!--CHUNK6-->
