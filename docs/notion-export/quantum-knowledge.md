@@ -1104,4 +1104,212 @@ Six articles collected from Quanta Magazine and Scientific American. **Source fa
 
 *A formatted PDF of this digest is also available locally in the Cowork outputs folder. Notion does not support direct PDF embedding via MCP.*
 
-<!--CHUNK8-->
+## Quantum Digest — 2026-07-20
+
+*Notion URL: https://app.notion.com/p/3a3765478c3c81509b30f402d473c9e6*
+
+Sources attempted: Quantum Cookie (Facebook), Scientific American, Quanta Magazine. **3 articles collected**, all from Quanta Magazine. Two sources failed this run — see Source Status below. No Quanta article in the last 7 days carried the target tags, so the most recent per tag were taken.
+
+### Source Status
+
+#### Run notes — 2 of 3 sources unavailable
+
+Quantum Cookie (Facebook) returned "This content isn't available right now" — the page is restricted, renamed, or removed. No login prompt appeared, so this is not a credentials issue. Scientific American returned HTTP 404 on every topic and section path tried (/topic/quantum-physics/, /topic/string-theory/, /physics/, /space-physics/, /search/) — the site's URL structure appears to have changed and the topic routes need re-derivation in the skill. Quanta was fully reachable; note /tag/quantum-mechanics/ is also dead and was replaced with /tag/quantum-physics/.
+
+### Quanta Magazine — String Theory
+
+#### A Dark Dimension Could Link Two of the Universe's Great Unknowns
+
+June 22, 2026 — DESI's 2024 and 2025 data sets indicate the dark-energy equation-of-state parameter is not pinned at `w = -1`, and naive fits push it into the phantom regime `w < -1`, violating the null energy condition unless the dark sector is coupled. Khoury, Lin and Trodden build a dark-sector analogue of QCD in which the dark-matter mass and dark-energy density co-evolve, so apparent phantom behaviour is a bookkeeping artefact of attributing all `d(rho)/dt` to dark energy alone. Teixeira et al. (PRD, Jan 2026) show a related energy transfer `Q` from dark matter to dark energy relaxes the ~9% Hubble tension in `H_0`. Vafa's dark-dimension proposal supplies a string-theoretic origin: one extra dimension of radius `L ~ 10^-6 m`, far above `l_P ~ 10^-35 m`, into which gravitons leak and acquire Kaluza-Klein masses — the dark-matter tower is literally massive gravitons. The Obied-Bedroya-Wu-Vafa July 2025 analysis finds this consistent with DESI, predicting `|d(rho_DE)/dt| ∝ rho_DE`. Kesden and Kamionkowski's 2006 tidal-tail null result bounds the implied dark-matter self-interaction at roughly 20x above the predicted coupling — the prediction survives but is untested.
+
+[https://www.quantamagazine.org/a-dark-dimension-could-link-two-of-the-universes-great-unknowns-20260622/](https://www.quantamagazine.org/a-dark-dimension-could-link-two-of-the-universes-great-unknowns-20260622/)
+
+### Quanta Magazine — Quantum Gravity
+
+#### Entanglement Builds Space-Time. Now "Magic" Gives It Gravity.
+
+June 3, 2026 — Holographic duality lets a bulk region be reconstructed from boundary degrees of freedom, and since Harlow's 2014–2016 work the reconstruction map has been modelled as a quantum error-correcting code, with entanglement supplying bulk connectivity — canonically `S_A = Area(gamma_A) / (4 G_N)`. The problem: stabilizer codes cleanly factorize the code space into a geometry sector and a matter sector with no back-reaction, so the bulk was rigid — Wheeler's first sentence held, his second did not. Cao, Preskill and collaborators show the missing ingredient is non-stabilizerness, or "magic" — the resource quantified by how many non-Clifford gates (T, Toffoli) a state requires, and precisely the resource that defeats Gottesman–Knill classical simulation. Codes built with many non-Clifford gates are only *approximate* error-correcting codes, and that imperfection is what lets matter and geometry mix, producing back-reaction. The claim: gravity is the signature of an imperfect quantum encoding; perfect codes give inert, gravity-free bulks. Background-general and time-independent so far (Cao: "step 0.5 of 5"), but it makes a sharp structural prediction — any quantum-gravity simulation must be genuinely quantum, since high-magic states are by definition classically intractable.
+
+[https://www.quantamagazine.org/entanglement-builds-space-time-now-magic-gives-it-gravity-20260603/](https://www.quantamagazine.org/entanglement-builds-space-time-now-magic-gives-it-gravity-20260603/)
+
+### Quanta Magazine — Quantum Mechanics
+
+#### How Many Elementary Particles Are There, Really?
+
+June 15, 2026 — The Standard Model's 17 poster particles inflate rapidly once one counts states rather than fields: antiparticles → 30, the eight gluon colour-anticolour combinations → 37, quark colour multiplicity → 61, chirality plus polarization → 118. The substantive result is Komargodski and Schwimmer's 2011 proof of Cardy's a-theorem in 3+1D: the effective number of degrees of freedom is monotonically non-increasing along RG flow toward the IR — the four-dimensional analogue of Zamolodchikov's c-theorem in 1+1D. The proof, obtained by coupling the theory to a background dilaton and examining the four-point amplitude, also fixes the allowed anomaly coefficients: `a_scalar = 1`, `a_Weyl-fermion = 5.5`, `a_vector = 62`. Applied to the pre-electroweak-breaking content — 4 scalars, 45 Weyl fermions, 12 gauge bosons — this gives `(4 × 1) + (45 × 5.5) + (12 × 62) = 995.5`. Antimatter is absorbed into each fermion field's 5.5 rather than double-counted. No explanation exists for why nature selected 1, 5.5, and 62.
+
+[https://www.quantamagazine.org/how-many-elementary-particles-are-there-really-20260615/](https://www.quantamagazine.org/how-many-elementary-particles-are-there-really-20260615/)
+
+*Also noted on the tag indexes but outside the fetch window: "Are Strings Still Our Best Hope for a Theory of Everything?" (Wolchover, Mar 23 2026) and "Where Some See Strings, She Sees a Space-Time Made of Fractals" (Eichhorn Q&A on asymptotic safety, Mar 11 2026).*
+
+*PDF version of this digest is available locally in the Cowork outputs folder.*
+
+## Quantum Digest — 2026-07-21
+
+*Notion URL: https://app.notion.com/p/3a4765478c3c81b58f77fb66b411400b*
+
+**Sources covered:** Quanta Magazine (string theory, quantum gravity, quantum physics tags). **Total articles: 4.**
+
+**Failed sources this run:** Quantum Cookie (Facebook) returned "This content isn't available right now" — page restricted, deleted, or login-gated. Scientific American returned HTTP 404 on every attempted path (`/topic/quantum-physics/`, `/topic/string-theory/`, `/physics/`, site search), suggesting a site restructure or edge block; the URL patterns should be re-derived before the next run. Note also that Quanta's `/tag/quantum-mechanics/` 404s — the working slug is `/tag/quantum-physics/`.
+
+No Quanta physics article appeared in the trailing 7 days under the target tags, so this digest falls back to the most recent per tag.
+
+### Quanta Magazine — String Theory
+
+#### A Dark Dimension Could Link Two of the Universe's Great Unknowns
+
+DESI's 2024 and 2025 datasets indicate the dark energy equation-of-state parameter has drifted off the cosmological-constant value `w = -1` and passed through the phantom regime `w < -1`, in which the dark energy density rises with scale factor — apparently violating energy conservation if the dark sector is treated as decoupled. Khoury, Lin and Trodden respond with a dark-sector analogue of QCD in which the dark matter mass and dark energy density co-evolve, so phantom behaviour is an artifact of attributing all evolution to the dark energy box alone. A separate model by Teixeira et al. (Phys. Rev. D, January 2026) transfers a small energy fraction from dark matter to dark energy at earlier epochs, easing the ~9% Hubble tension between early-time CMB and late-time supernova determinations of `H_0`. Vafa's dark dimension scenario supplies a string-theoretic origin: one extra dimension is anomalously large, of order `R ~ 10^-6 m` against `l_P ~ 10^-35 m`, and gravitons leaking into it acquire mass, forming a Kaluza-Klein tower of "dark gravitons" playing the dark matter role. The July 2025 Obied–Vafa–Bedroya–Wu analysis finds this consistent with DESI, predicting that the fractional rate of change of dark energy scales with its own density — hence unobservably slow until now — and a new long-range dark-matter self-interaction sitting about a factor of 20 below the Kesden–Kamionkowski tidal-tail bound.
+
+[Read on Quanta](https://www.quantamagazine.org/a-dark-dimension-could-link-two-of-the-universes-great-unknowns-20260622/)
+
+### Quanta Magazine — Quantum Gravity
+
+#### Entanglement Builds Space-Time. Now "Magic" Gives It Gravity.
+
+Holographic duality realizes bulk space-time as a quantum error-correcting code on the boundary; entanglement supplies bulk connectivity, as in Ryu–Takayanagi `S_A = Area(gamma_A) / (4 G_N)`, but stabilizer codes leave the geometry rigid. The obstruction is structural: stabilizer codes cleanly factorize boundary entanglement into a geometric sector and a matter sector with no channel between them, so matter cannot backreact on curvature — Wheeler's second clause fails. Cao, Preskill and collaborators show the missing ingredient is "magic" (non-stabilizerness), the resource quantified by non-Clifford gate count that Bravyi and Kitaev identified in 2004 as the true source of quantum advantage, since Clifford circuits are classically simulable by Gottesman–Knill. Building on Cao–Lackey (2020) and Cao–Swingle–White's finding that AdS boundary states are highly magical, the new code injects non-Clifford gates and thereby couples the geometric and matter entanglement sectors — space acquires springiness, and gravity emerges. The conceptual payoff: gravity appears to be a consequence of *approximate*, imperfect encoding — exactly recoverable codes give inert, gravity-free geometries, so bulk reconstruction must be lossy for dynamics to exist. Cao is explicit that the code is background-general and time-less: "step 0.5 of 5."
+
+[Read on Quanta](https://www.quantamagazine.org/entanglement-builds-space-time-now-magic-gives-it-gravity-20260603/)
+
+### Quanta Magazine — Quantum Mechanics
+
+#### How Many Elementary Particles Are There, Really?
+
+The naive Standard Model census of 17 fields inflates rapidly once one insists on physically distinct states: adding antiparticles gives 30, resolving the gluon into the eight generators of `SU(3)` adjoint gives 37, colouring quarks and antiquarks gives 61, and counting chirality and polarization states separately gives 118. The deeper point is that "how many particles" is scale-dependent: effective degrees of freedom are lost under RG flow toward the infrared, until at zero energy only the massless photon survives. Schwimmer and Komargodski's 2011 proof of Cardy's 1989 conjecture — the a-theorem — establishes that in 3+1D the quantity `a` decreases monotonically along RG flow, `a_UV > a_IR`, the four-dimensional analogue of Zamolodchikov's c-theorem, proved by probing the theory's response to a background dilaton coupled to gravity. The theorem fixes allowed contributions rigidly: a scalar field carries 1, a Weyl fermion field 5.5, a gauge field 62. Applied to the pre-EWSB field content — 4 scalars, 45 fermions, 12 gauge bosons — this yields `(4 x 1) + (45 x 5.5) + (12 x 62) = 995.5`, with antimatter already absorbed into each fermion's 5.5. The half-integer reflects that fermionic degrees of freedom are not fully independent of the others.
+
+[Read on Quanta](https://www.quantamagazine.org/how-many-elementary-particles-are-there-really-20260615/)
+
+#### Thermodynamic Computers Go With the (Energy) Flow
+
+Thermodynamic computing inverts the usual engineering posture toward thermal noise: rather than switching bits at energies far above `k_B T` to suppress fluctuations, it uses those fluctuations as the computational substrate. Two regimes are distinguished — equilibrium computing, where the system relaxes down an energy landscape to a minimum encoding the solution (the protein-folding analogy), and nonequilibrium computing, where the trajectory itself under Langevin dynamics `m x'' = -grad U(x) - gamma x' + eta(t)` encodes the result and can be terminated on a fixed schedule rather than waiting for equilibration. Normal Computing's prototype is an eight-node network of coupled RLC resonators driven by noise; when the drive amplitude is comparable to the coupling energies, the equilibrium covariance of the fluctuations is proportional to the inverse of the coupling matrix, so measuring the noise performs matrix inversion `A^-1` directly. Whitelam's Lawrence Berkeley simulation trains a nonequilibrium network on a denoising task and reports dissipation roughly `10^11` times below an equivalent digital neural network — though as with Normal's device the noise was supplied by a pseudo-random generator rather than harvested ambiently, so the demonstrated energy advantage remains prospective. Extropic's probabilistic chip, published in npj Unconventional Computing in July 2026, claims a factor of `10^4` energy reduction for generative workloads. The field's own comparison point is quantum computing circa the 1990s, with the advantage that semiconductor resonators need neither cryogenics nor coherence.
+
+[Read on Quanta](https://www.quantamagazine.org/thermodynamic-computers-go-with-the-energy-flow-20260715/)
+
+## Quantum Digest — 2026-07-22
+
+*Notion URL: https://app.notion.com/p/3a5765478c3c817e8731d6a819e92c9d*
+
+Daily Quantum Knowledge Digest for Yaser. **Sources this run:** Quanta Magazine (string-theory, quantum-gravity, quantum-mechanics tags) fetched successfully; Scientific American topic pages were client-rendered and returned no content to the fetcher, so SciAm items were selected via targeted web search with one full article retrieved directly; **Quantum Cookie (Facebook): login required — skipped.** Most Quanta tag pages had no articles inside the strict last-7-days window today, so the most recent per tag are included as fallback. Written for a technically rigorous reader — 12 articles across 4 active sources.
+
+### Scientific American
+
+#### Quantum Computers Simulate Particle 'String Breaking' in a Physics Breakthrough
+
+June 13, 2025 — Two collaborations (QuEra and Google Quantum AI) used quantum simulators to watch confining 'strings' between charges stretch and snap in real time, a regime lattice gauge theory struggles to reach classically because of the sign problem. The static potential rises linearly, `V(r) = sigma * r`, so a flux tube stores energy proportional to its length until it breaks by pair creation at threshold `sigma * r ~ 2 m`. QuEra's Aquila used analog evolution of Rydberg atoms in a 2D honeycomb; Google's Sycamore ran a digital Trotterized `Z_2 / U(1)` field. Tuning couplings gave stiff strings, wobbly strings, and full deconfinement. Still 2D and Abelian, far from 3D QCD, but a genuine simulation of dynamics beyond classical reach.
+
+[Read on Scientific American](https://www.scientificamerican.com/article/quantum-computers-simulate-particle-string-breaking-in-a-physics/)
+
+#### Quantum Computing Is Reaching Its Make-or-Break Moment
+
+May 19, 2026 — Fault-tolerant quantum computing is at an inflection point: error-corrected logical qubits must scale or enthusiasm may cool. Physical gate error must sit below the surface-code threshold `p < 1%` for logical error to shrink with code distance `d`, scaling roughly `p_L ~ (p/p_th)^{(d+1)/2}`. Shor's algorithm remains the payoff, converting factoring into polynomial-time period-finding via the quantum Fourier transform. Surveys superconducting, trapped-ion, and neutral-atom platforms and the thousands-to-one physical-qubit overhead per logical qubit.
+
+[Read on Scientific American](https://www.scientificamerican.com/article/quantum-computing-is-reaching-its-make-or-break-moment/)
+
+#### A 100-Year-Old Theory Might Explain What's Wrong With Quantum Mechanics
+
+May 13, 2026 — Antony Valentini revisits de Broglie-Bohm pilot-wave theory, where particles have definite positions guided by `dx/dt = (hbar/m) Im( grad psi / psi )`. The Born rule `rho = |psi|^2` is not fundamental but an equilibrium ('quantum equilibrium') that generic distributions relax toward. Valentini argues 'quantum non-equilibrium' states with `rho != |psi|^2` could have existed in the early universe and leave observable signatures — making standard QM only an effective statistical limit of a deeper deterministic dynamics.
+
+[Read on Scientific American](https://www.scientificamerican.com/article/a-100-year-old-theory-might-explain-whats-wrong-with-quantum-mechanics/)
+
+#### Quantum Physicists Just Supersized Schrödinger's Cat
+
+2026 — Experimentalists pushed macroscopic superposition to record mass-times-displacement scales, tightening bounds on spontaneous-collapse models such as continuous spontaneous localization (CSL), which add a stochastic nonlinear term to the Schrödinger equation. Collapse rate grows with particle number and separation, so a larger 'cat state' `|psi> = (|L> + |R>)/sqrt(2)` probes the collapse parameters lambda and r_C more stringently. No deviation from unitary QM was seen, further constraining objective-collapse parameter space.
+
+[Read on Scientific American](https://www.scientificamerican.com/article/quantum-physicists-just-supersized-schroedingers-cat/)
+
+### Quanta Magazine — String Theory
+
+#### A Dark Dimension Could Link Two of the Universe's Great Unknowns
+
+June 22, 2026 — Connects two anomalies: DESI hints that dark energy is evolving, and the nature of dark matter. The string-theoretic 'dark dimension' posits one micron-scale extra dimension tied to the small cosmological constant via the swampland distance conjecture, predicting a tower of light Kaluza-Klein modes with `m_KK ~ Lambda^{1/4}`. Those KK gravitons are dark-matter candidates, so a time-varying `Lambda(t)` could imply a co-evolving dark sector — attractive because it is testable via fifth-force and cosmological constraints.
+
+[Read on Quanta Magazine](https://www.quantamagazine.org/a-dark-dimension-could-link-two-of-the-universes-great-unknowns-20260622/)
+
+#### Are Strings Still Our Best Hope for a Theory of Everything?
+
+March 23, 2026 — Natalie Wolchover weighs string theory's successes (a consistent perturbative quantum gravity, a finite string scale taming point-particle UV divergences, AdS/CFT holography) against its central weakness: a landscape of ~`10^500` metastable vacua that frustrates unique predictions. Contrasts the swampland program — which tries to identify which effective field theories admit a string UV-completion — with critics who call the framework unfalsifiable.
+
+[Read on Quanta Magazine](https://www.quantamagazine.org/are-strings-still-our-best-hope-for-a-theory-of-everything-20260323/)
+
+#### String Theory Can Now Describe a Universe That Has Dark Energy
+
+January 14, 2026 — Building a string vacuum with positive cosmological constant (de Sitter, `Lambda > 0`) has long been notoriously hard, since compactifications favor `Lambda < 0` or flat solutions and KKLT/LVS uplifts remain contested. This work reports a detailed model compatible with accelerated expansion, confronting the swampland de Sitter conjecture. If it holds, it weakens the argument that our accelerating universe lies in the swampland rather than the string landscape.
+
+[Read on Quanta Magazine](https://www.quantamagazine.org/string-theory-can-now-describe-a-universe-that-has-dark-energy-20260114/)
+
+### Quanta Magazine — Quantum Gravity
+
+#### Entanglement Builds Space-Time. Now 'Magic' Gives It Gravity.
+
+June 3, 2026 — In AdS/CFT the Ryu-Takayanagi formula ties a boundary region's entanglement entropy to a bulk minimal surface, `S = A/(4 G_N hbar)`, so entanglement 'builds' geometry. This work argues a second quantum resource — nonstabilizerness, or 'magic' (what makes a state hard to simulate classically and unreachable by Clifford gates alone) — corresponds to gravitational dynamics, i.e. space-time's flexibility rather than just its shape. Entanglement fixes the shape; magic supplies the pliability — pushing 'it-from-qubit' beyond entanglement entropy.
+
+[Read on Quanta Magazine](https://www.quantamagazine.org/entanglement-builds-space-time-now-magic-gives-it-gravity-20260603/)
+
+#### Cosmic Paradox Reveals the Awful Consequence of an Observer-Free Universe
+
+November 19, 2025 — Extending holographic and observer-based reasoning from black holes to entire closed universes creates deep puzzles. In a closed universe the Wheeler-DeWitt constraint `H|psi> = 0` implies a 'problem of time' — the global state does not evolve against any external clock — and defining probabilities or a well-posed Hilbert space becomes ambiguous. Pushing these methods leads to paradoxes about whether physics can be done at all without an observer to anchor measurements.
+
+[Read on Quanta Magazine](https://www.quantamagazine.org/cosmic-paradox-reveals-the-awful-consequence-of-an-observer-free-universe-20251119/)
+
+#### Old 'Ghost' Theory of Quantum Gravity Makes a Comeback
+
+November 17, 2025 — Quadratic (fourth-derivative) gravity adds curvature-squared terms to Einstein-Hilbert and is renormalizable, unlike GR where Newton's constant has negative mass dimension and loops diverge. The historic price is a massive spin-2 'ghost' of negative kinetic energy, from a propagator behaving as `1/(p^2 (p^2 + M^2))`. The piece reports renewed arguments that the ghost may be benign (an unstable resonance, or handled via modified quantization), reviving a ~50-year-old route to quantum gravity.
+
+[Read on Quanta Magazine](https://www.quantamagazine.org/old-ghost-theory-of-quantum-gravity-makes-a-comeback-20251117/)
+
+### Quanta Magazine — Quantum Mechanics
+
+#### Researchers Reveal the Power of 'Quantum Proofs'
+
+July 6, 2026 — Bostanci, Haferkamp, Nirkhe, and Zhandry gave an oracle separation between QMA (quantum-proof-verifiable) and QCMA (classical-proof, quantum-checked), showing `QMA != QCMA` relative to an oracle. Their vehicle is the 'spectral forrelation problem' — whether two measurement 'shadows' could come from one quantum state; a valid witness is a state too complex to write down, needing `2^n` amplitudes. The proof is by contradiction, exploiting measurement disturbance: a reusable classical proof could be read repeatedly to solve a shadow-guessing task shown intractable. A second independent oracle separation followed within weeks, strengthening the case that quantum proofs are categorically more powerful.
+
+[Read on Quanta Magazine](https://www.quantamagazine.org/researchers-reveal-the-power-of-quantum-proofs-20260706/)
+
+#### New Advances Bring the Era of Quantum Computers Closer Than Ever
+
+April 3, 2026 — A survey of hardware and error-correction milestones narrowing the gap to quantum advantage, anchored by Shor's algorithm, which factors via order-finding solved with the quantum Fourier transform. Emphasizes that useful computation requires crossing the fault-tolerance threshold, where logical error `p_L` shrinks with surface-code distance only once physical error sits below `p_th ~ 1%`, and reviews demonstrations of below-threshold operation and lengthening logical-qubit lifetimes.
+
+[Read on Quanta Magazine](https://www.quantamagazine.org/new-advances-bring-the-era-of-quantum-computers-closer-than-ever-20260403/)
+
+#### Are the Mysteries of Quantum Mechanics Beginning To Dissolve?
+
+February 13, 2026 — Examines whether decoherence and quantum Darwinism demystify the measurement problem: pointer states are those robust to environmental entanglement, and classical objectivity emerges as the environment redundantly imprints many copies of that information. Decoherence diagonalizes the reduced density matrix `rho_S = Tr_E |psi><psi|` in the pointer basis, explaining definite-looking outcomes without selecting a single one. Weighs how far this dissolves the problem versus where the origin of a unique outcome and the Born rule remain.
+
+[Read on Quanta Magazine](https://www.quantamagazine.org/are-the-mysteries-of-quantum-mechanics-beginning-to-dissolve-20260213/)
+
+### Quantum Cookie
+
+**Login required — skipped.** The Facebook page could not be read without an authenticated session, so no posts were extracted this run.
+
+[facebook.com/QuantumCookie](https://www.facebook.com/QuantumCookie)
+
+---
+
+## Provenance
+
+All content exported on 2026-07-22 from the Notion workspace section "⚛️ Quantum Knowledge" (parent: Knowledge Hub).
+
+| # | Page / Database | Notion URL |
+|---|---|---|
+| — | ⚛️ Quantum Knowledge (section parent) | https://app.notion.com/p/37d765478c3c81bf80d8db456785dbb9 |
+| DB | 📄 Papers (empty — 0 rows) | https://app.notion.com/p/4d507afe56794c2faa9edab9575f0b84 |
+| DB | 🗒️ Notes (empty — 0 rows) | https://app.notion.com/p/067558fe7e484bdebf5ab64b162806ee |
+| 1 | Quantum Digest — 2026-06-15 (first page) | https://app.notion.com/p/380765478c3c815cb347c8243544c14c |
+| 2 | Quantum Digest — 2026-06-15 (second page) | https://app.notion.com/p/380765478c3c816791c6c6632e106578 |
+| 3 | Quantum Digest — 2026-06-16 | https://app.notion.com/p/381765478c3c81e9a910ccb53e29fe9f |
+| 4 | Quantum Digest — 2026-06-17 | https://app.notion.com/p/382765478c3c81fd9621d60a326bec75 |
+| 5 | Quantum Digest — 2026-06-18 | https://app.notion.com/p/383765478c3c8148acb5e656927ad7bf |
+| 6 | CERN — Nobel Prizes & Landmark Papers | https://app.notion.com/p/386765478c3c811eb848ce22f2ac596e |
+| 7 | Quantum Digest — 2026-06-28 | https://app.notion.com/p/38d765478c3c81f99bedee54f843eb19 |
+| 8 | Quantum Digest — 2026-06-30 | https://app.notion.com/p/38f765478c3c8109adefe79fe1d45f08 |
+| 9 | Quantum Digest — 2026-07-09 | https://app.notion.com/p/398765478c3c8159af01c4c8a06d2af0 |
+| 10 | 🔬 Research (arXiv) | https://app.notion.com/p/398765478c3c818a94b3feaef9c37feb |
+| 11 | Quantum Digest — 2026-07-14 | https://app.notion.com/p/39d765478c3c8129b4d8f655dda18aa9 |
+| 12 | Quantum Digest — 2026-07-15 | https://app.notion.com/p/39e765478c3c81ef9782f5b3353164bb |
+| 13 | Quantum Digest — 2026-07-16 | https://app.notion.com/p/39f765478c3c81e5b823ca937ed84cb7 |
+| 14 | Quantum Digest — 2026-07-19 | https://app.notion.com/p/3a2765478c3c818f94c0d9fe1645f89f |
+| 15 | Quantum Digest — 2026-07-20 | https://app.notion.com/p/3a3765478c3c81509b30f402d473c9e6 |
+| 16 | Quantum Digest — 2026-07-21 | https://app.notion.com/p/3a4765478c3c81b58f77fb66b411400b |
+| 17 | Quantum Digest — 2026-07-22 | https://app.notion.com/p/3a5765478c3c817e8731d6a819e92c9d |
+
+*Export compiled by Claude on 2026-07-22 for import into NotebookLM as a single text source.*
+
