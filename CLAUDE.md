@@ -1,5 +1,13 @@
 # Project memory workflow — NotebookLM
 
+## One-prompt sync
+
+To transfer all science content in this repo to NotebookLM, use the
+`notebooklm-sync` skill (`.claude/skills/notebooklm-sync/SKILL.md`) — trigger
+it with `/notebooklm-sync` or "sync the science to NotebookLM". It uses the
+notebooklm MCP server directly when connected, and falls back to the Google
+Drive bridge (folder "Fine Structure α — NotebookLM") in cloud sessions.
+
 This project uses NotebookLM as its external long-term memory, connected via
 the `notebooklm` MCP server configured in `.mcp.json` (see
 `docs/NOTEBOOKLM_SETUP.md` for setup).
