@@ -5,6 +5,7 @@ Two standard-library Python scripts (no `pip install`, Python 3.9+):
 | Script | Purpose |
 | --- | --- |
 | `scripts/scrape_site.py` | Crawl a whole site into a local corpus |
+| `scripts/ingest_fetched.py` | Build the same corpus from pages fetched elsewhere |
 | `scripts/query_site.py`  | Search, read and export that corpus |
 
 ## Quick start
@@ -79,6 +80,7 @@ Useful flags: `--max-pages` (default 1000, `0` = unlimited), `--max-depth`,
 | `--links URL\|N` | inbound and outbound links for one page |
 | `--broken` | internal links that were never captured, split into failed / policy-skipped / not-crawled |
 | `--export FILE.md` | the whole site as a single markdown document |
+| `--products [QUERY]` | the extracted product catalog, optionally filtered |
 
 Pages can be addressed by list index, full URL, or any unique substring of a
 URL. Add `--json` to `--list` and `--search` for machine-readable output.
@@ -89,13 +91,68 @@ URL. Add `--json` to `--list` and `--search` for machine-readable output.
 fresh snapshot instead, crawl into a new dated directory
 (`--out data/zagzoog-2026-08-19`) and keep the old one for comparison.
 
-## Network access note
+## When the crawler cannot reach the site
 
-Crawling requires outbound HTTPS to the target host. In sandboxed environments
-(including Claude Code on the web) egress may be restricted by policy, in which
-case requests fail before they leave the machine. Run the scraper from a
-machine with normal internet access, or have the target domain allowed in the
-environment's egress policy.
+Crawling needs outbound HTTPS to the target host. In sandboxed environments
+(including Claude Code on the web) egress may be blocked by policy, and the
+request fails before it leaves the machine. It is also of no use against a
+JavaScript app that renders its content client-side — `scrape_site.py` reads
+HTML, it does not run scripts.
+
+For both cases `scripts/ingest_fetched.py` separates *fetching* from
+*parsing*. Fetch the pages by whatever means works — a hosted extraction
+service, a headless browser, a colleague running `curl` — save each one as a
+JSON file shaped like
+
+```json
+{"url": "https://example.com/page", "content": "<html>…</html>",
+ "title": "optional", "description": "optional"}
+```
+
+then build the normal corpus from that directory:
+
+```bash
+scripts/ingest_fetched.py --results-dir ./fetched --out data/example
+scripts/query_site.py --data data/example --stats   # identical from here on
+```
+
+`content` may be HTML, Markdown or plain text; the format is detected. The
+same URL captured several times keeps the richest copy. Beyond parsing, the
+ingest does three things worth knowing about:
+
+- **Noise removal** — inlined CSS and framework bootstrap payloads (React
+  Server Component streams, i18n dictionaries) are dropped. Left in, they can
+  outweigh the real text by five to one and wreck search ranking.
+- **Boilerplate removal** — lines appearing on more than
+  `--boilerplate-threshold` of pages (default 0.6) are site chrome, not
+  content. They are removed from the searchable text and listed in
+  `boilerplate.txt`.
+- **Product extraction** — e-commerce cards are distilled into
+  `products.jsonl` with sku, name, price, previous price, brand and category,
+  queryable via `query_site.py --products`.
+
+## The zagzoog.com archive
+
+`data/zagzoog/` holds an archive of zagzoog.com (Zagzoog for Home Appliances)
+built through this path, because the domain is blocked by the egress policy of
+the environment it was built in.
+
+The site is a Next.js storefront with `/en/` and `/ar/` locales over a Magento
+catalog. Two properties shaped the capture:
+
+- Content is rendered client-side, so pages had to be fetched with a
+  JavaScript-capable browser, not plain HTTP.
+- The shop listing renders **12 product cards per view** and loads the rest on
+  scroll. Category and brand filters are URL parameters
+  (`/en/shop/?category_id=NNN&brand=NN`), so the catalog was captured by
+  slicing it into filtered views small enough to render whole.
+
+That yields 203 of the 230 products the site advertises (88%). The shortfall is
+in categories whose narrowest URL-addressable slice still holds more than 12
+items. Closing it needs a scrolling browser session rather than more slices.
+
+To refresh the archive, re-fetch the URLs in `data/zagzoog/pages.jsonl` and
+re-run `ingest_fetched.py` over the results.
 
 ## Courtesy and legality
 

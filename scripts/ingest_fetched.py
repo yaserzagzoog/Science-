@@ -66,6 +66,14 @@ PRICE_RE = re.compile(r"([\d][\d,]*(?:\.\d+)?)")
 # Fetched payloads often carry inlined CSS and framework bootstrap data (React
 # Server Component streams, i18n dictionaries). It is not page content, and it
 # swamps full-text search, so it is dropped before indexing.
+# Swatch filenames spell brands inconsistently (ZTRUST, samsung-log, GlemGas).
+BRAND_NAMES = {
+    "ztrust": "Z Trust", "samsung": "Samsung", "lg": "LG", "ogeneral": "O General",
+    "glemgas": "Glem Gas", "glem builtin": "Glem Builtin", "hisense": "Hisense",
+    "hitachi": "Hitachi", "mabe": "Mabe", "philips": "Philips",
+    "whirlpool": "Whirlpool",
+}
+
 NOISE_MARKERS = ("__next_f", "self.__next", "window.__NUXT", "__NEXT_DATA__",
                  "@font-face", "!function", "webpackChunk")
 
@@ -250,9 +258,14 @@ def extract_products(parsed: list[dict]) -> list[dict]:
                 record["was_price_sar"] = was.group(1).replace(",", "")
 
             before = markdown[max(0, match.start() - 420): match.start()]
-            brand = re.findall(r"swatch/([A-Za-z0-9_.-]+)\.svg", before)
+            # Swatches are usually /media/attribute/swatch/NAME.svg, but some
+            # are PNGs behind an image proxy with the path percent-encoded.
+            brand = re.findall(
+                r"swatch(?:/|%2F)(?:[^/%\s)]*(?:/|%2F))*?([A-Za-z0-9_.-]+?)"
+                r"(?:-log[a-z]*)?\.(?:svg|png)", before, re.I)
             if brand and not record["brand"]:
-                record["brand"] = brand[-1].replace("_", " ")
+                raw = brand[-1].replace("_", " ").strip()
+                record["brand"] = BRAND_NAMES.get(raw.lower(), raw)
             cat = re.findall(r"#{4,6}\s*\[?\s*([A-Za-z][A-Za-z &/]{2,40}?)\s*\]?\s*\n",
                              before)
             if cat and not record["category"]:

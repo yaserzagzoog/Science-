@@ -1,11 +1,15 @@
 0
+1
 92000411
 920022766
 About Us
 AccountLogin
+Add to cart
 Air Conditioners
 All
 All Categories
+Brand
+Buy Now, And Pay Later
 Cart0-items
 Cassette
 Catalog
@@ -37,7 +41,9 @@ Register
 Return & Exchange
 Screens
 Shop All
+Shop Page
 Small Appliances
+Sort byPositionRelevanceName, A to ZName, Z to APrice, low to highPrice, high to low
 Start Shopping
 Wall Split
 Warranty

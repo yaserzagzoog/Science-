@@ -11,6 +11,7 @@ interact with the scraped site:
     --show URL|N           print one page (text by default, --markdown for md)
     --links URL|N          inbound and outbound links for one page
     --export FILE.md       whole site as one markdown file (e.g. for NotebookLM)
+    --products [QUERY]     product catalog, optionally filtered by text
     --broken               pages that link to URLs the crawl never captured
 
 Examples
@@ -342,6 +343,59 @@ def cmd_broken(pages: list[dict], aliases: list[dict], data_dir: str) -> None:
            lambda u: "not fetched (page limit, depth limit, or --include/--exclude)")
 
 
+def cmd_products(data_dir: str, query: str, limit: int, as_json: bool) -> None:
+    """List the extracted product catalog, optionally filtered."""
+    path = os.path.join(data_dir, "products.jsonl")
+    if not os.path.exists(path):
+        raise SystemExit(f"No product catalog at {path}")
+    rows = []
+    with open(path, encoding="utf-8") as handle:
+        for line in handle:
+            if line.strip():
+                rows.append(json.loads(line))
+
+    terms = [t for t in tokenize(query)] if query and query != "*" else []
+    if terms:
+        def haystack(row: dict) -> str:
+            return " ".join(str(row.get(k, "")) for k in
+                            ("sku", "name", "name_ar", "brand", "category")).lower()
+        rows = [r for r in rows if all(t in haystack(r) for t in terms)]
+
+    def sort_key(row: dict):
+        try:
+            price = float(row.get("price_sar") or 0)
+        except ValueError:
+            price = 0.0
+        return (row.get("category", ""), -price)
+
+    rows.sort(key=sort_key)
+    shown = rows[:limit] if limit else rows
+
+    if as_json:
+        print(json.dumps(shown, ensure_ascii=False, indent=2))
+        return
+    if not rows:
+        print(f"No products matching {query!r}")
+        return
+
+    print(f"{len(rows)} products" + (f" matching {query!r}" if terms else "")
+          + (f" (showing {len(shown)})" if len(shown) < len(rows) else "") + "\n")
+    print(f"{'SKU':<15} {'PRICE':>8} {'WAS':>8}  {'BRAND':<14}{'CATEGORY':<20}NAME")
+    print("-" * 110)
+    for row in shown:
+        print(f"{row['sku']:<15} {row.get('price_sar', '') or '-':>8} "
+              f"{row.get('was_price_sar', '') or '-':>8}  {row.get('brand', '')[:13]:<14}"
+              f"{row.get('category', '')[:19]:<20}{row.get('name', '')[:44]}")
+
+    priced = [r for r in rows if r.get("price_sar")]
+    if priced:
+        values = sorted(float(r["price_sar"]) for r in priced)
+        discounted = sum(1 for r in priced if r.get("was_price_sar"))
+        print(f"\nprice range: SAR {values[0]:,.0f} - {values[-1]:,.0f}   "
+              f"median SAR {values[len(values) // 2]:,.0f}   "
+              f"on discount: {discounted}/{len(priced)}")
+
+
 def cmd_export(pages: list[dict], data_dir: str, out_path: str) -> None:
     with open(out_path, "w", encoding="utf-8") as handle:
         host = urllib.parse.urlsplit(pages[0]["url"]).netloc if pages else "site"
@@ -397,6 +451,8 @@ def main(argv: list[str] | None = None) -> int:
     group.add_argument("--show", metavar="URL|INDEX")
     group.add_argument("--links", metavar="URL|INDEX")
     group.add_argument("--broken", action="store_true")
+    group.add_argument("--products", nargs="?", const="*", metavar="QUERY",
+                       help="list the product catalog, optionally filtered")
     group.add_argument("--export", metavar="FILE.md")
     args = parser.parse_args(argv)
     _allow_broken_pipe()
@@ -416,6 +472,8 @@ def main(argv: list[str] | None = None) -> int:
         cmd_links(pages + aliases, args.links)
     elif args.broken:
         cmd_broken(pages, aliases, args.data)
+    elif args.products:
+        cmd_products(args.data, args.products, args.limit, args.json)
     elif args.export:
         cmd_export(pages, args.data, args.export)
     return 0
