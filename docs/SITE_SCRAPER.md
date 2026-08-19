@@ -147,16 +147,27 @@ catalog. Two properties shaped the capture:
   (`/en/shop/?category_id=NNN&brand=NN`), so the catalog was captured by
   slicing it into filtered views small enough to render whole.
 
-That yields 203 of the 230 products the site advertises (88%). The shortfall is
-in categories whose narrowest URL-addressable slice still holds more than 12
-items. Closing it needs a scrolling browser session rather than more slices;
-related-product links on the detail pages were checked and surface no SKUs
-beyond those 203.
+That yields 217 of the 230 products the site advertises (94%), each with its
+own detail page captured. Four categories are complete: Cooking Appliances
+47/47, Small Appliances 36/36, Dishwashers 7/7, Screens 5/5.
 
-Every one of the 203 has its own detail page captured, giving `products.jsonl`
-the SKU as stated on the page, name (English and Arabic), price, previous
-price, discount percent, brand, category, warranty term, stock status, image
-gallery and spec-sheet PDF URL.
+Finding the last of those 217 needed two things beyond the obvious slicing:
+
+- **Category IDs run past the navigation.** The mega-menu exposes ids 422-450,
+  but 451-456 also hold products and appear in no menu. Probing found them;
+  457 onward are empty, so the range ends at 456.
+- **Subcategory x brand.** A category filtered to one brand usually falls
+  under the 12-card render cap even when the category alone does not.
+
+The remaining 13 (Air Conditioners 47/56, Laundry 29/32, Refrigeration 46/47)
+sit behind three slices that stay capped at 12 with no finer filter to apply:
+duct AC by O General, and the Z Trust refrigeration and laundry subcategories.
+Everything else was tried and ruled out rather than assumed: the `page`
+parameter is ignored, sort and price filters are client-side state, search is
+an inline XHR with no URL route, the Arabic locale returns the identical 12,
+related-product links surface nothing new, and Floor Standing AC (`425`)
+returns zero products for every brand. Those 13 need a scrolling browser
+session.
 
 One limit worth stating plainly: the **specification table is not captured**.
 On a product page "Product Details" and "Specifications" are collapsed
