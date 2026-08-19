@@ -1,3 +1,7 @@
+Shop Page
+
+Sort byPositionRelevanceName, A to ZName, Z to APrice, low to highPrice, high to low
+
 Fridge Single Door (12.5)Cf, (355)L
 
 3,500Incl. VAT
@@ -48,6 +52,8 @@ Chest Freezer (10.5)Cf, (297)L
 
 Showing 1-12 of 14 item(s)
 
+1
+
 2
 
 Sub Category
@@ -55,3 +61,5 @@ Sub Category
 Refrigerators
 
 Freezers
+
+Brand

@@ -1,4 +1,6 @@
-NEW
+Shop Page
+
+Sort byPositionRelevanceName, A to ZName, Z to APrice, low to highPrice, high to low
 
 Grill (1800-2200)W, (8) Functions, Food Thermometer
 
@@ -9,3 +11,7 @@ Grill (1800-2200)W, (8) Functions, Food Thermometer
 54% Off
 
 Showing 1-1 of 1 item(s)
+
+1
+
+Brand

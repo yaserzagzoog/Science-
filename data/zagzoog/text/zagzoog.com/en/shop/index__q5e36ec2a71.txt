@@ -1,4 +1,6 @@
-NEW
+Shop Page
+
+Sort byPositionRelevanceName, A to ZName, Z to APrice, low to highPrice, high to low
 
 Front/Load Dryr (8)Kg, (16) Programs,Condenser
 
@@ -21,3 +23,7 @@ Front/Load Dryr (6) Kg, (14) Programs, (2) Knobs
 4,000Incl. VAT
 
 Showing 1-4 of 4 item(s)
+
+1
+
+Brand

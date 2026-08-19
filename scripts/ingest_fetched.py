@@ -275,6 +275,61 @@ def extract_products(parsed: list[dict]) -> list[dict]:
     return sorted(products.values(), key=lambda p: p["sku"])
 
 
+PRODUCT_URL_RE = re.compile(r"/(?:en|ar)/product-page/([A-Za-z0-9._-]+)/?$")
+
+
+def enrich_from_detail_pages(products: dict[str, dict], parsed: list[dict],
+                             payloads: dict[str, str]) -> int:
+    """Add detail-page-only fields to the product records.
+
+    A product page carries facts the listing card does not: the SKU stated
+    outright, the warranty term, stock status, delivery city, the image
+    gallery and the spec-sheet PDF. The specification table itself sits in a
+    collapsed accordion that is not in the DOM until clicked, so it cannot be
+    captured this way; the spec sheet is where those numbers live.
+    """
+    enriched = 0
+    by_url = {page["url"]: page for page in parsed}
+    for url, html in payloads.items():
+        match = PRODUCT_URL_RE.search(urllib.parse.urlsplit(url).path)
+        if not match:
+            continue
+        sku = match.group(1)
+        page = by_url.get(url)
+        text = page["text"] if page else ""
+        record = products.setdefault(sku, {
+            "sku": sku, "name": "", "name_ar": "", "url": url, "price_sar": "",
+            "was_price_sar": "", "brand": "", "category": "", "seen_on": [],
+        })
+
+        spec = re.search(r"https?://[^\"'\s]*?/media/spec_sheet/[^\"'\s]+?\.pdf", html)
+        record["spec_sheet_url"] = spec.group(0) if spec else ""
+
+        warranty = re.search(r"(\d+)\s*Years?\s*Warranty", html)
+        record["warranty_years"] = warranty.group(1) if warranty else ""
+
+        # Breadcrumb reads: Home > <Category> > <Product name>
+        crumb = re.search(r"Home([A-Z][A-Za-z &/]{2,40}?)([A-Z0-9(\"].{5,})", text)
+        if crumb and not record.get("category"):
+            record["category"] = crumb.group(1).strip()
+
+        discount = re.search(r"(\d+)%\s*Off", text)
+        record["discount_percent"] = discount.group(1) if discount else ""
+
+        if "Out of Stock" in text or "out of stock" in text.lower():
+            record["in_stock"] = False
+        elif "Add to cart" in text:
+            record["in_stock"] = True
+
+        images = sorted(set(re.findall(
+            r"https?://[^\"'\s]*?/media/catalog/product/[^\"'\s]+?\.(?:jpg|jpeg|png|webp)",
+            html, re.I)))
+        record["images"] = images[:12]
+        record["detail_page"] = url
+        enriched += 1
+    return enriched
+
+
 def write_corpus(parsed: list[dict], out: str, source_note: str) -> dict:
     for sub in ("raw", "text", "markdown"):
         os.makedirs(os.path.join(out, sub), exist_ok=True)
@@ -401,7 +456,12 @@ def main(argv: list[str] | None = None) -> int:
     if args.boilerplate_threshold > 0:
         boilerplate, removed = strip_boilerplate(parsed, args.boilerplate_threshold)
 
-    products = extract_products(parsed)
+    products_list = extract_products(parsed)
+    products = {p["sku"]: p for p in products_list}
+    enriched = enrich_from_detail_pages(
+        products, parsed, {p["url"]: p["content"] for p in payloads})
+    products_list = sorted(products.values(), key=lambda p: p["sku"])
+    products = products_list
     os.makedirs(args.out, exist_ok=True)
     if boilerplate:
         with open(os.path.join(args.out, "boilerplate.txt"), "w", encoding="utf-8") as h:
@@ -420,7 +480,9 @@ def main(argv: list[str] | None = None) -> int:
               f"({removed} line instances) -> {args.out}/boilerplate.txt")
     if products:
         priced = sum(1 for p in products if p["price_sar"])
-        print(f"products:    {len(products)} distinct SKUs ({priced} with a price) "
+        sheets = sum(1 for p in products if p.get("spec_sheet_url"))
+        print(f"products:    {len(products)} distinct SKUs ({priced} priced, "
+              f"{enriched} detail pages, {sheets} spec sheets) "
               f"-> {args.out}/products.jsonl")
     for note in skipped:
         print(f"skipped {note}", file=sys.stderr)

@@ -1,4 +1,6 @@
-NEW
+Shop Page
+
+Sort byPositionRelevanceName, A to ZName, Z to APrice, low to highPrice, high to low
 
 Cool Window 21800 Btu
 
@@ -8,8 +10,6 @@ Cool Window 21800 Btu
 
 31% Off
 
-NEW
-
 Cool Window 18000 Btu
 
 1,499Incl. VAT
@@ -17,8 +17,6 @@ Cool Window 18000 Btu
 2,150Save651
 
 30% Off
-
-NEW
 
 Hot/Cool Window 17800 Btu
 
@@ -30,4 +28,8 @@ Hot/Cool Window 17800 Btu
 
 Showing 1-3 of 3 item(s)
 
+1
+
 Sub Category
+
+Brand

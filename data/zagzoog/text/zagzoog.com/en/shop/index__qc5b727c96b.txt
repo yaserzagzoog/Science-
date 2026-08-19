@@ -1,4 +1,6 @@
-NEW
+Shop Page
+
+Sort byPositionRelevanceName, A to ZName, Z to APrice, low to highPrice, high to low
 
 85" UHD Smart TV,4K HDR,VIDAA
 
@@ -8,8 +10,6 @@ NEW
 
 9% Off
 
-NEW
-
 65" QLED Smart TV,4K HDR,VIDAA
 
 1,799Incl. VAT
@@ -17,8 +17,6 @@ NEW
 2,400Save601
 
 25% Off
-
-NEW
 
 65" QLED Smart TV,4K HDR,VIDAA
 
@@ -28,8 +26,6 @@ NEW
 
 17% Off
 
-NEW
-
 65" UHD SmartTV,4K,HDR10,WebOS
 
 2,349Incl. VAT
@@ -37,8 +33,6 @@ NEW
 3,600Save1,251
 
 35% Off
-
-NEW
 
 55" UHD SmartTV,4K,HDR10,WebOS
 
@@ -50,4 +44,8 @@ NEW
 
 Showing 1-5 of 5 item(s)
 
+1
+
 Sub Category
+
+Brand

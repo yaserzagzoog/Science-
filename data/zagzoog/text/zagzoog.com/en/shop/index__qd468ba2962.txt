@@ -1,4 +1,6 @@
-NEW
+Shop Page
+
+Sort byPositionRelevanceName, A to ZName, Z to APrice, low to highPrice, high to low
 
 Ref TM 21.9Cf,620L,Inverter
 
@@ -8,8 +10,6 @@ Ref TM 21.9Cf,620L,Inverter
 
 42% Off
 
-NEW
-
 Ref TM 20.7Cf,585L,Inverter
 
 4,399Incl. VAT
@@ -18,8 +18,6 @@ Ref TM 20.7Cf,585L,Inverter
 
 38% Off
 
-NEW
-
 Ref TM 18.6Cf,528L,Inverter
 
 3,799Incl. VAT
@@ -27,8 +25,6 @@ Ref TM 18.6Cf,528L,Inverter
 5,912Save2,113
 
 36% Off
-
-NEW
 
 Ref TM 16.3Cf,460L,Inverter
 
@@ -40,8 +36,12 @@ Ref TM 16.3Cf,460L,Inverter
 
 Showing 1-4 of 4 item(s)
 
+1
+
 Sub Category
 
 Refrigerators
 
 Freezers
+
+Brand

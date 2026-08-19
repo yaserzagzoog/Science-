@@ -1,4 +1,6 @@
-NEW
+Shop Page
+
+Sort byPositionRelevanceName, A to ZName, Z to APrice, low to highPrice, high to low
 
 Hot/Cool Duct Inv 57000 Btu
 
@@ -8,8 +10,6 @@ Hot/Cool Duct Inv 57000 Btu
 
 29% Off
 
-NEW
-
 Hot/Cool Duct Inv 46000 Btu
 
 11,099Incl. VAT
@@ -17,8 +17,6 @@ Hot/Cool Duct Inv 46000 Btu
 15,200Save4,101
 
 27% Off
-
-NEW
 
 Hot/Cool Duct Inverter 35000 Btu
 
@@ -28,8 +26,6 @@ Hot/Cool Duct Inverter 35000 Btu
 
 28% Off
 
-NEW
-
 Hot/Cool Duct Inverter 30000 Btu
 
 8,299Incl. VAT
@@ -37,8 +33,6 @@ Hot/Cool Duct Inverter 30000 Btu
 11,700Save3,401
 
 29% Off
-
-NEW
 
 Hot/Cool Duct Inverter 22900 Btu
 
@@ -48,8 +42,6 @@ Hot/Cool Duct Inverter 22900 Btu
 
 29% Off
 
-NEW
-
 Hot/Cool Duct Inverter 18000 Btu
 
 5,699Incl. VAT
@@ -57,8 +49,6 @@ Hot/Cool Duct Inverter 18000 Btu
 7,400Save1,701
 
 23% Off
-
-NEW
 
 Cool Duct Inverter 57000 Btu
 
@@ -68,8 +58,6 @@ Cool Duct Inverter 57000 Btu
 
 32% Off
 
-NEW
-
 Cool Duct Inverter 48000 Btu
 
 10,599Incl. VAT
@@ -77,8 +65,6 @@ Cool Duct Inverter 48000 Btu
 15,000Save4,401
 
 29% Off
-
-NEW
 
 Cool Duct Inverter 35000 Btu
 
@@ -88,8 +74,6 @@ Cool Duct Inverter 35000 Btu
 
 30% Off
 
-NEW
-
 Cool duct Inv 30000 Btu
 
 7,299Incl. VAT
@@ -98,8 +82,6 @@ Cool duct Inv 30000 Btu
 
 28% Off
 
-NEW
-
 Cool Duct Inverter 22900 Btu
 
 6,299Incl. VAT
@@ -107,8 +89,6 @@ Cool Duct Inverter 22900 Btu
 8,400Save2,101
 
 25% Off
-
-NEW
 
 Cool Duct Inverter,18000 Btu
 
@@ -120,4 +100,8 @@ Cool Duct Inverter,18000 Btu
 
 Showing 1-12 of 21 item(s)
 
+1
+
 2
+
+Brand

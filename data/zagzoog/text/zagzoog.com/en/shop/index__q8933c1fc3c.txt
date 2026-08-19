@@ -1,8 +1,10 @@
+Shop Page
+
+Sort byPositionRelevanceName, A to ZName, Z to APrice, low to highPrice, high to low
+
 E/Range (5) Electric Ceramic, (5) CF, Fan, Self Clean
 
 8,100Incl. VAT
-
-NEW
 
 E/Range (5) Electric Ceramic, (5) CF, Fan, Self Clean
 
@@ -12,8 +14,6 @@ E/Range (5) Electric Ceramic, (5) CF, Fan, Self Clean
 
 32% Off
 
-NEW
-
 E/Range (4) Electric Ceramic, (5) CF
 
 5,099Incl. VAT
@@ -21,8 +21,6 @@ E/Range (4) Electric Ceramic, (5) CF
 7,500Save2,401
 
 32% Off
-
-NEW
 
 E/Range (4) Electric Ceramic, (5) CF
 
@@ -32,8 +30,6 @@ E/Range (4) Electric Ceramic, (5) CF
 
 27% Off
 
-NEW
-
 E/Range (4) Electric Coil, (5) CF
 
 3,399Incl. VAT
@@ -41,8 +37,6 @@ E/Range (4) Electric Coil, (5) CF
 4,000Save601
 
 15% Off
-
-NEW
 
 E/Range (4) Electric Coil, (5) CF
 
@@ -54,6 +48,8 @@ E/Range (4) Electric Coil, (5) CF
 
 Showing 1-6 of 6 item(s)
 
+1
+
 Sub Category
 
 Ovens
@@ -63,3 +59,5 @@ Built-in - Hobs
 Built-in - Ovens
 
 Built-in - Hoods
+
+Brand

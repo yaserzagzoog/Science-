@@ -1,4 +1,6 @@
-NEW
+Shop Page
+
+Sort byPositionRelevanceName, A to ZName, Z to APrice, low to highPrice, high to low
 
 Top/Load Washer (19)Kg, P.Clean,Inverter,WiFi
 
@@ -8,8 +10,6 @@ Top/Load Washer (19)Kg, P.Clean,Inverter,WiFi
 
 33% Off
 
-NEW
-
 Twin/Top/Load, W/D,(14)Kg/W,(10)Kg/D
 
 1,549Incl. VAT
@@ -17,8 +17,6 @@ Twin/Top/Load, W/D,(14)Kg/W,(10)Kg/D
 2,600Save1,051
 
 40% Off
-
-NEW
 
 Twin/Top/Load, W/D,(12)Kg/W,(10)Kg/D
 
@@ -28,8 +26,6 @@ Twin/Top/Load, W/D,(12)Kg/W,(10)Kg/D
 
 38% Off
 
-NEW
-
 Twin/Top/Load, W/D,(10.5)Kg/W,(8)Kg/D
 
 1,399Incl. VAT
@@ -37,8 +33,6 @@ Twin/Top/Load, W/D,(10.5)Kg/W,(8)Kg/D
 2,200Save801
 
 36% Off
-
-NEW
 
 Front/Load Washer/Dryer 10.5Kg/7Kg, Inverter, WiFi
 
@@ -50,8 +44,12 @@ Front/Load Washer/Dryer 10.5Kg/7Kg, Inverter, WiFi
 
 Showing 1-5 of 5 item(s)
 
+1
+
 Sub Category
 
 Washers
 
 Dryers
+
+Brand

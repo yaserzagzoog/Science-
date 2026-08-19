@@ -1,4 +1,6 @@
-NEW
+Shop Page
+
+Sort byPositionRelevanceName, A to ZName, Z to APrice, low to highPrice, high to low
 
 D/W 7P,14Set,LED/Display -St
 
@@ -7,8 +9,6 @@ D/W 7P,14Set,LED/Display -St
 2,300Save871
 
 38% Off
-
-NEW
 
 D/W 7P,12Set,LED/Display -St
 
@@ -26,8 +26,6 @@ D/W 6P,12Set,LED/Display-Slv
 
 1,800Incl. VAT
 
-NEW
-
 D/W 8P,14Set
 
 3,099Incl. VAT
@@ -36,8 +34,6 @@ D/W 8P,14Set
 
 36% Off
 
-NEW
-
 Dishwasher (9) Programs, (14) Set,Inverter, WiFi
 
 2,599Incl. VAT
@@ -45,8 +41,6 @@ Dishwasher (9) Programs, (14) Set,Inverter, WiFi
 5,600Save3,001
 
 54% Off
-
-NEW
 
 Dishwasher (9) Programs, (14) Set, Inverter, WiFi
 
@@ -58,4 +52,8 @@ Dishwasher (9) Programs, (14) Set, Inverter, WiFi
 
 Showing 1-7 of 7 item(s)
 
+1
+
 Sub Category
+
+Brand

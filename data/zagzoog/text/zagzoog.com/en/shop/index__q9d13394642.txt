@@ -1,3 +1,7 @@
+Shop Page
+
+Sort byPositionRelevanceName, A to ZName, Z to APrice, low to highPrice, high to low
+
 Fridge Top Mount (24.8)Cf,(700)L,Inverter, Dual Fan
 
 5,477Incl. VAT
@@ -12,8 +16,12 @@ Fridge Top Mount (19.4)Cf,(550)L,Inverter, Dual Fan
 
 Showing 1-3 of 3 item(s)
 
+1
+
 Sub Category
 
 Refrigerators
 
 Freezers
+
+Brand

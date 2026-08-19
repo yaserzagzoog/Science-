@@ -149,7 +149,22 @@ catalog. Two properties shaped the capture:
 
 That yields 203 of the 230 products the site advertises (88%). The shortfall is
 in categories whose narrowest URL-addressable slice still holds more than 12
-items. Closing it needs a scrolling browser session rather than more slices.
+items. Closing it needs a scrolling browser session rather than more slices;
+related-product links on the detail pages were checked and surface no SKUs
+beyond those 203.
+
+Every one of the 203 has its own detail page captured, giving `products.jsonl`
+the SKU as stated on the page, name (English and Arabic), price, previous
+price, discount percent, brand, category, warranty term, stock status, image
+gallery and spec-sheet PDF URL.
+
+One limit worth stating plainly: the **specification table is not captured**.
+On a product page "Product Details" and "Specifications" are collapsed
+accordions whose contents are not in the DOM until a user clicks them, so no
+amount of rendering reaches them. The per-product spec sheet PDF carries those
+numbers — `products.jsonl` records its URL for 134 of the 203 (the other 69
+publish no sheet). Downloading and parsing those PDFs is the remaining step to
+a complete specification database.
 
 To refresh the archive, re-fetch the URLs in `data/zagzoog/pages.jsonl` and
 re-run `ingest_fetched.py` over the results.

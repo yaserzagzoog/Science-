@@ -1,3 +1,5 @@
+Shop Page
+
 Shop by Category
 
 56 Items
@@ -14,7 +16,7 @@ Shop by Category
 
 36 Items
 
-NEW
+Sort byPositionRelevanceName, A to ZName, Z to APrice, low to highPrice, high to low
 
 Cool Window 21800 Btu
 
@@ -24,8 +26,6 @@ Cool Window 21800 Btu
 
 31% Off
 
-NEW
-
 Cool Window 18000 Btu
 
 1,499Incl. VAT
@@ -33,8 +33,6 @@ Cool Window 18000 Btu
 2,150Save651
 
 30% Off
-
-NEW
 
 Hot/Cool Window 17800 Btu
 
@@ -64,8 +62,6 @@ Hot/Cool Window 17800 Btu
 
 2,300Incl. VAT
 
-NEW
-
 Hot/Cool Cast 41000 Btu
 
 11,699Incl. VAT
@@ -73,8 +69,6 @@ Hot/Cool Cast 41000 Btu
 18,000Save6,301
 
 35% Off
-
-NEW
 
 Cool Cast 41000 Btu
 
@@ -88,8 +82,6 @@ Cool Cast 22800 Btu
 
 10,700Incl. VAT
 
-NEW
-
 Cool Wall Inverter 36000 Btu
 
 8,599Incl. VAT
@@ -99,6 +91,8 @@ Cool Wall Inverter 36000 Btu
 31% Off
 
 Showing 1-12 of 230 item(s)
+
+1
 
 2
 
@@ -113,18 +107,4 @@ Showing 1-12 of 230 item(s)
 ...
 20
 
-Free Shipping
-
-Enjoy free shipping on your orders within main cities for purchases of SR 500 or more
-
-24/7 Support
-
-Support you around the clock through the website, WhatsApp, and social media
-
-Return Policy
-
-Flexible return and exchange policy, ensuring a reassuring shopping experience
-
-Secure Payment
-
-Shop with confidence using secure payment methods supported by global protection standards
+Brand

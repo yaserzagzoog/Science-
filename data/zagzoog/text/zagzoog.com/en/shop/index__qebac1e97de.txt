@@ -1,3 +1,7 @@
+Shop Page
+
+Sort byPositionRelevanceName, A to ZName, Z to APrice, low to highPrice, high to low
+
 Top/Load Washer (12)Kg, (8) Programs, Buble Clean
 
 2,450Incl. VAT
@@ -17,8 +21,6 @@ F/L W/M 8K,16P,Inv,WiFi-D.Slv
 F/L W/M 13K,16P,Inv,WF-D.Slv
 
 3,550Incl. VAT
-
-NEW
 
 F/L W/M 10.5K,16P,Inv,WF-D.Slv
 
@@ -42,8 +44,12 @@ Front/Load Dryer (10)Kg, (14) Programs, Pump
 
 Showing 1-9 of 9 item(s)
 
+1
+
 Sub Category
 
 Washers
 
 Dryers
+
+Brand

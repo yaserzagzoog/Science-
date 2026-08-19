@@ -1,4 +1,6 @@
-NEW
+Shop Page
+
+Sort byPositionRelevanceName, A to ZName, Z to APrice, low to highPrice, high to low
 
 Hood Pyrmd,90cm,Sc1000m3/h
 
@@ -8,8 +10,6 @@ Hood Pyrmd,90cm,Sc1000m3/h
 
 27% Off
 
-NEW
-
 Hood Pyrmd,60cm,Sc1000m3/h
 
 599Incl. VAT
@@ -17,8 +17,6 @@ Hood Pyrmd,60cm,Sc1000m3/h
 900Save301
 
 33% Off
-
-NEW
 
 Hood Pyrmd,90cm,Sct436M3/H
 
@@ -28,8 +26,6 @@ Hood Pyrmd,90cm,Sct436M3/H
 
 15% Off
 
-NEW
-
 Hood Pyrmd,60cm,Sct436M3/H
 
 1,249Incl. VAT
@@ -38,8 +34,6 @@ Hood Pyrmd,60cm,Sct436M3/H
 
 17% Off
 
-NEW
-
 Hood Cast,90cm,Sct204M3/H
 
 849Incl. VAT
@@ -47,8 +41,6 @@ Hood Cast,90cm,Sct204M3/H
 1,000Save151
 
 15% Off
-
-NEW
 
 Hood Cast,60cm,Sct204M3/H
 
@@ -59,3 +51,7 @@ Hood Cast,60cm,Sct204M3/H
 17% Off
 
 Showing 1-6 of 6 item(s)
+
+1
+
+Brand

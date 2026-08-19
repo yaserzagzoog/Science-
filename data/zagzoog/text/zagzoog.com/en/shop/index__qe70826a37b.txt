@@ -1,4 +1,6 @@
-NEW
+Shop Page
+
+Sort byPositionRelevanceName, A to ZName, Z to APrice, low to highPrice, high to low
 
 Cool Wall Inverter 36000 Btu
 
@@ -16,8 +18,6 @@ Hot/Cool Wall Inverter 24000 Btu
 
 7,100Incl. VAT
 
-NEW
-
 Cool Wall Inverter 24000 Btu
 
 4,699Incl. VAT
@@ -25,8 +25,6 @@ Cool Wall Inverter 24000 Btu
 6,900Save2,201
 
 32% Off
-
-NEW
 
 Cool Wall Inverter 18000 Btu
 
@@ -36,8 +34,6 @@ Cool Wall Inverter 18000 Btu
 
 35% Off
 
-NEW
-
 Cool Wall Inverter 21200 Btu
 
 3,799Incl. VAT
@@ -45,8 +41,6 @@ Cool Wall Inverter 21200 Btu
 6,300Save2,501
 
 40% Off
-
-NEW
 
 Cool Wall Inverter 18000 Btu
 
@@ -59,8 +53,6 @@ Cool Wall Inverter 18000 Btu
 Hot/Cool Wall 23700 Btu
 
 7,100Incl. VAT
-
-NEW
 
 Hot/Cool Wall 19000 Btu
 
@@ -84,4 +76,8 @@ Hot/Cool Wall 27000 Btu WiFi
 
 Showing 1-12 of 24 item(s)
 
+1
+
 2
+
+Brand

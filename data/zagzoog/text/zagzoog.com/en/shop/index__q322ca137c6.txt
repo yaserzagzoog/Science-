@@ -1,3 +1,7 @@
+Shop Page
+
+Sort byPositionRelevanceName, A to ZName, Z to APrice, low to highPrice, high to low
+
 Cool Walll Smart 21500 Btu
 
 6,300Incl. VAT
@@ -24,4 +28,8 @@ Cool Walll JetCool 22000 Btu
 
 Showing 1-6 of 6 item(s)
 
+1
+
 Sub Category
+
+Brand

@@ -1,14 +1,14 @@
 {
   "start_url": "https://zagzoog.com/ar/about-us/",
   "site": "zagzoog.com",
-  "pages": 60,
+  "pages": 263,
   "duplicates": 5,
   "assets": 0,
   "errors": 0,
   "queued_remaining": 0,
-  "total_words": 15256,
+  "total_words": 49403,
   "elapsed_seconds": 0,
-  "finished_at": "2026-08-19T09:54:15Z",
+  "finished_at": "2026-08-19T10:11:44Z",
   "output_dir": "/home/user/Science-/data/zagzoog",
-  "ingested_from": "external-fetch"
+  "ingested_from": "nimble-extract"
 }

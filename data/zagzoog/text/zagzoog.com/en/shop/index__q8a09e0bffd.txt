@@ -1,4 +1,6 @@
-NEW
+Shop Page
+
+Sort byPositionRelevanceName, A to ZName, Z to APrice, low to highPrice, high to low
 
 Hob (4) Gas & (2) Electric Burners, 86cm, Enameled
 
@@ -8,8 +10,6 @@ Hob (4) Gas & (2) Electric Burners, 86cm, Enameled
 
 14% Off
 
-NEW
-
 Hob (5) Gas Burners, 86cm, Enameled
 
 2,549Incl. VAT
@@ -17,8 +17,6 @@ Hob (5) Gas Burners, 86cm, Enameled
 2,700Save151
 
 6% Off
-
-NEW
 
 Hob (4) Gas & (2) Electric Burners, 86cm, Cast iron
 
@@ -28,8 +26,6 @@ Hob (4) Gas & (2) Electric Burners, 86cm, Cast iron
 
 17% Off
 
-NEW
-
 Hob (4) Electric Plate, 58.5cm
 
 1,349Incl. VAT
@@ -37,8 +33,6 @@ Hob (4) Electric Plate, 58.5cm
 1,500Save151
 
 10% Off
-
-NEW
 
 Domino (2) Gas Burners, 29cm
 
@@ -48,8 +42,6 @@ Domino (2) Gas Burners, 29cm
 
 12% Off
 
-NEW
-
 Domino (2) Electric Burners (Ceramic), 29cm
 
 1,549Incl. VAT
@@ -57,8 +49,6 @@ Domino (2) Electric Burners (Ceramic), 29cm
 1,700Save151
 
 9% Off
-
-NEW
 
 Domino (2) Electric Plate, 29cm
 
@@ -68,8 +58,6 @@ Domino (2) Electric Plate, 29cm
 
 15% Off
 
-NEW
-
 Hob (4) Gas Burners, 58.5cm
 
 1,549Incl. VAT
@@ -77,8 +65,6 @@ Hob (4) Gas Burners, 58.5cm
 1,700Save151
 
 9% Off
-
-NEW
 
 Hob (3) Gas&(1) Electric Burners,58.5cm
 
@@ -88,8 +74,6 @@ Hob (3) Gas&(1) Electric Burners,58.5cm
 
 17% Off
 
-NEW
-
 Hob (5) Electric Burners (Ceramic),88cm,Touch Ctrl
 
 3,849Incl. VAT
@@ -98,8 +82,6 @@ Hob (5) Electric Burners (Ceramic),88cm,Touch Ctrl
 
 8% Off
 
-NEW
-
 Hob (4) Electric Burners (Ceramic),58cm
 
 2,549Incl. VAT
@@ -107,8 +89,6 @@ Hob (4) Electric Burners (Ceramic),58cm
 2,700Save151
 
 6% Off
-
-NEW
 
 Hob (5) Gas Burners,86cm, Cast iron
 
@@ -119,6 +99,8 @@ Hob (5) Gas Burners,86cm, Cast iron
 9% Off
 
 Showing 1-12 of 27 item(s)
+
+1
 
 2
 
@@ -133,3 +115,5 @@ Built-in - Hobs
 Built-in - Ovens
 
 Built-in - Hoods
+
+Brand

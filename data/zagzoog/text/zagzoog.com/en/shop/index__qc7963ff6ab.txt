@@ -1,3 +1,7 @@
+Shop Page
+
+Sort byPositionRelevanceName, A to ZName, Z to APrice, low to highPrice, high to low
+
 Products not found.
 
 Sub Category
@@ -5,3 +9,5 @@ Sub Category
 Washers
 
 Dryers
+
+Brand

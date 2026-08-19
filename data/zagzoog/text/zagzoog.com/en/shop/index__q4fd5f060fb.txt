@@ -1,4 +1,6 @@
-NEW
+Shop Page
+
+Sort byPositionRelevanceName, A to ZName, Z to APrice, low to highPrice, high to low
 
 Cooker 60X90, (5) Gas Burn., Multi Function, Fan, Air Fryer
 
@@ -8,8 +10,6 @@ Cooker 60X90, (5) Gas Burn., Multi Function, Fan, Air Fryer
 
 15% Off
 
-NEW
-
 Cooker 60X100, (5) Gas Burn., Multi Function, Fan, Air Fryer
 
 6,799Incl. VAT
@@ -17,8 +17,6 @@ Cooker 60X100, (5) Gas Burn., Multi Function, Fan, Air Fryer
 8,200Save1,401
 
 17% Off
-
-NEW
 
 Cooker 60X90, (5) Gas Burn., Multi Function, Fan
 
@@ -28,8 +26,6 @@ Cooker 60X90, (5) Gas Burn., Multi Function, Fan
 
 24% Off
 
-NEW
-
 Cooker 60X90, (4)Gas&(2)Electric Burn., Fan
 
 4,999Incl. VAT
@@ -37,8 +33,6 @@ Cooker 60X90, (4)Gas&(2)Electric Burn., Fan
 6,300Save1,301
 
 21% Off
-
-NEW
 
 Cooker 60X90, (5) Electric Burn. (Ceramic), Fan
 
@@ -48,8 +42,6 @@ Cooker 60X90, (5) Electric Burn. (Ceramic), Fan
 
 17% Off
 
-NEW
-
 Cooker 60x120, (6) Gas Burn., Multi Function, (2) Fans, Air Fryer
 
 15,999Incl. VAT
@@ -58,8 +50,6 @@ Cooker 60x120, (6) Gas Burn., Multi Function, (2) Fans, Air Fryer
 
 16% Off
 
-NEW
-
 Cooker 60X90, (5) Gas Burn., Multi Function, Fan, Air Fryer
 
 8,599Incl. VAT
@@ -67,8 +57,6 @@ Cooker 60X90, (5) Gas Burn., Multi Function, Fan, Air Fryer
 10,200Save1,601
 
 16% Off
-
-NEW
 
 Cooker 60X100, (5) Gas Burn., Multi Function, Fan, Air Fryer
 
@@ -82,8 +70,6 @@ E/Range (5) Electric Ceramic, (5) CF, Fan, Self Clean
 
 8,100Incl. VAT
 
-NEW
-
 E/Range (5) Electric Ceramic, (5) CF, Fan, Self Clean
 
 4,999Incl. VAT
@@ -92,8 +78,6 @@ E/Range (5) Electric Ceramic, (5) CF, Fan, Self Clean
 
 32% Off
 
-NEW
-
 E/Range (4) Electric Ceramic, (5) CF
 
 5,099Incl. VAT
@@ -101,8 +85,6 @@ E/Range (4) Electric Ceramic, (5) CF
 7,500Save2,401
 
 32% Off
-
-NEW
 
 E/Range (4) Electric Ceramic, (5) CF
 
@@ -114,4 +96,8 @@ E/Range (4) Electric Ceramic, (5) CF
 
 Showing 1-12 of 18 item(s)
 
+1
+
 2
+
+Brand
