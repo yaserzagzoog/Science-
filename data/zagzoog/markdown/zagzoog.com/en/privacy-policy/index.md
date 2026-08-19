@@ -1,0 +1,277 @@
+Delivery to all regions of the Kingdom
+
+- [Home](/en/home/)
+
+- [FAQ](/en/faq/)
+
+- [About Us](/en/about-us/)
+
+- [Contact Us](/en/contact-us/)
+
+- [Our Stores](/en/locations/)
+
+- [Catalog](/en/catalog/)
+
+Maintenance Request[**920022766](tel:920022766)[**AR](/ar/privacy-policy/)
+
+[
+
+**
+
+](/en/login/)[
+
+**
+
+0](/en/wishlist/)
+
+**
+
+0**
+
+[![Site Logo](https://zagzoog.com/assets/img/logo/footer-logo.svg)](/en/home/)
+
+**
+
+**
+
+AccountLogin
+
+- [Register](/en/register/)
+
+- [Login](/en/login/)
+
+[
+
+**
+
+Wishlist**0**-items
+
+](/en/wishlist/)[
+
+**
+
+Cart**0**-items
+
+](#)
+
+**All Categories**
+
+- ![Air Conditioners](https://zagzoog.com/media/catalog/category/air-conditioners.svg)Air Conditioners
+
+- ![Cooking Appliances](https://zagzoog.com/media/catalog/category/cooking-appliances.svg)Cooking Appliances
+
+- ![Refrigeration](https://zagzoog.com/media/catalog/category/refrigerators-freezers.svg)Refrigeration
+
+- ![Laundry Appliances](https://zagzoog.com/media/catalog/category/washing-machines-dryers.svg)Laundry Appliances
+
+- ![Dishwashers](https://zagzoog.com/media/catalog/category/dish-washers.svg)Dishwashers
+
+- ![Screens](https://zagzoog.com/media/catalog/category/tvs.svg)Screens
+
+- ![Small Appliances](https://zagzoog.com/media/catalog/category/small-appliances.svg)Small Appliances
+
+###### Air Conditioners
+
+- [Window](/en/shop/?category_id=423)
+
+- [Wall Split](/en/shop/?category_id=424)
+
+- [Floor Standing](/en/shop/?category_id=425)
+
+- [Duct](/en/shop/?category_id=426)
+
+- [Cassette](/en/shop/?category_id=427)
+
+- [Portable](/en/shop/?category_id=428)
+
+[All](/en/shop/?shop=all)
+
+[Offers](/en/shop/?shop=offer)
+
+[Air Conditioners](/en/shop/?category_id=422)
+
+[Cooking Appliances](/en/shop/?category_id=429)
+
+[Refrigeration](/en/shop/?category_id=434)
+
+[Laundry Appliances](/en/shop/?category_id=437)
+
+[Dishwashers](/en/shop/?category_id=440)
+
+[Screens](/en/shop/?category_id=442)
+
+[Small Appliances](/en/shop/?category_id=444)
+
+My Cart[**](/)
+
+Your cart is empty.
+
+Looks like you haven't added anything yet
+
+[Start Shopping](/en/shop/)
+
+- [Home](/en/home/)
+
+- Privacy Policy
+
+## Privacy Policy
+
+Browse The Collection of Top Products
+
+##### Your Account Obligations
+
+This Privacy Policy provides the manner your data is collected and used by Zagzoog for Home Appliances. You are advised to read this Privacy Policy carefully. By accessing the services provided by ZagzoogKSA.com you agree to the collection and use of your data by ZagzoogKSA.com and certain authorized third party service providers in the manner provided in this Privacy Policy. If you do not agree with this Privacy Policy, please do not use the website – ZagzoogKSA.com. By accepting the Privacy Policy during registration, you expressly consent to our use and disclosure of your personal information in accordance with this Privacy Policy. This Privacy Policy is incorporated into and subject to the terms of the User Agreement.
+
+##### Your Privacy protection with ZagzoogKSA.com
+
+ZagzoogKSA.com values your trust in us. We want you to feel comfortable using our site and feel secure to share your information with us, thus we are extremely proud of our commitment to protect your privacy. Please continue reading the following policy to understand how your personal information will be treated as you make full use of our Site.
+
+##### Your Privacy Guarantee with ZagzoogKSA.com
+
+ZagzoogKSA Promises not to sell or rent your personal information to third parties (except as provided in this Privacy Policy) without your consent. We and/or certain authorized third party service providers will use the personal information provided by you to provide you with the services, which we offer.
+
+##### Third-Party Service Providers
+
+We employ other companies and individuals to perform functions on our behalf. Examples include fulfilling orders, delivering packages, sending postal mail and e-mail, analyzing data, providing marketing assistance, providing search results, processing credit card payments. They have access to personal information needed to perform their functions, but may not use it for other purposes.
+
+##### Information may be collected from you
+
+ZagzoogKSA.com collects the details provided by you on registration together with information we learn about you from your use of our service and your visits to our Site. We also collect information about the transactions you make including details of payment cards used. We may collect additional information in connection with your participation in any promotions or competitions offered by us and information you provide when giving us feedback or completing profile forms. We also monitor customer traffic patterns and Site use, which enables us to improve the service we provide. We will collect only such information as is necessary and relevant to us to provide you with the services available on the Site.
+
+We may collect the following personally identifiable information about you like:
+
+- Name including first and last name
+
+- Mobile phone number and contact details
+
+- Demographic profile (like your age, address)
+
+You can terminate your account at any time. However, your information may remain stored in archive on our servers even after the deletion or the termination of your account.
+
+##### Credit Card details
+
+We do not keep any credit card details in our data base or server. It is important for you to protect against unauthorized access to your password and to your computer. Be sure to sign off when finished using a shared computer.
+
+##### Our Use of Your Information
+
+We use your personal & contact information to:
+
+- Get in touch with you whenever necessary
+
+- Supply the orders/services requested by you
+
+- Preserve social history as governed by existing law or policy
+
+- Contact you as a survey respondent
+
+- Notify you if you win any contest
+
+- Send you promotional materials from our contest sponsors or advertisers
+
+##### Who's allowed to use ZagzoogKSA.com?
+
+ZagzoogKSA.com does not sell products for purchase by children. If you are under 18, you may browse the ZagzoogKSA.com website but you cannot purchase any product without the involvement of a parent or guardian.
+
+##### Information that you can access
+
+ZagzoogKSA.com gives you access to a range of information about your account and your interactions with ZagzoogKSA.com for the purpose of viewing, updating and editing that information.
+
+##### Our Disclosure of Your Information
+
+We will not use your personal information for any purpose other than to complete a transaction with you. We do not rent, sell or share your personal information and we will not disclose any of your personally identifiable information to third parties unless:
+
+- We have your permission
+
+- To provide products or services you've requested
+
+- To help investigate, prevent or take action regarding unlawful and illegal activities, suspected fraud, potential threat to the safety or security of any person, violations of ZagzoogKSA.com terms of use or to defend against legal claims
+
+- Special circumstances such as compliance with subpoenas, court orders, requests/order from legal authorities or law enforcement agencies requiring such disclosure
+
+##### What choices are available to you regarding Collection, Use and Distribution of Your Information?
+
+Supplying personally identifiable information is entirely voluntary. You are not required to register with us in order to browse our Site. However, we offer some services only to visitors who do register.
+
+You may change your interests at any time and may opt-in or opt-out of any marketing / promotional / newsletters mailings. ZagzoogKSA.com reserves the right to send you certain service related communication, considered to be a part of your ZagzoogKSA.com account without offering you the facility to opt-out. You may update your information and change your account settings at any time.
+
+Upon request, we will remove / block your personally identifiable information from our database, thereby canceling your registration. However, your information may remain stored in archive on our servers even after the deletion or the termination of your account.
+
+If we plan to use your personally identifiable information for any commercial purposes, we will notify you at the time we collect that information and allow you to opt-out of having your information used for those purposes.
+
+##### Security
+
+To protect against the loss, misuse and alteration of the information under our control, we have in place appropriate physical, electronic and managerial procedures. For example, our servers are accessible only to authorized personnel and that your information is shared with respective personnel on need to know basis to complete the transaction and to provide the services requested by you.
+
+Although we will endeavor to safeguard the confidentiality of your personally identifiable information, transmissions made by means of the Internet cannot be made absolutely secure. By using this Site, you agree that we will have no liability for disclosure of your information due to errors in transmission or unauthorized acts of third parties.
+
+##### Access or change your personally identifiable information
+
+To protect your privacy and security, we will verify your identity before granting access or making changes to your personally-identifying information. If you have registered your profile on ZagzoogKSA, your ZagzoogKSA.com user name and Password are required in order to access your profile information. We reserve the right to change or update our policies at any time. Such changes shall be effective immediately upon posting to this Site.
+
+You can offer your views, suggestions, if any, by submitting your feedback using the form in the Contact Us section.
+
+You can contact us by Phone: 8001000717, E-mail: info@zagzoog.com, Mail: ZagzoogKSA (Customer Relationship).
+
+You will be able to unsubscribe anytime by clicking on the unsubscribe link at the bottom of all our email communications.
+
+![footer logo](https://zagzoog.com/assets/img/logo/footer-logo.svg)
+
+![qr code](https://zagzoog.com/assets/img/logo/app-download.png)
+
+#### Category
+
+**
+
+- [Air Conditioners](/en/shop/?category_id=422)
+
+- [Cooking Appliances](/en/shop/?category_id=429)
+
+- [Refrigeration](/en/shop/?category_id=434)
+
+- [Laundry Appliances](/en/shop/?category_id=437)
+
+- [Dishwashers](/en/shop/?category_id=440)
+
+- [Screens](/en/shop/?category_id=442)
+
+- [Shop All](/en/shop/?shop=all)
+
+#### Need Help?
+
+**
+
+- [Return & Exchange](/en/return-policy/)
+
+- [Privacy Policy](/en/privacy-policy/)
+
+- [Warranty](/en/contact-us/)
+
+- [Deal With Us](/en/contact-us/)
+
+- [Catalog](/en/catalog/)
+
+#### Contact
+
+**
+
+- **[920022766](tel:+00966920022766)
+
+- **[92000411](tel:+0096692000411)
+
+- **[info@zagzoog.com](mailto:info@zagzoog.com)
+
+- [**](#)
+
+- [**](#)
+
+- [**](#)
+
+- [**](#)
+
+[Find Our Stores](/en/locations/)
+
+Zagzoog for Home Appliances CR No.4030086856 VAT No.300182458100003
+
+![payment](https://zagzoog.com/assets/img/logo/footer-payment.png)
+
+Copyright © 2026 Zagzoogall rights reserved.

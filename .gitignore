@@ -2,5 +2,8 @@
 # scripts/setup-notebooklm-mcp.sh) — contains auth state, never commit it.
 tools/notebooklm-mcp/
 
-# Scraped site corpora — regenerate with scripts/scrape_site.py
-data/
+# Scraped site corpora are regenerated with scripts/scrape_site.py, so they
+# stay out of git — except the zagzoog.com archive, which cannot be re-fetched
+# from every environment and is the point of the exercise.
+data/*
+!data/zagzoog/

@@ -202,6 +202,8 @@ class PageParser(HTMLParser):
             self._href_stack.append(href)
             self._link_text = []
             if href:
+                self._md.append("[")
+            if href:
                 self.links.append(
                     {"href": href, "rel": (attr.get("rel") or "").lower(), "text": ""}
                 )
@@ -256,8 +258,11 @@ class PageParser(HTMLParser):
         if tag == "title":
             self._in_title = False
         elif tag == "a":
-            if self._href_stack:
-                self._href_stack.pop()
+            href = self._href_stack.pop() if self._href_stack else ""
+            if href:
+                # Keeping the target in the markdown makes the export usable as
+                # a link graph, not just prose.
+                self._md.append(f"]({href})")
             text = "".join(self._link_text).strip()
             if self.links and text and not self.links[-1]["text"]:
                 self.links[-1]["text"] = " ".join(text.split())[:200]
