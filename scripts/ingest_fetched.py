@@ -275,6 +275,90 @@ def extract_products(parsed: list[dict]) -> list[dict]:
     return sorted(products.values(), key=lambda p: p["sku"])
 
 
+PRODUCT_OBJECT_RE = re.compile(r'\{"id":\d+,"title":')
+
+
+def extract_product_objects(text: str) -> dict[str, dict]:
+    """Pull the product records the page ships as JSON.
+
+    Next.js streams each product as a JSON object in the RSC payload, carrying
+    the fields the rendered HTML never shows -- notably `description`, which is
+    the technical specification list. The payload is JSON escaped inside a JS
+    string, so quotes are unescaped first and each object is then brace-matched
+    and parsed properly rather than scraped with a regex.
+    """
+    unescaped = text.replace('\\"', '"')
+    found: dict[str, dict] = {}
+    for match in PRODUCT_OBJECT_RE.finditer(unescaped):
+        start = match.start()
+        depth = 0
+        end = None
+        in_string = False
+        escaped = False
+        for i in range(start, min(len(unescaped), start + 8000)):
+            ch = unescaped[i]
+            if escaped:
+                escaped = False
+                continue
+            if ch == "\\":
+                escaped = True
+                continue
+            if ch == '"':
+                in_string = not in_string
+                continue
+            if in_string:
+                continue
+            if ch == "{":
+                depth += 1
+            elif ch == "}":
+                depth -= 1
+                if depth == 0:
+                    end = i + 1
+                    break
+        if end is None:
+            continue
+        try:
+            obj = json.loads(unescaped[start:end])
+        except json.JSONDecodeError:
+            continue
+        if obj.get("sku"):
+            found[obj["sku"]] = obj
+    return found
+
+
+def merge_product_objects(products: dict[str, dict], payloads: dict[str, str]) -> int:
+    """Fold JSON product objects into the catalog, adding specs and stock."""
+    merged = 0
+    for html in payloads.values():
+        for sku, obj in extract_product_objects(html).items():
+            record = products.setdefault(sku, {
+                "sku": sku, "name": "", "name_ar": "", "url":
+                f"https://zagzoog.com/en/product-page/{sku}/", "price_sar": "",
+                "was_price_sar": "", "brand": "", "category": "", "seen_on": [],
+            })
+            spec = (obj.get("description") or "").strip()
+            if spec and len(spec) > len(record.get("specs", "")):
+                record["specs"] = spec
+                # "* A. * B. * C." is a bullet list; split it into real fields.
+                bullets = [b.strip(" .") for b in re.split(r"\s*\*\s*", spec) if b.strip(" .*")]
+                record["spec_list"] = bullets
+                merged += 1
+            if not record.get("name") and obj.get("title"):
+                record["name"] = obj["title"]
+            if not record.get("category") and obj.get("category"):
+                record["category"] = obj["category"]
+            if not record.get("price_sar") and obj.get("newPrice"):
+                record["price_sar"] = str(obj["newPrice"])
+            if not record.get("was_price_sar") and obj.get("oldPrice"):
+                record["was_price_sar"] = str(obj["oldPrice"])
+            for src, dest in (("rating", "rating"), ("quantity", "stock_quantity"),
+                              ("status", "stock_status"), ("weight", "weight"),
+                              ("color", "color"), ("id", "product_id")):
+                if obj.get(src) not in (None, "", "$undefined"):
+                    record[dest] = obj[src]
+    return merged
+
+
 PRODUCT_URL_RE = re.compile(r"/(?:en|ar)/product-page/([A-Za-z0-9._-]+)/?$")
 
 
@@ -430,6 +514,66 @@ def write_corpus(parsed: list[dict], out: str, source_note: str) -> dict:
     return report
 
 
+def write_catalog_markdown(products: list[dict], path: str) -> None:
+    """Write the whole catalog as one document, grouped by category.
+
+    This is the file to hand to an assistant when asking about any SKU: every
+    product, its price, stock, warranty and full specification list in one
+    place, so no lookup tooling is needed to answer a question about it.
+    """
+    by_category: dict[str, list[dict]] = {}
+    for product in products:
+        by_category.setdefault(product.get("category") or "Uncategorised",
+                               []).append(product)
+
+    with open(path, "w", encoding="utf-8") as handle:
+        handle.write("# Zagzoog for Home Appliances - product catalog\n\n")
+        priced = [p for p in products if p.get("price_sar")]
+        handle.write(f"{len(products)} products across {len(by_category)} "
+                     f"categories. Prices in SAR, VAT included.\n\n")
+        handle.write("| Category | Products |\n|---|---|\n")
+        for category in sorted(by_category):
+            handle.write(f"| {category} | {len(by_category[category])} |\n")
+        handle.write("\n---\n")
+
+        for category in sorted(by_category):
+            handle.write(f"\n## {category}\n")
+            for product in sorted(by_category[category],
+                                  key=lambda p: p.get("name", "")):
+                handle.write(f"\n### {product['sku']} - {product.get('name', '')}\n\n")
+                if product.get("name_ar"):
+                    handle.write(f"Arabic name: {product['name_ar']}\n\n")
+                facts = []
+                if product.get("price_sar"):
+                    price = f"SAR {product['price_sar']} incl. VAT"
+                    if product.get("was_price_sar"):
+                        price += (f" (was SAR {product['was_price_sar']}, "
+                                  f"-{product.get('discount_percent', '?')}%)")
+                    facts.append(("Price", price))
+                for label, key in (("Brand", "brand"), ("Warranty", "warranty_years"),
+                                   ("Stock", "stock_status"),
+                                   ("Units in stock", "stock_quantity"),
+                                   ("Rating", "rating")):
+                    if product.get(key) not in (None, ""):
+                        value = product[key]
+                        if key == "warranty_years":
+                            value = f"{value} years"
+                        facts.append((label, value))
+                for label, value in facts:
+                    handle.write(f"- **{label}:** {value}\n")
+                if product.get("spec_list"):
+                    handle.write("\n**Specifications**\n\n")
+                    for bullet in product["spec_list"]:
+                        handle.write(f"- {bullet}\n")
+                elif product.get("specs"):
+                    handle.write(f"\n**Specifications**\n\n{product['specs']}\n")
+                else:
+                    handle.write("\n_No specifications published for this product._\n")
+                handle.write(f"\nProduct page: {product.get('url', '')}\n")
+                if product.get("spec_sheet_url"):
+                    handle.write(f"Spec sheet: {product['spec_sheet_url']}\n")
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description="Build a corpus from externally fetched page payloads.",
@@ -458,8 +602,9 @@ def main(argv: list[str] | None = None) -> int:
 
     products_list = extract_products(parsed)
     products = {p["sku"]: p for p in products_list}
-    enriched = enrich_from_detail_pages(
-        products, parsed, {p["url"]: p["content"] for p in payloads})
+    raw_by_url = {p["url"]: p["content"] for p in payloads}
+    enriched = enrich_from_detail_pages(products, parsed, raw_by_url)
+    specced = merge_product_objects(products, raw_by_url)
     products_list = sorted(products.values(), key=lambda p: p["sku"])
     products = products_list
     os.makedirs(args.out, exist_ok=True)
@@ -471,6 +616,8 @@ def main(argv: list[str] | None = None) -> int:
             for product in products:
                 h.write(json.dumps(product, ensure_ascii=False) + "\n")
 
+    if products:
+        write_catalog_markdown(products, os.path.join(args.out, "catalog.md"))
     report = write_corpus(parsed, args.out, args.source_note)
 
     print(f"ingested {len(payloads)} payloads -> {report['pages']} pages "
@@ -481,11 +628,15 @@ def main(argv: list[str] | None = None) -> int:
     if products:
         priced = sum(1 for p in products if p["price_sar"])
         sheets = sum(1 for p in products if p.get("spec_sheet_url"))
+        specs = sum(1 for p in products if p.get("specs"))
         print(f"products:    {len(products)} distinct SKUs ({priced} priced, "
-              f"{enriched} detail pages, {sheets} spec sheets) "
+              f"{enriched} detail pages, {sheets} spec sheets, {specs} with specs) "
               f"-> {args.out}/products.jsonl")
     for note in skipped:
         print(f"skipped {note}", file=sys.stderr)
+    if products:
+        size = os.path.getsize(os.path.join(args.out, "catalog.md"))
+        print(f"catalog:     {args.out}/catalog.md ({size:,} bytes)")
     print(f"corpus:      {report['output_dir']}")
     return 0
 

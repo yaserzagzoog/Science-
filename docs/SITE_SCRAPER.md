@@ -169,13 +169,27 @@ related-product links surface nothing new, and Floor Standing AC (`425`)
 returns zero products for every brand. Those 13 need a scrolling browser
 session.
 
-One limit worth stating plainly: the **specification table is not captured**.
-On a product page "Product Details" and "Specifications" are collapsed
-accordions whose contents are not in the DOM until a user clicks them, so no
-amount of rendering reaches them. The per-product spec sheet PDF carries those
-numbers — `products.jsonl` records its URL for 134 of the 203 (the other 69
-publish no sheet). Downloading and parsing those PDFs is the remaining step to
-a complete specification database.
+**Specifications are captured.** An earlier pass concluded they were not,
+because "Product Details" and "Specifications" render as collapsed accordions
+whose text is absent from the DOM. That conclusion was wrong: it came from
+fetching pages as `simplified_html`, which strips `<script>` tags. Next.js
+streams each product as a JSON object in the RSC payload, and that object
+carries a `description` field holding the specification list. Fetching as
+`plain_text` keeps it. `ingest_fetched.py` brace-matches those objects out of
+the payload and parses them properly, which also yields stock status, units in
+stock, rating, weight and the internal product id.
+
+205 of the 217 products carry specifications. The other 12 publish none on the
+site itself -- their pages show "No product details are available yet" -- so
+that gap is the site's, not the scraper's.
+
+The spec-sheet PDFs are a separate matter: they are scans with no text layer
+(zero font objects), so they are recorded as URLs and would need OCR to read.
+The JSON specifications make that unnecessary.
+
+`data/zagzoog/catalog.md` is the whole catalog as one document -- every SKU
+with price, stock, warranty and specifications, grouped by category. It is the
+file to hand to an assistant when asking about any product.
 
 To refresh the archive, re-fetch the URLs in `data/zagzoog/pages.jsonl` and
 re-run `ingest_fetched.py` over the results.

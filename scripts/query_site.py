@@ -12,6 +12,7 @@ interact with the scraped site:
     --links URL|N          inbound and outbound links for one page
     --export FILE.md       whole site as one markdown file (e.g. for NotebookLM)
     --products [QUERY]     product catalog, optionally filtered by text
+    --spec SKU             everything known about one product, specs included
     --broken               pages that link to URLs the crawl never captured
 
 Examples
@@ -396,6 +397,65 @@ def cmd_products(data_dir: str, query: str, limit: int, as_json: bool) -> None:
               f"on discount: {discounted}/{len(priced)}")
 
 
+def cmd_spec(data_dir: str, sku: str, as_json: bool) -> None:
+    """Print the full record for one product, specifications included."""
+    path = os.path.join(data_dir, "products.jsonl")
+    if not os.path.exists(path):
+        raise SystemExit(f"No product catalog at {path}")
+    rows = [json.loads(l) for l in open(path, encoding="utf-8") if l.strip()]
+    query = sku.strip().lower()
+    exact = [r for r in rows if r["sku"].lower() == query]
+    matches = exact or [
+        r for r in rows
+        if query in r["sku"].lower() or query in (r.get("name", "") or "").lower()
+    ]
+    if not matches:
+        raise SystemExit(f"No product matching {sku!r}")
+    if len(matches) > 1 and not exact:
+        print(f"{len(matches)} products match {sku!r}:")
+        for r in matches[:20]:
+            print(f"  {r['sku']:<15} {r.get('name', '')[:60]}")
+        return
+
+    row = matches[0]
+    if as_json:
+        print(json.dumps(row, ensure_ascii=False, indent=2))
+        return
+
+    print(f"{row['sku']}  -  {row.get('name', '')}")
+    if row.get("name_ar"):
+        print(f"           {row['name_ar']}")
+    print("-" * 74)
+    price, was = row.get("price_sar"), row.get("was_price_sar")
+    line = f"price:      SAR {price}" if price else "price:      -"
+    if was:
+        line += f"  (was {was}, -{row.get('discount_percent', '?')}%)"
+    print(line)
+    for label, key in (("brand", "brand"), ("category", "category"),
+                       ("warranty", "warranty_years"), ("rating", "rating"),
+                       ("stock", "stock_status"), ("units", "stock_quantity"),
+                       ("weight", "weight"), ("product id", "product_id")):
+        if row.get(key) not in (None, ""):
+            suffix = " years" if key == "warranty_years" else ""
+            print(f"{label + ':':<12}{row[key]}{suffix}")
+
+    if row.get("spec_list"):
+        print("\nSPECIFICATIONS")
+        for bullet in row["spec_list"]:
+            print(f"  - {bullet}")
+    elif row.get("specs"):
+        print("\nSPECIFICATIONS\n  " + row["specs"])
+    else:
+        print("\nSPECIFICATIONS\n  (the site publishes none for this product)")
+
+    print()
+    for label, key in (("page", "url"), ("spec sheet", "spec_sheet_url")):
+        if row.get(key):
+            print(f"{label + ':':<12}{row[key]}")
+    for image in (row.get("images") or [])[:3]:
+        print(f"{'image:':<12}{image}")
+
+
 def cmd_export(pages: list[dict], data_dir: str, out_path: str) -> None:
     with open(out_path, "w", encoding="utf-8") as handle:
         host = urllib.parse.urlsplit(pages[0]["url"]).netloc if pages else "site"
@@ -453,6 +513,8 @@ def main(argv: list[str] | None = None) -> int:
     group.add_argument("--broken", action="store_true")
     group.add_argument("--products", nargs="?", const="*", metavar="QUERY",
                        help="list the product catalog, optionally filtered")
+    group.add_argument("--spec", metavar="SKU",
+                       help="everything known about one product, specs included")
     group.add_argument("--export", metavar="FILE.md")
     args = parser.parse_args(argv)
     _allow_broken_pipe()
@@ -474,6 +536,8 @@ def main(argv: list[str] | None = None) -> int:
         cmd_broken(pages, aliases, args.data)
     elif args.products:
         cmd_products(args.data, args.products, args.limit, args.json)
+    elif args.spec:
+        cmd_spec(args.data, args.spec, args.json)
     elif args.export:
         cmd_export(pages, args.data, args.export)
     return 0
