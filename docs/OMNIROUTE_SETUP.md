@@ -30,6 +30,11 @@ Anthropic ولا تمرّ عبر جهازك. الفائدة تظهر عند تش
 أو أي شيء لا تقبل أن يخرج من جهازك. OmniRoute نفسه محلي ولا يرسل بياناتك إلى
 خوادمه — لكن المزوّد الذي يختاره في النهاية طرف ثالث.
 
+> **ملاحظة على المفاتيح:** التثبيت يولّد ملفَّي `.env` — واحد في
+> `~/.omniroute/.env` وآخر داخل مجلد الحزمة — ويُحمَّلان مع كل أمر (يظهر ذلك في
+> أول سطر من مخرجات أي أمر). مفاتيحك تُخزَّن هناك مشفّرة، لكن لا تنسخ هذين
+> الملفين إلى مستودع أو نسخة احتياطية عامة.
+
 **3. رقم «90%» ادّعاء من الجهة المطوِّرة، ولم يُقَس في هذا المشروع.**
 الضغط يعمل عبر إعادة صياغة البرومبت (RTK للمخرجات الطويلة، و Caveman الذي يحذف
 الكلمات الزائدة). هذا ممتاز لمخرجات الأوامر والاختبارات، وخطِر في العمل الذي
@@ -74,36 +79,53 @@ omniroute        # اتركه يعمل في تبويب طرفية مستقل
 - لوحة التحكم: <http://localhost:20128>
 - الـ API: <http://localhost:20128/v1>
 
-يعمل مباشرة بدون أي مفتاح، لأن مزوّدات مجانية بلا مفاتيح (OpenCode Free و Felo)
-مُهيّأة مسبقًا في وضع `auto`.
+يعمل مباشرة بدون أي مفتاح. **تم التحقق فعليًا:** بعد التثبيت مباشرة، بدون أي
+مفتاح أو تسجيل، أعاد `GET /v1/models` عدد **115 نموذجًا** (منها 38 اسمًا من نوع
+`auto/*`)، من مزوّدات مجانية بلا مفاتيح مثل Felo و DuckDuckGo Gateway.
 
-### 3) تجربة Claude Code دون تغيير أي إعداد
+### 3) توليد بروفايلات Claude Code
 
-هذه أفضل طريقة للتجربة — لا تكتب شيئًا في ملفات الإعداد:
+> **مهم:** الاسم `auto` وحده **ليس** نموذجًا صالحًا في هذا الإصدار (تم التحقق —
+> غير موجود في قائمة `/v1/models`). الأسماء الصحيحة تحمل شرطة مائلة:
+> `auto/coding`, `auto/best-coding`, `auto/best-reasoning`, `auto/chat` …
+
+الأمر `setup-claude` يكتب بروفايلات منفصلة في `~/.claude/profiles/<name>/`
+كـ `CLAUDE_CONFIG_DIR` مستقل — أي أن **إعداد `claude` الأساسي عندك لا يُمَس**.
+هذه أأمن طريقة للتجربة:
 
 ```bash
-omniroute run claude --model auto --dry-run   # لمعاينة ما سيُشغَّل
-omniroute run claude --model auto             # للتشغيل الفعلي
+omniroute setup-claude --dry-run        # معاينة ما سيُكتب دون لمس القرص
+omniroute setup-claude                  # الكتابة الفعلية
+omniroute setup-claude --only auto,glm  # اقتصار على نماذج معيّنة
 ```
+
+### 4) تشغيل Claude Code عبر البروفايل
+
+```bash
+omniroute launch --profile <name>
+```
+
+خيارات مفيدة: `--port` (افتراضيًا 20128)، `--remote <url>` لخادم بعيد،
+و `--token` (وهو `ANTHROPIC_AUTH_TOKEN` الذي سيرسله Claude Code).
 
 جرّب مهمة حقيقية من مهامك اليومية. راقب: هل جودة الردود مقبولة؟ هل تعمل
 الأدوات (قراءة الملفات، التعديل، Bash) كما ينبغي؟
 
-### 4) التثبيت الدائم (فقط بعد أن تقتنع بالخطوة 3)
+### 5) بديل: الإعداد اليدوي
 
-```bash
-omniroute configure claude     # اختيار تفاعلي للمزوّد والنموذج
-```
-
+`omniroute configure claude` يختار مزوّدًا ونموذجًا تفاعليًا ويكتب إعداد الأداة.
 أو يدويًا عبر متغيّرات البيئة التي يقرأها Claude Code:
 
 ```bash
 export ANTHROPIC_BASE_URL="http://localhost:20128/v1"
 export ANTHROPIC_AUTH_TOKEN="<مفتاحك من Dashboard → Endpoints>"
-export ANTHROPIC_MODEL="auto"
+export ANTHROPIC_MODEL="auto/coding"
 ```
 
-### 5) الرجوع إلى Anthropic المباشر
+### 6) الرجوع إلى Anthropic المباشر
+
+إذا استخدمت البروفايلات (الخطوة 3) فلا يوجد ما تتراجع عنه — شغّل `claude`
+عاديًا. أما إن صدّرت المتغيّرات يدويًا:
 
 ```bash
 unset ANTHROPIC_BASE_URL ANTHROPIC_AUTH_TOKEN ANTHROPIC_MODEL
@@ -115,19 +137,25 @@ unset ANTHROPIC_BASE_URL ANTHROPIC_AUTH_TOKEN ANTHROPIC_MODEL
 
 ## التحكّم في الضغط (Compression)
 
-الضغط **مُفعّل افتراضيًا**. الوضع الافتراضي هو `RTK → Caveman` مكدّسين.
-تحكّم فيه من لوحة التحكم (قسم Compression) أو من الطرفية:
+الضغط **مُفعّل افتراضيًا**. تحكّم فيه من لوحة التحكم (قسم Compression) أو من
+الطرفية:
 
 ```bash
-omniroute compression --help
+omniroute compression status                      # الإعداد الحالي
+omniroute compression configure --engine rtk      # تغيير المحرّك
+omniroute compression preview --file req.json     # قياس الأثر قبل الاعتماد
 ```
 
-الأوضاع المتاحة: `off` / `lite` / `standard` / `aggressive` / `ultra` / `RTK` /
-`stacked`.
+> **تصحيح:** المحرّكات الفعلية في الإصدار `3.8.49` هي `caveman` / `rtk` /
+> `hybrid` / `none` — وليست `off/lite/standard/aggressive/ultra` كما قد توحي
+> بعض صفحات التوثيق. تم التحقق من `omniroute compression configure --help`.
 
-**نصيحة عملية:** ابدأ بـ `RTK` فقط. هو يضغط مخرجات الأوامر والاختبارات
+خيارات ضبط إضافية: `--caveman-aggressiveness <0.0–1.0>` و `--rtk-budget <n>`.
+
+**نصيحة عملية:** ابدأ بـ `--engine rtk`. هو يضغط مخرجات الأوامر والاختبارات
 والـ git — وهي أكبر مصدر لاستهلاك التوكنز في جلسات البرمجة — دون العبث بصياغة
-برومبتك أنت. انتقل إلى `stacked` فقط إذا كانت الجودة ما تزال مقبولة.
+برومبتك أنت. `caveman` هو الذي يحذف الكلمات من نصّك، و `hybrid` يجمع الاثنين.
+استخدم `compression preview` لترى الفرق بنفسك بدل الاعتماد على الأرقام المعلنة.
 
 ---
 
@@ -139,7 +167,7 @@ omniroute compression --help
 | نفاد حصتك في منتصف العمل | ✅ OmniRoute (تبديل تلقائي) |
 | رياضيات، براهين، فيزياء دقيقة | ❌ Anthropic مباشرة |
 | كود فيه أسرار أو مفاتيح أو بيانات عملاء | ❌ Anthropic مباشرة |
-| نصوص عربية تحتاج صياغة دقيقة | ❌ أو على الأقل `compression off` |
+| نصوص عربية تحتاج صياغة دقيقة | ❌ أو على الأقل `--engine none` |
 | جلسات claude.ai/code السحابية | لا ينطبق — لا يمرّ عبر جهازك |
 
 ---
@@ -150,8 +178,10 @@ omniroute compression --help
 |---|---|
 | `omniroute: command not found` | تأكد أن مجلد npm العام ضمن `PATH`: `npm bin -g` |
 | Claude Code لا يستجيب بعد التهيئة | تأكد أن `omniroute` يعمل في تبويب آخر، ثم `omniroute doctor` |
-| المنفذ 20128 مشغول | `OMNIROUTE_PORT=20200 omniroute` وحدّث `ANTHROPIC_BASE_URL` |
-| الردود ضعيفة أو ناقصة | خفّض الضغط إلى `RTK` أو `off`، أو ثبّت نموذجًا محددًا بدل `auto` |
+| المنفذ 20128 مشغول | `omniroute serve --port 20200` وحدّث `ANTHROPIC_BASE_URL` |
+| الردود ضعيفة أو ناقصة | `omniroute compression configure --engine rtk` (أو `none`)، أو ثبّت نموذجًا محددًا بدل `auto/*` |
+| `unknown command 'run'` | لا يوجد أمر `run` في هذا الإصدار — استخدم `omniroute launch` |
+| إيقاف الخادم | `omniroute stop` (و `omniroute restart` لإعادة التشغيل) |
 | الأدوات (Tool use) لا تعمل | ليست كل النماذج المجانية تدعم استدعاء الأدوات — جرّب نموذجًا آخر |
 | تريد التراجع كليًا | `unset ANTHROPIC_*` ثم `npm uninstall -g omniroute` |
 

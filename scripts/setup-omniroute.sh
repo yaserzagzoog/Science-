@@ -78,25 +78,38 @@ Next steps (run these yourself):
        omniroute doctor
        curl http://localhost:${PORT}/v1/models
 
-  3) Try Claude Code through OmniRoute WITHOUT changing any config
-     (credentials are injected per process, nothing is written to disk):
+  3) Generate Claude Code profiles. These land in ~/.claude/profiles/<name>/
+     as separate CLAUDE_CONFIG_DIRs, so your normal 'claude' setup is NOT
+     touched. Preview first:
 
-       omniroute run claude --model auto
+       omniroute setup-claude --dry-run
+       omniroute setup-claude
 
-     Add --dry-run first if you want to see the exact env and args:
+     Narrow it down if the model list is long:
 
-       omniroute run claude --model auto --dry-run
+       omniroute setup-claude --only auto,glm
 
-  4) Only once you are happy with step 3, make it permanent:
+  4) Launch Claude Code against a generated profile:
 
-       omniroute configure claude
+       omniroute launch --profile <name>
 
-  5) To go back to plain Anthropic at any time, run 'claude' normally, or
-     unset the overrides in your shell profile:
+  5) Turn the prompt compression down before real work. 'rtk' squeezes
+     tool/command output only and leaves your wording alone:
+
+       omniroute compression status
+       omniroute compression configure --engine rtk
+
+     Engines are: caveman | rtk | hybrid | none
+
+  6) To go back to plain Anthropic at any time, run 'claude' normally — the
+     profiles above are separate, so nothing needs undoing. If you exported
+     the overrides by hand, unset them:
 
        unset ANTHROPIC_BASE_URL ANTHROPIC_AUTH_TOKEN ANTHROPIC_MODEL
 
-Read docs/OMNIROUTE_SETUP.md before step 4 — it covers what leaves your
+Stop the gateway with 'omniroute stop'.
+
+Read docs/OMNIROUTE_SETUP.md before step 3 — it covers what leaves your
 machine, and when prompt compression is a bad idea.
 ------------------------------------------------------------------
 EOF
