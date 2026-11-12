@@ -1,0 +1,80 @@
+[submodule "ai-agents/01-agent-frameworks/langgraph"]
+	path = ai-agents/01-agent-frameworks/langgraph
+	url = https://github.com/langchain-ai/langgraph
+	shallow = true
+[submodule "ai-agents/01-agent-frameworks/crewai"]
+	path = ai-agents/01-agent-frameworks/crewai
+	url = https://github.com/crewAIInc/crewAI
+	shallow = true
+[submodule "ai-agents/01-agent-frameworks/openai-agents-sdk"]
+	path = ai-agents/01-agent-frameworks/openai-agents-sdk
+	url = https://github.com/openai/openai-agents-python
+	shallow = true
+[submodule "ai-agents/01-agent-frameworks/microsoft-agent-framework"]
+	path = ai-agents/01-agent-frameworks/microsoft-agent-framework
+	url = https://github.com/microsoft/agent-framework
+	shallow = true
+[submodule "ai-agents/01-agent-frameworks/google-adk"]
+	path = ai-agents/01-agent-frameworks/google-adk
+	url = https://github.com/google/adk-python
+	shallow = true
+[submodule "ai-agents/01-agent-frameworks/pydantic-ai"]
+	path = ai-agents/01-agent-frameworks/pydantic-ai
+	url = https://github.com/pydantic/pydantic-ai
+	shallow = true
+[submodule "ai-agents/01-agent-frameworks/agno"]
+	path = ai-agents/01-agent-frameworks/agno
+	url = https://github.com/agno-agi/agno
+	shallow = true
+[submodule "ai-agents/01-agent-frameworks/smolagents"]
+	path = ai-agents/01-agent-frameworks/smolagents
+	url = https://github.com/huggingface/smolagents
+	shallow = true
+[submodule "ai-agents/02-workflows-integrations/flowise"]
+	path = ai-agents/02-workflows-integrations/flowise
+	url = https://github.com/FlowiseAI/Flowise
+	shallow = true
+[submodule "ai-agents/02-workflows-integrations/dify"]
+	path = ai-agents/02-workflows-integrations/dify
+	url = https://github.com/langgenius/dify
+	shallow = true
+[submodule "ai-agents/02-workflows-integrations/n8n"]
+	path = ai-agents/02-workflows-integrations/n8n
+	url = https://github.com/n8n-io/n8n
+	shallow = true
+[submodule "ai-agents/02-workflows-integrations/mcp-servers"]
+	path = ai-agents/02-workflows-integrations/mcp-servers
+	url = https://github.com/modelcontextprotocol/servers
+	shallow = true
+[submodule "ai-agents/03-memory-knowledge/llamaindex"]
+	path = ai-agents/03-memory-knowledge/llamaindex
+	url = https://github.com/run-llama/llama_index
+	shallow = true
+[submodule "ai-agents/03-memory-knowledge/mem0"]
+	path = ai-agents/03-memory-knowledge/mem0
+	url = https://github.com/mem0ai/mem0
+	shallow = true
+[submodule "ai-agents/03-memory-knowledge/graphiti"]
+	path = ai-agents/03-memory-knowledge/graphiti
+	url = https://github.com/getzep/graphiti
+	shallow = true
+[submodule "ai-agents/03-memory-knowledge/cognee"]
+	path = ai-agents/03-memory-knowledge/cognee
+	url = https://github.com/topoteretes/cognee
+	shallow = true
+[submodule "ai-agents/04-autonomous-agents-learning/openhands"]
+	path = ai-agents/04-autonomous-agents-learning/openhands
+	url = https://github.com/OpenHands/OpenHands
+	shallow = true
+[submodule "ai-agents/04-autonomous-agents-learning/browser-use"]
+	path = ai-agents/04-autonomous-agents-learning/browser-use
+	url = https://github.com/browser-use/browser-use
+	shallow = true
+[submodule "ai-agents/04-autonomous-agents-learning/ai-agents-for-beginners"]
+	path = ai-agents/04-autonomous-agents-learning/ai-agents-for-beginners
+	url = https://github.com/microsoft/ai-agents-for-beginners
+	shallow = true
+[submodule "ai-agents/04-autonomous-agents-learning/awesome-llm-apps"]
+	path = ai-agents/04-autonomous-agents-learning/awesome-llm-apps
+	url = https://github.com/Shubhamsaboo/awesome-llm-apps
+	shallow = true
